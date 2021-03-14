@@ -18,4 +18,3 @@ set /A a = %helper%
 goto :eof
 
 :End
-
