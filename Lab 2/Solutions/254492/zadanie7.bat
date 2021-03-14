@@ -2,7 +2,7 @@
 
 set /A result = 1
 
-FOR /l %%i IN (%1, -1, 1) DO call :ForBody %%i
+FOR /l %%i IN (%1, -1, 2) DO call :ForBody %%i
 goto End
 
 :ForBody
