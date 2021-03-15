@@ -11,7 +11,7 @@ SET /A b = 1
 
 
 FOR /l %%i IN (0, 1, %1) DO call :ForBody
-goto :End
+goto :eof
 
 :ForBody
 echo %a%
@@ -20,4 +20,4 @@ set /A b = %a% + %b%
 set /A a = %helper%
 goto :eof
 
-:End
+:eof
