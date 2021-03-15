@@ -1,6 +1,6 @@
 @echo off
 
-REM Podajemy scieze zrodlowa oraz docelowa aby skopiowac pliki
+REM Podajemy sciezke zrodlowa oraz docelowa aby skopiowac pliki
 
 xcopy %1 %2 /t /e
 
