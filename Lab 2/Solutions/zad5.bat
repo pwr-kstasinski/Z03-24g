@@ -14,4 +14,4 @@ echo %VAR%
 
 ffmpeg -i %1 -ss 00:00:%VAR%.000 -vframes 1 %2
 
-pauses6
+pause
