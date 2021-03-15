@@ -20,4 +20,3 @@ set /A b = %a% + %b%
 set /A a = %helper%
 goto :eof
 
-:eof
