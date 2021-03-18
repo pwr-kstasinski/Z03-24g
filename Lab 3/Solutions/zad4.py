@@ -132,8 +132,8 @@ def calc_points(stats):
 def main():
     rounds: int = int(input("Rounds number: "))
     game_objects = [Rock(), Paper(), Scissor()]
-    players: List[Player] = [ConsolePlayer(game_objects, "consolePlayer"),
-                             ComputerPlayer(game_objects, "computerPlayer")]
+    players: List[Player] = [ConsolePlayer(game_objects, "player"),
+                             ComputerPlayer(game_objects, "computer")]
     game = RockPaperScissorGame(players, rounds)
     while not game.ended():
         game.nextRound()
