@@ -1,5 +1,5 @@
 import random
-from typing import List, Sequence
+from typing import List, Sequence, Dict, Set
 
 
 class GameObject:
@@ -57,11 +57,17 @@ class Player:
     def get_choice(self) -> GameObject:
         raise NotImplementedError
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def send_stats(self, stats):
+    def send_stats(self, stats: Dict[str, Dict[str, int]]) -> None:
         raise NotImplementedError
+
+    def send_winner(self, winner: str) -> None:
+        raise NotImplementedError
+
+    def __hash__(self):
+        return hash(self.name)
 
 
 def get_int_from_input(text) -> int:
@@ -70,8 +76,12 @@ def get_int_from_input(text) -> int:
 
 class ConsolePlayer(Player):
 
-    def send_stats(self, stats):
-        print(f"Your stats: {stats}")
+    def send_winner(self, winner: str) -> None:
+        input(f"Winner: {winner}")
+
+    def send_stats(self, stats: Dict[str, Dict[str, int]]) -> None:
+        for key, value in stats.items():
+            print(f"{key} => {value}")
 
     def get_choice(self) -> GameObject:
         text = f"{self.name}\n"
@@ -82,7 +92,11 @@ class ConsolePlayer(Player):
 
 
 class ComputerPlayer(Player):
-    def send_stats(self, stats):
+
+    def send_winner(self, winner: str) -> None:
+        pass
+
+    def send_stats(self, stats: Dict[str, Dict[str, int]]):
         pass
 
     def get_choice(self) -> GameObject:
@@ -90,10 +104,10 @@ class ComputerPlayer(Player):
 
 
 class RockPaperScissorGame:
-    def __init__(self, players: List[Player], rounds: int):
+    def __init__(self, players: Set[Player], rounds: int):
         if rounds < 0:
             raise AttributeError
-        self._players = players
+        self._players = list(players)
         self._stats = []
         for _ in self._players:
             self._stats.append({"wins": 0, "draws": 0, "losses": 0})
@@ -116,13 +130,29 @@ class RockPaperScissorGame:
                 else:
                     player_stats["losses"] += 1
             player_stats["draws"] -= 1
-
-        for player, player_stats in zip(self._players, self._stats):
-            player.send_stats(player_stats)
+        self.send_stats_to_players()
         self._done_rounds += 1
 
-    def get_stats_for_player(self, player: Player):
+    def get_stats_for_player(self, player: Player) -> Dict[str, int]:
         return self._stats[self._players.index(player)]
+
+    def send_stats_to_players(self) -> None:
+        stats = {}
+        for player, player_stats in zip(self._players, self._stats):
+            stats[player.name] = player_stats
+        for player in self._players:
+            player.send_stats(stats)
+
+    def get_winner(self) -> Player:
+        points_with_index = [(calc_points(stats), i) for i, stats in enumerate(self._stats)]
+        winner_index = max(points_with_index, key=lambda pair: pair[0])[1]
+        winner = self._players[winner_index]
+        return winner
+
+    def show_winner(self) -> None:
+        winner = self.get_winner()
+        for player in self._players:
+            player.send_winner(winner.name)
 
 
 def calc_points(stats):
@@ -131,15 +161,14 @@ def calc_points(stats):
 
 def main():
     rounds: int = int(input("Rounds number: "))
-    game_objects = [Rock(), Paper(), Scissor()]
-    players: List[Player] = [ConsolePlayer(game_objects, "player"),
-                             ComputerPlayer(game_objects, "computer")]
+    player_name = "player"
+    computer_name = "computer"
+    game_objects: Sequence[GameObject] = [Rock(), Paper(), Scissor()]
+    players: Set[Player] = {ConsolePlayer(game_objects, player_name), ComputerPlayer(game_objects, computer_name)}
     game = RockPaperScissorGame(players, rounds)
     while not game.ended():
         game.nextRound()
-    players_with_stats = [(player, game.get_stats_for_player(player)) for player in players]
-    for player, stats in sorted(players_with_stats, key=lambda t: calc_points(t[1])):
-        print(f"{player} => {stats}")
+    game.show_winner()
     input()
 
 

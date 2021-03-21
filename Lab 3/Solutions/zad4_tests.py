@@ -104,9 +104,8 @@ class GameTest(unittest.TestCase):
         game = RockPaperScissorGame([], 1)
         self.assertFalse(game.ended())
 
-    def test_next_round_get_choise(self):
-        player_mock = Player([], "player")
-        player_mock.get_choice = MagicMock(return_value=Rock())
+    def test_next_round_get_choice(self):
+        player_mock = self.create_player_mock("player", Rock())
         game = RockPaperScissorGame([player_mock], 10)
 
         game.nextRound()
@@ -114,11 +113,15 @@ class GameTest(unittest.TestCase):
         player_mock.get_choice.assert_called_once()
         self.assertEqual(1, game._done_rounds)
 
+    def create_player_mock(self, player_name, choice):
+        player_mock = Player([], player_name)
+        player_mock.get_choice = MagicMock(return_value=choice)
+        player_mock.send_stats = MagicMock()
+        return player_mock
+
     def test_next_round_get_stats(self):
-        first_player_mock = Player([], "player")
-        first_player_mock.get_choice = MagicMock(return_value=Rock())
-        second_player_mock = Player([], "player")
-        second_player_mock.get_choice = MagicMock(return_value=Paper())
+        first_player_mock = self.create_player_mock("player1", Rock())
+        second_player_mock = self.create_player_mock("player2", Paper())
         game = RockPaperScissorGame([first_player_mock, second_player_mock], 10)
 
         game.nextRound()
@@ -127,14 +130,10 @@ class GameTest(unittest.TestCase):
         self.assertEqual({"wins": 1, "draws": 0, "losses": 0}, game.get_stats_for_player(second_player_mock))
 
     def test_next_round_get_stats_more_players(self):
-        first = Player([], "player")
-        first.get_choice = MagicMock(return_value=Rock())
-        second = Player([], "player")
-        second.get_choice = MagicMock(return_value=Paper())
-        third = Player([], "player")
-        third.get_choice = MagicMock(return_value=Scissor())
-        fourth = Player([], "player")
-        fourth.get_choice = MagicMock(return_value=Scissor())
+        first = self.create_player_mock("player1", Rock())
+        second = self.create_player_mock("player2", Paper())
+        third = self.create_player_mock("player3", Scissor())
+        fourth = self.create_player_mock("player4", Scissor())
         game = RockPaperScissorGame([first, second, third, fourth], 10)
 
         game.nextRound()
