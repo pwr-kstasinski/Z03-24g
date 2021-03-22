@@ -17,14 +17,14 @@ if(run):
 
         while choice > 3 or choice < 1: 
             choice = int(input("Wpisz poprawna wartosc (1, 2 lub 3): ")) 
-print()
+
         if choice == 1: 
             choice_name = 'Kamien'
         elif choice == 2: 
             choice_name = 'Papier'
         else: 
             choice_name = 'Nozyce'
-            
+                       
         print("Wybor uzytkownika to: " + choice_name)
         print("\nTeraz wybiera komputer...")
 
