@@ -1,94 +1,64 @@
-import re
-from typing import Set, Dict
-
-from operations import *
+from tree_elements import *
 
 
-class TreeElement:
-    def calc(self) -> float:
+class Calculator:
+    def __init__(self, operations: Optional[Set[Operation]] = None):
+        self.operations = operations
+        self.equation_tree: Optional[EquationTree] = None
+
+    def read(self) -> None:
+        if self.operations is None:
+            raise AttributeError("operations set not found")
+        else:
+            self._read()
+
+    def calc(self) -> None:
+        if self.equation_tree is None:
+            raise AttributeError("equation not found")
+        elif self.operations is None:
+            raise AttributeError("operations set not found")
+        else:
+            self._calc()
+
+    def print(self) -> None:
+        if self.equation_tree is None:
+            raise AttributeError("equation not found")
+        elif self.operations is None:
+            raise AttributeError("operations set not found")
+        else:
+            self._print()
+
+    def _read(self) -> None:
+        raise NotImplementedError
+
+    def _calc(self) -> None:
+        raise NotImplementedError
+
+    def _print(self) -> None:
         raise NotImplementedError
 
 
-class ValueElement(TreeElement):
-    def __init__(self, value: float):
-        self.value = value
-
-    def calc(self) -> float:
-        return self.value
-
-
-class OperationElement(TreeElement):
-    def __init__(self, operation: Operation, x: TreeElement, y: TreeElement):
-        self.operation = operation
-        self.x = x
-        self.y = y
-
-    def calc(self) -> float:
-        return self.operation.calc(self.x.calc(), self.y.calc())
-
-
-class EquationsTree:
+class ConsoleCalculator(Calculator):
     def __init__(self, operations: Set[Operation]):
-        self.operations = sorted(operations, key=lambda x: x.get_priority())
+        super().__init__(operations)
 
-    def calc(self, equation_string: str) -> float:
-        equation = equation_string.replace(" ", "")
-        element: TreeElement = self._read_equation(equation)
-        return element.calc()
+    def _read(self) -> None:
+        self.equation_tree = EquationTree(self.operations)
+        equation = input("Podaj równanie: ")
+        self.equation_tree.read(equation)
 
-    def _read_equation(self, equation: str) -> TreeElement:
-        if self._can_delete_outer_brackets(equation):
-            equation = equation[1:-1]
-        blurred_equation = self._blur_brackets(equation)
-        for operation in self.operations:
-            opr_symbol = str(operation)
-            break_index = blurred_equation.find(opr_symbol)
-            if break_index != -1:
-                first = equation[:break_index]
-                x = self._read_equation(first)
-                second = equation[break_index + len(opr_symbol):]
-                y = self._read_equation(second)
-                return OperationElement(operation, x, y)
-        return ValueElement(float(equation))
+    def _calc(self) -> None:
+        result = self.equation_tree.calc()
+        print(f"Wynik: {result}")
 
-    @staticmethod
-    def _blur_brackets(equation: str) -> str:
-        stack = []
-        equation_list = list(equation)
-        blurred_equation_list = list()
-        for letter in equation_list:
-            if letter == "(":
-                stack.append(letter)
-            blurred_equation_list.append("0" if len(stack) else letter)
-            if letter == ")":
-                stack.pop()
-        return "".join(blurred_equation_list)
-
-    @staticmethod
-    def _can_delete_outer_brackets(equation: str) -> bool:
-        stack = []
-        if equation[0] != "(" or equation[-1] != ")":
-            return False
-        equation = equation[1:-1]
-        for letter in equation:
-            if letter == "(":
-                stack.append(letter)
-            elif letter == ")":
-                if len(stack) == 0:
-                    return False
-                else:
-                    stack.pop()
-        return True
+    def _print(self) -> None:
+        print(self.equation_tree)
 
 
 operations_set: Set[Operation] = {Add(), Subtract(), Multiply(), Divide()}
-equations_tree: EquationsTree = EquationsTree(operations_set)
-
-
-def calc(equation: str) -> float:
-    return equations_tree.calc(equation)
-
 
 if __name__ == '__main__':
-    result = calc(input("Podaj równanie: "))
-    print(f"Wynik: {result}")
+    calculator = ConsoleCalculator(operations_set)
+    calculator.read()
+    calculator.print()
+    calculator.calc()

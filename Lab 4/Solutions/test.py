@@ -11,10 +11,13 @@ class TestCalcEquationWithoutBrackets(unittest.TestCase):
         [" 2 ", 2.0],
         ["2.0", 2.0],
         [" 2.0 ", 2.0],
+        ["1.3", 1.3],
         [" 1.3 ", 1.3]
     ])
     def test_number(self, equation: str, expecting: float):
-        self.assertAlmostEqual(expecting, calc(equation), 3)
+        equation_tree = EquationTree(operations_set)
+        equation_tree.read(equation)
+        self.assertAlmostEqual(expecting, equation_tree.calc(), 3)
 
     @parameterized.expand([
         ["2+3", 5.0],
@@ -25,23 +28,32 @@ class TestCalcEquationWithoutBrackets(unittest.TestCase):
         ["2.0*3.0", 6.0],
         ["6/3", 2.0],
         ["6.0/3.0", 2.0],
-        ["3.0/2.0", 1.5],
+        ["3.0/2.0", 1.5]
     ])
     def test_simple_equation(self, equation: str, expecting: float):
-        self.assertAlmostEqual(expecting, calc(equation), 3)
+        equation_tree = EquationTree(operations_set)
+        equation_tree.read(equation)
+        self.assertAlmostEqual(expecting, equation_tree.calc(), 3)
 
     @parameterized.expand([
         ["1+2*3", 7.0],
         ["2*3+1", 7.0],
         ["2-6/2", -1.0],
+        ["2*3+1/2", 6.5],
+        ["2-6/2*4", -10.0],
+        ["2/4*6*4/3", 4.0],
+        ["2/4-6*4+3", -20.5]
     ])
-    def test_double_equation(self, equation: str, expecting: float):
-        self.assertAlmostEqual(expecting, calc(equation), 3)
+    def test_complex_equation(self, equation: str, expecting: float):
+        equation_tree = EquationTree(operations_set)
+        equation_tree.read(equation)
+        self.assertAlmostEqual(expecting, equation_tree.calc(), 3)
 
 
 class TestCalcEquationWithBrackets(unittest.TestCase):
     @parameterized.expand([
         ["(1)", 1.0],
+        ["(-1)", -1.0],
         ["(1+2)", 3.0],
         ["(2-6)/2", -2.0],
         ["(2*3)+(6/3)", 8.0],
@@ -50,14 +62,16 @@ class TestCalcEquationWithBrackets(unittest.TestCase):
         ["((2-6)/(2+2))-2*(6/3)", -5.0]
     ])
     def test_bracket_equation(self, equation: str, expecting: float):
-        self.assertAlmostEqual(expecting, calc(equation), 3)
+        equation_tree = EquationTree(operations_set)
+        equation_tree.read(equation)
+        self.assertAlmostEqual(expecting, equation_tree.calc(), 3)
 
     @parameterized.expand([
         ["1(239)", "100000"],
         ["1(3)4(67)8", "1000400008"],
     ])
     def test_blur_brackets(self, equation: str, expecting: str):
-        self.assertEqual(expecting, EquationsTree._blur_brackets(equation))
+        self.assertEqual(expecting, EquationTree._blur_brackets(equation))
 
     @parameterized.expand([
         ["(2)", True],
@@ -68,7 +82,7 @@ class TestCalcEquationWithBrackets(unittest.TestCase):
         ["((2*3)+(6/3))", True],
     ])
     def test_can_delete_brackets_brackets(self, equation: str, expecting: bool):
-        self.assertEqual(expecting, EquationsTree._can_delete_outer_brackets(equation))
+        self.assertEqual(expecting, EquationTree._can_delete_outer_brackets(equation))
 
 
 class TestOperations(unittest.TestCase):
@@ -99,6 +113,13 @@ class TestOperations(unittest.TestCase):
     ])
     def test_priority(self, operation: Operation, expecting: int):
         self.assertEqual(expecting, operation.get_priority())
+
+
+class TestPrintEquationGraph(unittest.TestCase):
+    def test_depth(self):
+        equation_tree = EquationTree(operations_set)
+        equation_tree.read("1+1+1+1+1")
+        self.assertEqual(5, equation_tree._get_depth(equation_tree._root))
 
 
 if __name__ == '__main__':
