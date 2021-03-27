@@ -1,14 +1,16 @@
 #infix to postfix conversion form https://cppsecrets.com/users/2582658986657266505064717765737646677977/INFIX-TO-POSTFIX-CONVERSION-USING-STACK.php
 
-
-OPERATORS = set(['+', '-', '*', '/', '(', ')'])
-PRIORITY = {'+': 1, '-': 1, '*': 2, '/': 2}
-
 class Node:
     def __init__(self, value):
         self.left = None
         self.data = value
         self.right = None
+
+
+tree = Node("")
+OPERATORS = set(['+', '-', '*', '/', '(', ')'])
+PRIORITY = {'+': 1, '-': 1, '*': 2, '/': 2}
+
 
 def infix_to_postfix(expression):
 
@@ -38,7 +40,7 @@ def infix_to_postfix(expression):
 
             stack.append(ch)
 
-    print(stack)
+    #print(stack)
 
     while stack:
         postfix.append(stack.pop())
@@ -68,6 +70,7 @@ def printLevelOrder(root):
 
     for i in range(h):
         helperPrintLevelOrder(root, i+1)
+    print("")
 
 
 def helperPrintLevelOrder(root, level):
@@ -93,23 +96,73 @@ def height(node):
             return rh + 1
 
 
-def work():
-    print("Welcome in Calculator")
-    exp=input("Enter expresion(use space to separate brackets, operands and operators)")
-    exp = exp.split(" ")
-    print(exp)
-    if len(exp) > 1:
-        print("supa")
-        temp = infix_to_postfix(exp)
-        print(temp)
-        printLevelOrder(postfix_to_tree(temp))
+def evaluateExpressionTree(root):
+    if root is None:
+        return 0
+
+    if root.left is None and root.right is None:
+        try:
+            temp = float(root.data)
+            return temp
+        except:
+            print("Error during conversion to float. Next time type data correctly!")
+            raise SystemExit
+
+    leftEv = evaluateExpressionTree(root.left)
+    rightEv = evaluateExpressionTree(root.right)
+
+    if root.data == '+':
+        return leftEv + rightEv
+
+    elif root.data == '-':
+        return leftEv - rightEv
+
+    elif root.data == '*':
+        return leftEv * rightEv
 
     else:
-        print("next time do what I say")
+        try:
+            temp = leftEv / rightEv
+            return temp
+        except ZeroDivisionError:
+            print("Error during Division.")
+            raise SystemExit
+
+
+def whatToDo():
+    result = -1
+    while result < 1 or result > 3:
+        print("Enter what you want me to do:")
+        print("1. get result")
+        print("2. print tree")
+        print("3. exit")
+        result = int(input())
+
+    return result
+
+
+def work():
+    print("Welcome in Calculator")
+    exp = input("Enter expresion(use space to separate brackets, operands and operators)")
+    exp = exp.split(" ")
+
+    if len(exp) > 1:
+        tree = postfix_to_tree(infix_to_postfix(exp))
+        while True:
+            temp = whatToDo()
+            if temp == 1:
+                print(evaluateExpressionTree(tree))
+
+            elif temp == 2:
+                printLevelOrder(tree)
+
+            else:
+                raise SystemExit
 
 
 
-
+    else:
+        print("Next time do what I say.")
 
 
 work()
