@@ -71,7 +71,7 @@ def post_order(root, stack):
             if root.value == '*':
                 stack.append(float(stack.pop()) * float(stack.pop()))
             if root.value == '/':
-                stack.append(1 / float(stack.pop()) * float(stack.pop()))
+                stack.append(float(stack.pop()) * 1 / float(stack.pop()))
         else:
             stack.append(root.value)
 
