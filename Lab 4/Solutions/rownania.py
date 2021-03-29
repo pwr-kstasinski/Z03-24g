@@ -113,8 +113,30 @@ class Tree:
             return tree_node.get_value()           
     def dfs_to_list(self):
         return self.__make_list__(self.__root__)
-
+    def __make_grapholist__(self, tree_node):
+        grapholist = []
+        if (tree_node.get_left_child().is_operator()):
+            grapholist.append("├───" + str(tree_node.get_left_child().get_operator())) 
+        else:
+            grapholist.append("├───" + str(tree_node.get_left_child().get_value()))
         
+        if (tree_node.get_left_child().is_operator()):
+            for sublist_element in self.__make_grapholist__(tree_node.get_left_child()):
+                grapholist.append("│   " + sublist_element)
+
+        if (tree_node.get_right_child().is_operator()):
+            grapholist.append("└───" + str(tree_node.get_right_child().get_operator())) 
+        else:
+            grapholist.append("└───" + str(tree_node.get_right_child().get_value()))
+       
+        if (tree_node.get_right_child().is_operator()):
+            for sublist_element in self.__make_grapholist__(tree_node.get_right_child()):
+                grapholist.append("    " + sublist_element)
+        return grapholist
+    def print_as_graph(self):
+        print(str(self.__root__.get_operator()))
+        print(*(self.__make_grapholist__(self.__root__)), sep = "\n")
+
 
 
 
@@ -173,3 +195,4 @@ rpn = infix_to_rpn(normal)
 tree = Tree(rpn)
 print("Zawartosc grafu w kolejnosci infix depth-first: " + tree.dfs_to_list())
 print("Wynik obliczenia wyrazenia: " + str(tree.compute_expression()))
+tree.print_as_graph()
