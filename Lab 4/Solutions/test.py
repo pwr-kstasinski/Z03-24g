@@ -2,7 +2,7 @@ from sya import parse, OPDICT
 def test(exp):
     print(exp)
     t1 = parse(exp)
-    print(t1.evalAST(OPDICT))
+    t1.calc(OPDICT)
     t1.display()
 test('1 + 2')
 test('(5+2.1)*10.2')
