@@ -17,6 +17,21 @@ class Node:
         elif(self.data=='*'):   return self.left.calc()*self.right.calc()
         elif(self.data=='/'):   return self.left.calc()/self.right.calc()
 
+    def prtTree(self,offset=""):
+        if(offset==""):
+            print(self.data)
+            if(self.left!=None):
+                self.left.prtTree("├── ")
+                self.right.prtTree("└── ")
+        else:                   
+            print(offset,self.data,sep='')
+            if(self.left!=None):
+                if(offset[-4]=='├'):    
+                    self.left.prtTree(offset[:-4]+"|   ├── ")
+                    self.right.prtTree(offset[:-4]+"|   └── ")
+                else:                   
+                    self.left.prtTree(offset[:-4]+"    ├── ")
+                    self.right.prtTree(offset[:-4]+"    └── ")
 
 
 def makeNode(postfix):
@@ -64,40 +79,53 @@ def infixToPostfix(infix):
 
 """
 t1=makeNode(infixToPostfix("2"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(2)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("2+3"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(2+3)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(2+3)*4"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("3*(4+5)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(2+3)*(4)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(3)*(4+5)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("(2+3)*(4/5)"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 t1=makeNode(infixToPostfix("1+2*3"))
+t1.prtTree()
 t1.prt()
 print(" =",t1.calc())
 """
 
 try:
     while(True):
-        print(makeNode(infixToPostfix(input("podaj rownanie: "))).calc())
+        rownanie=input("podaj rownanie: ")
+        expr=makeNode(infixToPostfix(rownanie))
+        expr.prtTree()
+        print(rownanie,'=',expr.calc())
 except EOFError:
     print("")
 
