@@ -54,9 +54,9 @@ class AST:
 
     def format(self, _padding=''):
 
-        #line = '('+str(self.value) if type(self.value) is not float else "{:g}".format(self.value)+')\n'
+        line = '('+(str(self.value) if type(self.value) is not float else "{:g}".format(self.value))+')\n'
 
-        line = '('+str(self.value)+')\n'
+        #line = '('+str(self.value)+')\n'
 
         if self.left:
             line += _padding
