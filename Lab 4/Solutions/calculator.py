@@ -44,7 +44,7 @@ class ConsoleCalculator(Calculator):
 
     def _read(self) -> None:
         self.equation_tree = EquationTree(self.operations)
-        equation = input("Podaj równanie: ")
+        equation = input("Podaj równanie: ").replace(",", ".")
         self.equation_tree.read(equation)
 
     def _calc(self) -> None:
