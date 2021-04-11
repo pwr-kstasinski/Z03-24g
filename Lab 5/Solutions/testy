@@ -1,0 +1,12 @@
+digraph tree {
+	"<InputProcessing.Node object at 0x000002BDDC70BFD0>" [label="+", shape=circle]
+	"<InputProcessing.Node object at 0x000002BDDC70BF70>" [label="*", shape=circle]
+	"<InputProcessing.Node object at 0x000002BDDAB4FC10>" [label="2", shape=circle]
+	"<InputProcessing.Node object at 0x000002BDDC70BEB0>" [label="2", shape=circle]
+	"<InputProcessing.Node object at 0x000002BDDC70BF10>" [label="2", shape=circle]
+
+	"<InputProcessing.Node object at 0x000002BDDC70BFD0>" -> "<InputProcessing.Node object at 0x000002BDDAB4FC10>"
+	"<InputProcessing.Node object at 0x000002BDDC70BFD0>" -> "<InputProcessing.Node object at 0x000002BDDC70BF70>"
+	"<InputProcessing.Node object at 0x000002BDDC70BF70>" -> "<InputProcessing.Node object at 0x000002BDDC70BEB0>"
+	"<InputProcessing.Node object at 0x000002BDDC70BF70>" -> "<InputProcessing.Node object at 0x000002BDDC70BF10>"
+}
