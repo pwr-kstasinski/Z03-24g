@@ -10,10 +10,12 @@ class Window:
         self.tree = None
         self.root = tk.Tk()
 
+        # setting size and title of window
         self.root.title('Calculator')
         self.root.resizable(True, True)
         self.root.geometry('270x200')
 
+        # setting up labels and buttons
         self.entry_display = Label(self.root, width=20, background='white', relief='groove', anchor='e')
         self.entry_display.grid(row=0, columnspan=4, sticky='nsew')
 
@@ -120,14 +122,17 @@ class Window:
         button_inv = Button(self.root, text='1/x', command=lambda: self.append_sign('1 /'))
         button_inv.grid(row=6, column=4, sticky='nsew')
 
+        # making buttons resizable
         for x in range(5):
             self.root.columnconfigure(x, weight=1)
 
         for y in range(7):
             self.root.rowconfigure(y, weight=1)
 
+        # starting interface
         self.root.mainloop()
 
+    # formatting added sign after clicked button
     def append_sign(self, sign):
         if sign != 'sqrt' and sign != 'log' and sign != 'abs' and sign != '1 /':
             if not sign.isnumeric() and sign != '.':
@@ -168,18 +173,21 @@ class Window:
                     self.equation = " ".join(elements)
                     self.entry_display.configure(text=self.equation)
 
+    # deleting last added sign
     def backspace(self):
         if self.equation and self.equation[-1] == ' ':
             self.equation = self.equation[:-1]
         self.equation = self.equation[:-1]
         self.entry_display.configure(text=self.equation)
 
+    # clearing both displays and deleting previous tree if there was one
     def clear(self):
         self.equation = ''
         self.entry_display.configure(text=self.equation)
         self.result_display.configure(text=self.equation)
         self.tree = None
 
+    # evaluating expression and displaying result, it also handles division by zero
     def solve_equation(self):
         if self.equation:
             try:
@@ -189,6 +197,7 @@ class Window:
             except ZeroDivisionError:
                 self.result_display.configure(text='Error division by zero')
 
+    # calling popup window to display expression tree
     def print_tree(self):
         if self.tree is not None:
             PopupWindow(self.root, Calculate.print_string_return(self.tree))
@@ -213,6 +222,7 @@ class Window:
             return False
 
 
+# class responsible for pop up window with message to display and button to close
 class PopupWindow:
 
     def __init__(self, master, printed_tree):
@@ -231,7 +241,6 @@ class PopupWindow:
 
         button_close = tk.Button(pop_window, text='Close', command=pop_window.destroy)
         button_close.grid(row=1, column=0)
-
 
 if __name__ == '__main__':
     window = Window()
