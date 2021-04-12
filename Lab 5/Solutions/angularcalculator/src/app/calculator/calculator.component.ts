@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RpnConverter } from './rpnconverter';
 
 @Component({
   selector: 'app-calculator',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class CalculatorComponent implements OnInit {
 
   display = '';
-  output = '';
+  rpn: Array<string> = new Array<string>('Oczekiwanie na wykonywanie działania...');
 
   constructor() { }
 
@@ -38,7 +39,16 @@ export class CalculatorComponent implements OnInit {
     this.display += operator;
   }
 
-  calculate(): void {
-    this.output = 'Calculating!';
+  clear(): void {
+    this.display = '';
   }
+
+  backspace(): void {
+    this.display = this.display.slice(0, -1);
+  }
+
+  perform(): void {
+    this.rpn = RpnConverter.toRpn(this.display);
+  }
+
 }
