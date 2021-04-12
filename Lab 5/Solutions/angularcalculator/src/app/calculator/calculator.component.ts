@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RpnConverter } from './rpnconverter';
+import { RpnBinaryTree } from './RpnBinaryTree';
 
 @Component({
   selector: 'app-calculator',
@@ -10,6 +11,8 @@ export class CalculatorComponent implements OnInit {
 
   display = '';
   rpn: Array<string> = new Array<string>('Oczekiwanie na wykonywanie działania...');
+  rpnBinaryTree: RpnBinaryTree = null;
+  result: number = null;
 
   constructor() { }
 
@@ -49,6 +52,8 @@ export class CalculatorComponent implements OnInit {
 
   perform(): void {
     this.rpn = RpnConverter.toRpn(this.display);
+    this.rpnBinaryTree = new RpnBinaryTree(this.rpn);
+    this.result = this.rpnBinaryTree.calculate();
   }
 
 }
