@@ -1,6 +1,8 @@
 import tkinter as tk
 from sya import parse,OPDICT as opdict
+from treelib import Tree
 from graphviz import Source
+import os
 
 class Gui:
     ExpressionInput = None
@@ -193,8 +195,9 @@ class Gui:
     def showTree(self):
         tree = parse(self.ExpressionInput.get())
         treelibtree = tree.createTreelibNode(Tree())
-        treelibtree.to_graphviz("tv.txt")
-        s = Source.from_file(filename="tv.txt")
+        treelibtree.to_graphviz("tree")
+        s = Source.from_file(filename="tree")
+        os.remove("tree")
         s.view()
     def clearExpression(self):
         self.ExpressionInput.delete(0,'end')

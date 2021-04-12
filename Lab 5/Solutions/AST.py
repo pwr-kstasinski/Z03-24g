@@ -1,5 +1,4 @@
-from treelib import Tree, Node
-
+from treelib import Node
 class AST:
     '''Data structure for an Abstract Syntax Tree'''
 
@@ -96,8 +95,15 @@ class AST:
     def calc(self,opDict):
         print(self.evalAST(opDict))
     def createTreelibNode(self,tree,parent=None):
-        tree.createNode(parent=parent,data=str(self.value))
+        #print(parent)
+        #print(self.value)
+        if parent:
+            node = tree.create_node(parent=parent,tag=str(self.value))
+        else:
+            node = Node(tag=str(self.value))
+            tree.add_node(node)
         if self.left:
-            self.left.createTreelibNode(tree,self)
+            self.left.createTreelibNode(tree,node)
         if self.right:
-            self.right.createTreelibNode(tree,self)
+            self.right.createTreelibNode(tree,node)
+        return tree
