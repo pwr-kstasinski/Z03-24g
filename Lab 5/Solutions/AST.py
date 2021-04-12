@@ -4,9 +4,10 @@ class AST:
     def __init__(self, value, left=None, right=None):
         self.value = value
 
-        if left != None or right != None:
-            assert left != None and right != None, \
-                'Arguments left and right must both be either present or absent.'
+        # unary operators added
+        #if left != None or right != None:
+        #    assert left != None and right != None, \
+        #        'Arguments left and right must both be either present or absent.'
                   
         self.left = None
         if left != None:
@@ -88,7 +89,7 @@ class AST:
     
     def evalAST(self,opDict):
         if self.value in opDict:
-            return opDict[self.value](self.left.evalAST(opDict),self.right.evalAST(opDict))
+            return opDict[self.value](self.left.evalAST(opDict) if self.left else None,self.right.evalAST(opDict))
         else:
             return self.value
     def calc(self,opDict):
