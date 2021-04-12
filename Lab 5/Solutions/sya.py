@@ -30,15 +30,15 @@ def parse(expression):
     if(not tokens):
         raise RuntimeError(ERROR_MESSAGE)
     
-    print(tokens)
+    #print(tokens)
     ERROR_MESSAGE = 'Unable to parse \''+expression+'\''
     
     PRECEDENCE = {
         '(': -1,
+        'sqrt' : 4,
+        'log' : 4,
+        'abs' : 4,
         '!': 4,
-        'sqrt' : 3,
-        'log' : 3,
-        'abs' : 3,
         '^': 2,
         '*' : 1,
         '/' : 1,

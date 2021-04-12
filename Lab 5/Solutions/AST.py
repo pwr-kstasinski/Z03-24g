@@ -1,3 +1,5 @@
+from treelib import Tree, Node
+
 class AST:
     '''Data structure for an Abstract Syntax Tree'''
 
@@ -52,7 +54,6 @@ class AST:
             result += self.right.postOrder()
         result.append(self.value)
         return result
-
     def format(self, _padding=''):
 
         #line = '('+str(self.value) if type(self.value) is not float else "{:g}".format(self.value)+')\n'
@@ -94,3 +95,9 @@ class AST:
             return self.value
     def calc(self,opDict):
         print(self.evalAST(opDict))
+    def createTreelibNode(self,tree,parent=None):
+        tree.createNode(parent=parent,data=str(self.value))
+        if self.left:
+            self.left.createTreelibNode(tree,self)
+        if self.right:
+            self.right.createTreelibNode(tree,self)
