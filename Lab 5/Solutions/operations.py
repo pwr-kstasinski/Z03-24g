@@ -1,3 +1,5 @@
+import math
+
 
 class Operation:
     def calc(self, x: float, y: float) -> float:
@@ -14,14 +16,14 @@ class Operation:
 
 
 class Add(Operation):
+    def calc(self, x: float, y: float) -> float:
+        return x + y
+
     def get_priority(self) -> int:
         return 1
 
     def __str__(self):
         return "+"
-
-    def calc(self, x: float, y: float) -> float:
-        return x + y
 
 
 class Subtract(Operation):
@@ -55,3 +57,25 @@ class Divide(Operation):
 
     def calc(self, x: float, y: float) -> float:
         return x / y
+
+
+class Power(Operation):
+    def calc(self, x: float, y: float) -> float:
+        return x ** y
+
+    def __str__(self):
+        return "^"
+
+    def get_priority(self) -> int:
+        return 3
+
+
+class ModuloOperation(Operation):
+    def calc(self, x: float, y: float) -> float:
+        return math.fmod(x, y)
+
+    def __str__(self):
+        return "%"
+
+    def get_priority(self) -> int:
+        return 2
