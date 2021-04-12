@@ -1,49 +1,53 @@
-<h4>Calculator</h4>
+<h4>Kalkulator</h4>
 
-<input type="text" value="display">
-<table>
-  <tr>
-    <td>x^y</td>
-    <td>|x|</td>
-    <td>mod</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>sqrt(x)</td>
-    <td>x^y</td>
-    <td>log</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>(</td>
-    <td>)</td>
-    <td>n!</td>
-    <td>/</td>
-  </tr>
-  <tr>
-    <td>7</td>
-    <td>8</td>
-    <td>9</td>
-    <td>*</td>
-  </tr>
-  <tr>
-    <td>4</td>
-    <td>5</td>
-    <td>6</td>
-    <td>-</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>2</td>
-    <td>3</td>
-    <td>+</td>
-  </tr>
-  <tr>
-    <td>+/-</td>
-    <td>0</td>
-    <td>,</td>
-    <td>=</td>
-  </tr>
+{{output}}
+<div id="calculator_container">
+  <input id="display" type="text" [(ngModel)]="display">
+  <table>
+    <tr>
+      <td>x!</td>
+      <td>abs(x)</td>
+      <td>mod(x)</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>sqrt(x)</td>
+      <td>1/x</td>
+      <td>log(x)</td>
+      <td>Bspc</td>
+    </tr>
+    <tr>
+      <td><input class='calc_button' type="button" (click)="bracket(true)" value="("></td>
+      <td><input class='calc_button' type="button" (click)="bracket(false)" value=")"></td>
+      <td><input class='calc_button' type="button" (click)="infix_operator('^')" value="x^y"></td>
+      <td><input class='calc_button' type="button" (click)="infix_operator('/')" value="/"></td>
+    </tr>
+    <tr>
+      <td><input class='calc_button' type="button" (click)="digit(7)" value="7"></td>
+      <td><input class='calc_button' type="button" (click)="digit(8)" value="8"></td>
+      <td><input class='calc_button' type="button" (click)="digit(9)" value="9"></td>
+      <td><input class='calc_button' type="button" (click)="infix_operator('*')" value="*"></td>
+    </tr>
+    <tr>
+      <td><input class='calc_button' type="button" (click)="digit(4)" value="4"></td>
+      <td><input class='calc_button' type="button" (click)="digit(5)" value="5"></td>
+      <td><input class='calc_button' type="button" (click)="digit(6)" value="6"></td>
+      <td><input class='calc_button' type="button" (click)="infix_operator('-')" value="-"></td>
+    </tr>
+    <tr>
+      <td><input class='calc_button' type="button" (click)="digit(1)" value="1"></td>
+      <td><input class='calc_button' type="button" (click)="digit(2)" value="2"></td>
+      <td><input class='calc_button' type="button" (click)="digit(3)" value="3"></td>
+      <td><input class='calc_button' type="button" (click)="infix_operator('+')" value="+"></td>
+    </tr>
+    <tr>
+      <td>+/-</td>
+      <td><input class='calc_button' type="button" (click)="digit(0)" value="0"></td>
+      <td><input class='calc_button' type="button" (click)="comma()" value=","></td>
+      <td><input class='calc_button' type="button" (click)="calculate()" value="="></td>
+    </tr>
 
-</table>
+  </table>
+</div>
+
 
