@@ -314,65 +314,65 @@ if __name__ == "__main__":
     btns_frame = Frame(gui, width=500, height=400, bg="grey")
     btns_frame.pack()
 
-    power = Button(btns_frame, text="x^y", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    power = Button(btns_frame, text="x^y", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press("^")).grid(row=0, column=0, padx=1, pady=1)
-    factorial = Button(btns_frame, text="x!", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    factorial = Button(btns_frame, text="x!", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                        command=lambda: press("!")).grid(row=0, column=1, padx=1, pady=1)
-    sqr = Button(btns_frame, text="sqrt(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    sqr = Button(btns_frame, text="sqrt(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                  command=lambda: press("√")).grid(row=0, column=2, padx=1, pady=1)
-    backspace = Button(btns_frame, text="<--", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    backspace = Button(btns_frame, text="<--", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                       command=lambda: back()).grid(row=0, column=3, padx=1, pady=1)
 
-    modulo = Button(btns_frame, text="mod(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    modulo = Button(btns_frame, text="mod(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                     command=lambda: press("%")).grid(row=1, column=0, padx=1, pady=1)
-    reverse = Button(btns_frame, text="1/x", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    reverse = Button(btns_frame, text="1/x", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                      command=lambda: press("1/")).grid(row=1, column=1, padx=1, pady=1)
-    log = Button(btns_frame, text="log(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    log = Button(btns_frame, text="log(x)", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                  command=lambda: press("l")).grid(row=1, column=2, padx=1, pady=1)
-    divide = Button(btns_frame, text="/", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    divide = Button(btns_frame, text="/", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                     command=lambda: press("/")).grid(row=1, column=3, padx=1, pady=1)
 
-    seven = Button(btns_frame, text="7", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    seven = Button(btns_frame, text="7", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press(7)).grid(row=2, column=0, padx=1, pady=1)
-    eight = Button(btns_frame, text="8", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    eight = Button(btns_frame, text="8", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press(8)).grid(row=2, column=1, padx=1, pady=1)
-    nine = Button(btns_frame, text="9", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    nine = Button(btns_frame, text="9", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                   command=lambda: press(9)).grid(row=2, column=2, padx=1, pady=1)
-    multiply = Button(btns_frame, text="*", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    multiply = Button(btns_frame, text="*", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                       command=lambda: press("*")).grid(row=2, column=3, padx=1, pady=1)
 
-    four = Button(btns_frame, text="4", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    four = Button(btns_frame, text="4", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                   command=lambda: press(4)).grid(row=3, column=0, padx=1, pady=1)
-    five = Button(btns_frame, text="5", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    five = Button(btns_frame, text="5", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                   command=lambda: press(5)).grid(row=3, column=1, padx=1, pady=1)
-    six = Button(btns_frame, text="6", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    six = Button(btns_frame, text="6", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                  command=lambda: press(6)).grid(row=3, column=2, padx=1, pady=1)
-    minus = Button(btns_frame, text="-", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    minus = Button(btns_frame, text="-", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press("-")).grid(row=3, column=3, padx=1, pady=1)
 
-    one = Button(btns_frame, text="1", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    one = Button(btns_frame, text="1", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                  command=lambda: press(1)).grid(row=4, column=0, padx=1, pady=1)
-    two = Button(btns_frame, text="2", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    two = Button(btns_frame, text="2", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                  command=lambda: press(2)).grid(row=4, column=1, padx=1, pady=1)
-    three = Button(btns_frame, text="3", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    three = Button(btns_frame, text="3", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press(3)).grid(row=4, column=2, padx=1, pady=1)
-    plus = Button(btns_frame, text="+", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
+    plus = Button(btns_frame, text="+", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                   command=lambda: press("+")).grid(row=4, column=3, padx=1, pady=1)
 
-    clear = Button(btns_frame, text="Clear", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
+    clear = Button(btns_frame, text="Clear", fg="black", width=10, height=3, bd=0, bg="grey", cursor="trek",
                    command=lambda: btn_clear()).grid(row=5, column=0, padx=1, pady=1)
-    zero = Button(btns_frame, text="0", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    zero = Button(btns_frame, text="0", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                   command=lambda: press(0)).grid(row=5, column=1, padx=1, pady=1)
-    point = Button(btns_frame, text=".", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    point = Button(btns_frame, text=".", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                    command=lambda: press(".")).grid(row=5, column=2, padx=1, pady=1)
-    equals = Button(btns_frame, text="=", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    equals = Button(btns_frame, text="=", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                     command=lambda: equalPress()).grid(row=5, column=3, padx=1, pady=1)
 
-    leftPar = Button(btns_frame, text="(", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    leftPar = Button(btns_frame, text="(", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                      command=lambda: press("(")).grid(row=6, column=0, padx=1, pady=1)
-    rightPar = Button(btns_frame, text=")", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    rightPar = Button(btns_frame, text=")", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                       command=lambda: press(")")).grid(row=6, column=1, padx=1, pady=1)
 
-    display = Button(btns_frame, text="Display", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="hand2",
+    display = Button(btns_frame, text="Display", fg="black", width=10, height=3, bd=0, bg="#fff", cursor="trek",
                      command=lambda: dis()).grid(row=6, column=2, padx=1, pady=1)
     gui.mainloop()
