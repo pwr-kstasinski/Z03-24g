@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RpnConverter } from './rpnconverter';
-import { RpnBinaryTree } from './RpnBinaryTree';
+import { ExpressionService } from './ExpressionService';
+import { Lab5Calc } from './Lab5Calc';
 
 @Component({
   selector: 'app-calculator',
@@ -11,8 +11,10 @@ export class CalculatorComponent implements OnInit {
 
   display = '';
   rpn: Array<string> = new Array<string>('Oczekiwanie na wykonywanie działania...');
-  rpnBinaryTree: RpnBinaryTree = null;
   result: number = null;
+  graphNodesJsons: string[] = null;
+  graphLinksJsons: string[] = null;
+  graphCustomColorsJsons: string[] = null;
 
   constructor() { }
 
@@ -51,9 +53,10 @@ export class CalculatorComponent implements OnInit {
   }
 
   perform(): void {
-    this.rpn = RpnConverter.toRpn(this.display);
-    this.rpnBinaryTree = new RpnBinaryTree(this.rpn);
-    this.result = this.rpnBinaryTree.calculate();
+    const expressionService = new ExpressionService(new Lab5Calc());
+    expressionService.updateNormalForm(this.display);
+    this.rpn = expressionService.getRpnForm();
+    this.result = expressionService.evaluate();
   }
 
 }

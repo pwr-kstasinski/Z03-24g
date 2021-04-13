@@ -6,15 +6,15 @@ table, th, td {
 td {
   width: 25%;
   background-color: darkgray;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 .calc_button {
   width: 100%;
   geight: 100%;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 #display {
@@ -22,7 +22,8 @@ td {
 }
 
 #floating_container {
-  width: 80%;
+  width: 90%;
+  overflow: auto;
   margin-left: auto;
   margin-right: auto;
 
@@ -32,14 +33,18 @@ td {
 
 #calculator_container {
   width: 25%;
+  float: left;
+  display: inline-block;
 }
 
 #output_container {
-  width: 70%;
+  width: 65%;
+  float: right;
+  display: inline-block;
 }
 
 .blocks {
-  margin: 5px;
-  display: inline-block;
+  margin: 10px;
+  height: 100%;
   border: 2px solid gray;
 }
