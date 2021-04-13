@@ -1,7 +1,9 @@
 import { TreeNode} from './TreeNode';
 import { Stack } from './Stack';
 import {CalcDefinition, Operator} from './CalcDefinition';
-
+import {Queue} from './Queue';
+import {Node, NodeDimension, NodePosition} from '@swimlane/ngx-graph/lib/models/node.model';
+import {Edge} from '@swimlane/ngx-graph/lib/models/edge.model';
 
 export class ExpressionService {
   private calcLogic: CalcDefinition;
@@ -17,6 +19,57 @@ export class ExpressionService {
     return this.rpnForm;
   }
 
+  public getGraph(): [Node[], Edge[]] {
+    class NodeC implements Node {
+        id: string;
+        position?: NodePosition;
+        dimension?: NodeDimension;
+        transform?: string;
+        label?: string;
+        data?: any;
+        meta?: any;
+      constructor(id: string, label: string) {
+        this.id = id;
+        this.label = label;
+      }
+    }
+    class EdgeC implements Edge {
+      source: string;
+      target: string;
+      constructor(source: string, target: string) {
+        this.source = source;
+        this.target = target;
+      }
+    }
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
+    const evaluateNodeId = '0';
+
+    nodes.push(new NodeC(evaluateNodeId, '='));
+    let isFirst = true;
+
+    this.treeForm.bfs_task_performer(new class implements Task {
+      execute(node: TreeNode<Operator>): void {
+        nodes.push(new NodeC(node.getId(), node.getValue().getSymbol()));
+        if (isFirst) {
+          edges.push(new EdgeC(node.getId(), evaluateNodeId));
+          isFirst = false;
+        }
+        if (node.getValue().getNumberOfOperandsNeeded() === Operator.VALUE) {
+        }
+        else if (node.getValue().getNumberOfOperandsNeeded() === Operator.SINGLE_OPERAND_OPERATOR) {
+          edges.push(new EdgeC(node.getChild(0).getId(), node.getId()));
+        }
+        else if (node.getValue().getNumberOfOperandsNeeded() === Operator.DOUBLE_OPERAND_OPERATOR) {
+          edges.push(new EdgeC(node.getChild(0).getId(), node.getId()));
+          edges.push(new EdgeC(node.getChild(1).getId(), node.getId()));
+        }
+
+      }
+    }());
+    return [nodes, edges];
+  }
+
   public updateNormalForm(normalForm: string): void {
     this.normalForm = normalForm;
     this.normalToRpn();
@@ -24,14 +77,9 @@ export class ExpressionService {
   }
 
   private normalToRpn(): void {
-    console.log('converting to rpn...');
-    console.log('normal: ' + this.normalForm);
     this.normalForm = this.sanitizeNormal(this.normalForm);
-    console.log('sanitized: ' + this.normalForm);
     const splittedNormal = this.normalForm.split(' ');
-    console.log('splitted: ' + splittedNormal);
     const rpn: Array<string> = this.splittedNormalToRpn(splittedNormal);
-    console.log('rpn format: ' + rpn);
     this.rpnForm = rpn;
 
   }
@@ -88,10 +136,8 @@ export class ExpressionService {
         else if (this.calcLogic.isAcceptableRightBracket(actualString)) {
           while (!(this.calcLogic.isAcceptableLeftBracket(operands.peek())))
           {
-            console.log('   POP AND PUSH: ' + operands.peek());
             rpn.push(operands.pop());
           }
-          console.log('   POP: ' + operands.peek());
           operands.pop();
         }
         else if (this.calcLogic.isAvailablePostfixOperator(actualString)) {
@@ -131,9 +177,6 @@ class ExpressionTree {
   private root: TreeNode<Operator>;
   private calcLogic: CalcDefinition;
 
-  /*  private jsonNodes: string[];
-    private jsonLinks: string[];*/
-
   public constructor(rpnArgs: Array<string>, calcDefinition: CalcDefinition) {
     this.calcLogic = calcDefinition;
     this.init(rpnArgs);
@@ -141,7 +184,7 @@ class ExpressionTree {
 
   public init(rpnArgs: Array<string>): void {
     const waitingNodes: Stack<TreeNode<Operator>> = new Stack<TreeNode<Operator>>();
-    let i = 0;
+    let i = 1;
     for (const arg of rpnArgs) {
       const operator = this.calcLogic.makeOperator(arg);
       const nodesForConnect = new Stack<TreeNode<Operator>>();
@@ -151,14 +194,13 @@ class ExpressionTree {
         }
         nodesForConnect.push(waitingNodes.pop());
       }
-      const newNode = new TreeNode<Operator>(operator, '0');
+      const newNode = new TreeNode<Operator>(operator, 'Node' + (i++).toString());
       while (!nodesForConnect.empty()) {
         newNode.pushBackChild(nodesForConnect.pop());
       }
       waitingNodes.push(newNode);
     }
     this.root = waitingNodes.peek();
-    ++i;
   }
 
   public calculate(): number {
@@ -182,4 +224,26 @@ class ExpressionTree {
       throw new Error('Unsupported type of operator - too much operands needed: ' + operator.getNumberOfOperandsNeeded() + '!');
     }
   }
+
+  public bfs_task_performer(task: Task): void {
+    this.bfs_performer(this.root, task);
+  }
+
+  private bfs_performer(startNode: TreeNode<Operator>, task: Task): void {
+    const remainingNodes = new Queue<TreeNode<Operator>>();
+    remainingNodes.enqueue(startNode);
+    while (remainingNodes.size() !== 0) {
+      const actualNode = remainingNodes.dequeue();
+      task.execute(actualNode);
+      for (let i = 0; i < actualNode.getNumberOfChildren(); i++)
+      {
+        remainingNodes.enqueue(actualNode.getChild(i));
+      }
+    }
+  }
 }
+
+interface Task {
+  execute(node: TreeNode<Operator>): void;
+}
+

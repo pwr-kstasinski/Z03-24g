@@ -83,7 +83,6 @@ export abstract class CalcDefinition {
   }
   public getPriorityOfOperator(symbol: string): number {
     if (!this.operatorsPriorities.has(symbol)) {
-      console.log('trying to get... ' + this.operatorsPriorities.get(symbol));
       throw new Error('There is no "' + symbol + '" operator in calculator\'s definition priorities of operators!');
     }
     return this.operatorsPriorities.get(symbol);
@@ -95,6 +94,5 @@ export abstract class CalcDefinition {
     return this.acceptableRightBrackets.includes(symbol);
   }
 
-//  public abstract calculate(operator: Operator, operands: number[]): number;
   public abstract makeOperator(name: string): Operator;
 }

@@ -5,16 +5,16 @@
     <input id="display" type="text" [(ngModel)]="display">
     <table>
       <tr>
-        <td>x!</td>
-        <td>abs(x)</td>
-        <td>mod(x)</td>
+        <td><input class='calc_button' type="button" (click)="postfix_operator('!')" value="!"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('%')" value="mod"></td>
+        <td><input class='calc_button' type="button" (click)="backspace()" value="Bcksp"></td>
         <td><input class='calc_button' type="button" (click)="clear()" value="C"></td>
       </tr>
       <tr>
-        <td>sqrt(x)</td>
-        <td>1/x</td>
-        <td>log(x)</td>
-        <td><input class='calc_button' type="button" (click)="backspace()" value="Bcksp"></td>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('sqrt(')" value="sqrt(x)"></td>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('abs(')" value="|x|"></td>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('log(')" value="log(x)"></td>
+        <td><input class='calc_button' type="button" (click)="clear()" value="C"></td>
       </tr>
       <tr>
         <td><input class='calc_button' type="button" (click)="bracket(true)" value="("></td>
@@ -41,7 +41,7 @@
         <td><input class='calc_button' type="button" (click)="infix_operator('+')" value="+"></td>
       </tr>
       <tr>
-        <td>+/-</td>
+        <td><input class='calc_button' type="button" (click)="reciprocal()" value="1/x"></td>
         <td><input class='calc_button' type="button" (click)="digit(0)" value="0"></td>
         <td><input class='calc_button' type="button" (click)="comma()" value=","></td>
         <td><input class='calc_button' type="button" (click)="perform()" value="="></td>
@@ -50,47 +50,53 @@
   </div>
 
   <div id="output_container" class="blocks">
-    Postać Odwróconej Notacji Polskiej: {{rpn}} <br>
-    Wynik obliczenia: {{result}} <br>
-    Graf wyrażenia: <br>
+    <h6>Postać Odwróconej Notacji Polskiej:</h6> {{rpn}} <br>
+    <h6>Wynik obliczenia:</h6>  {{result}} <br>
+  </div>
+  <div class="blocks">
+    <h6>Graf wyrażenia:</h6>  <br>
     <ngx-graph
       class="chart-container"
-      [view]="[500, 500]"
-      [links]="[
-        {
-          id: 'a',
-          source: 'second',
-          target: 'first',
-          label: 'left operand'
-        }, {
-          id: 'b',
-          source: 'third',
-          target: 'first',
-          label: 'right operand'
-        },
-      ]"
-      [nodes]="[
-        {
-          id: 'first',
-          label: 'A'
-        }, {
-          id: 'second',
-          label: 'B'
-        }, {
-          id: 'third',
-          label: 'C'
-        },
-      ]"
+      [view]="[811, 300]"
+      [nodes]="graphNodesJsons"
+      [links]="graphLinksJsons"
       [customColors]="[
         {
-          name: 'A',
+          name: '=',
           value: 'yellow'
         }, {
-          name: 'B',
+          name: '0',
+          value: 'white'
+        }, {
+          name: '+',
+          value: 'green'
+        }, {
+          name: '-',
+          value: 'green'
+        }, {
+          name: '*',
+          value: 'blue'
+        }, {
+          name: '/',
+          value: 'blue'
+        }, {
+          name: '%',
+          value: 'blue'
+        }, {
+          name: '/',
           value: 'gray'
         }, {
-          name: 'C',
-          value: 'white'
+          name: 'sqrt',
+          value: 'brown'
+        }, {
+          name: 'abs',
+          value: 'brown'
+        }, {
+          name: 'log',
+          value: 'brown'
+        }, {
+          name: '!',
+          value: 'red'
         },
       ]"
 

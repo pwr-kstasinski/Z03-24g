@@ -36,10 +36,6 @@ export class Lab5Calc extends CalcDefinition {
           acceptableRightBrackets);
   }
 
-//  calculate(operator: Operator, operands: number[]): number {
-//    return 0;
-//  }
-
   makeOperator(symbol: string): Operator {
     switch (symbol) {
       case '+':
@@ -160,6 +156,9 @@ export class Lab5Calc extends CalcDefinition {
             super(Operator.VALUE, symbol);
           }
           safeCalculate(operands: number[]): number {
+            if (isNaN(parseFloat(symbol)) || symbol.search('=') !== -1) {
+              throw new Error('Invalid expression: ' + symbol);
+            }
             return Number(symbol);
           }
         }();
