@@ -8,9 +8,10 @@ Napisz program posiadający interfejs okienkowy, który pozwoli użytkownikowi n
 Wymagania:
 1. ***(2 ptk.)*** Program musi pobierać dane pogodowe z serwisu internetowego np: [weather.com](https://weather.com/)
 
-   Link do API w standardzie OpenAPi 3.0 (Swagger)
+   Link do API w standardzie OpenAPI 2.0/3.0 (Swagger)
    ```
    https://weather.com/swagger-docs/call-for-code
+   https://www.weatherbit.io/api/swaggerui/weather-api-v2#/
    ```
 
 2. ***(2 ptk.)*** Klient serwisu internetowego powinien być wygenerowany automatycznie przy zastosowaniu narzędzi automatyzujących proces integracji np: [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
