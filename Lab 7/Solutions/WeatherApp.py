@@ -14,7 +14,7 @@ import time
 def errorWindow(result):
     errorWindow = Toplevel(root)
     errorWindow.title("Error Message")
-
+    changeTime()
     errorWindow.geometry("450x311")
 
     mainTextChooseDay = Label(errorWindow, text=result, bg='white',
@@ -113,6 +113,7 @@ def displayPlot(hourTemps, newWindow):
     displayWindow = Toplevel(newWindow)
     displayWindow.title("TemperaturePlot")
 
+    changeTime()
     displayWindow.geometry("1000x530")
     x = []
     y = []
@@ -174,6 +175,14 @@ def currentDate():
     returnWeekDay = weekDays[weekDay]
     returnMonth = months[month - 1]
     return returnWeekDay, returnMonth, d1[8:10]
+
+def changeTime():
+    now = time.localtime()
+    currTime = time.strftime("%H:%M", now)
+
+    hour = Label(root, text=currTime,
+             bg='turquoise1', font=("Times", 25, "bold"), fg="black")
+    hour.place(x=120, y=360)
 
 
 def proceedWeekDay(weatherDict, whatDay):
@@ -310,7 +319,7 @@ def openNewWindow(result):
     createLabelsTomorrow(weatherDict, newWindow, tomorrowTemps)
 
     createLabelsDayAfterTomorrow(weatherDict, newWindow, dayAfterTomorrowTemps)
-
+    changeTime()
 
 root = Tk()
 root.title("Weather App")
@@ -319,17 +328,11 @@ root['background'] = "turquoise1"
 nameDay, month, day = currentDate()
 
 date1 = Label(root, text=f' {nameDay}  ', bg='turquoise1', font=("Times", 25, "bold"), fg="black")
-date1.place(x=15, y=300)
+date1.place(x=25, y=300)
 month1 = Label(root, text=f' {day} {month}', bg='turquoise1', font=("Times", 25, "bold"), fg="black")
 month1.place(x=155, y=300)
 
-now = time.localtime()
-currTime = time.strftime("%H:%M", now)
-
-hour = Label(root, text=currTime,
-             bg='turquoise1', font=("Times", 25, "bold"), fg="black")
-hour.place(x=120, y=360)
-
+changeTime()
 mainText = Label(root, text="Enter your location in field above", bg='turquoise1', font=("Times", 12, "bold"),
                  fg="black")
 mainText.place(x=55, y=100)
