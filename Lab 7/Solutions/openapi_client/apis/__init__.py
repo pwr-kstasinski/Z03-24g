@@ -6,7 +6,7 @@
 # raise a `RecursionError`.
 # In order to avoid this, import only the API that you directly need like:
 #
-#   from .api.120_hour___hourly_forecast_api import 120HourHourlyForecastApi
+#   from .api.a_120_hour___hourly_forecast_api import A120HourHourlyForecastApi
 #
 # or import this package, but before doing it, use:
 #
@@ -14,5 +14,5 @@
 #   sys.setrecursionlimit(n)
 
 # Import APIs into API package:
-from openapi_client.api.120_hour___hourly_forecast_api import 120HourHourlyForecastApi
-from openapi_client.api.16_day___daily_forecast_api import 16DayDailyForecastApi
+from openapi_client.api.a_120_hour___hourly_forecast_api import A120HourHourlyForecastApi
+from openapi_client.api.a_16_day___daily_forecast_api import A16DayDailyForecastApi

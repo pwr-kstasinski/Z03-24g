@@ -761,7 +761,7 @@ class Endpoint(object):
         """ This method is invoked when endpoints are called
         Example:
 
-        api_instance = 120HourHourlyForecastApi()
+        api_instance = A120HourHourlyForecastApi()
         api_instance.forecast_hourly_get  # this is an instance of the class Endpoint
         api_instance.forecast_hourly_get()  # this invokes api_instance.forecast_hourly_get.__call__()
         which then invokes the callable functions stored in that endpoint at

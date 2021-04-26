@@ -1,13 +1,13 @@
-# openapi_client.5Day3HourForecastApi
+# openapi_client.A5Day3HourForecastApi
 
 All URIs are relative to *https://api.weatherbit.io/v2.0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**forecast3hourlycity_idcity_id_get**](5Day3HourForecastApi.md#forecast3hourlycity_idcity_id_get) | **GET** /forecast/3hourly?city_id&#x3D;{city_id} | Returns a 3-hourly forecast - Given a City ID.
-[**forecast3hourlycitycitycountrycountry_get**](5Day3HourForecastApi.md#forecast3hourlycitycitycountrycountry_get) | **GET** /forecast/3hourly?city&#x3D;{city}&amp;country&#x3D;{country} | Returns a 3-hourly forecast - Given City and/or State, Country.
-[**forecast3hourlylatlatlonlon_get**](5Day3HourForecastApi.md#forecast3hourlylatlatlonlon_get) | **GET** /forecast/3hourly?lat&#x3D;{lat}&amp;lon&#x3D;{lon} | Returns a 3-hourly forecast - Given a lat/lon.
-[**forecast3hourlypostal_codepostal_code_get**](5Day3HourForecastApi.md#forecast3hourlypostal_codepostal_code_get) | **GET** /forecast/3hourly?postal_code&#x3D;{postal_code} | Returns a 3-hourly forecast - Given a Postal Code.
+[**forecast3hourlycity_idcity_id_get**](A5Day3HourForecastApi.md#forecast3hourlycity_idcity_id_get) | **GET** /forecast/3hourly?city_id&#x3D;{city_id} | Returns a 3-hourly forecast - Given a City ID.
+[**forecast3hourlycitycitycountrycountry_get**](A5Day3HourForecastApi.md#forecast3hourlycitycitycountrycountry_get) | **GET** /forecast/3hourly?city&#x3D;{city}&amp;country&#x3D;{country} | Returns a 3-hourly forecast - Given City and/or State, Country.
+[**forecast3hourlylatlatlonlon_get**](A5Day3HourForecastApi.md#forecast3hourlylatlatlonlon_get) | **GET** /forecast/3hourly?lat&#x3D;{lat}&amp;lon&#x3D;{lon} | Returns a 3-hourly forecast - Given a lat/lon.
+[**forecast3hourlypostal_codepostal_code_get**](A5Day3HourForecastApi.md#forecast3hourlypostal_codepostal_code_get) | **GET** /forecast/3hourly?postal_code&#x3D;{postal_code} | Returns a 3-hourly forecast - Given a Postal Code.
 
 
 # **forecast3hourlycity_idcity_id_get**
@@ -22,7 +22,7 @@ Returns a 3-hourly forecast, where each point represents a three hour   period. 
 ```python
 import time
 import openapi_client
-from openapi_client.api import 5_day___3_hour_forecast_api
+from openapi_client.api import a_5_day___3_hour_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 from pprint import pprint
@@ -36,7 +36,7 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 5_day___3_hour_forecast_api.5Day3HourForecastApi(api_client)
+    api_instance = a_5_day___3_hour_forecast_api.A5Day3HourForecastApi(api_client)
     city_id = 1 # int | City ID. Example: 4487042
     key = "key_example" # str | Your registered API key.
     days = 3.14 # float | Number of days to return. Default 5. (optional)
@@ -50,7 +50,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlycity_idcity_id_get(city_id, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlycity_idcity_id_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlycity_idcity_id_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
@@ -59,7 +59,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlycity_idcity_id_get(city_id, key, days=days, units=units, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlycity_idcity_id_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlycity_idcity_id_get: %s\n" % e)
 ```
 
 
@@ -108,7 +108,7 @@ Returns a 3-hourly forecast, where each point represents a three hour   period. 
 ```python
 import time
 import openapi_client
-from openapi_client.api import 5_day___3_hour_forecast_api
+from openapi_client.api import a_5_day___3_hour_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 from pprint import pprint
@@ -122,7 +122,7 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 5_day___3_hour_forecast_api.5Day3HourForecastApi(api_client)
+    api_instance = a_5_day___3_hour_forecast_api.A5Day3HourForecastApi(api_client)
     city = "city_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
     country = "country_example" # str | Country Code (2 letter).
     key = "key_example" # str | Your registered API key.
@@ -138,7 +138,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlycitycitycountrycountry_get(city, country, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlycitycitycountrycountry_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlycitycitycountrycountry_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
@@ -147,7 +147,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlycitycitycountrycountry_get(city, country, key, state=state, days=days, units=units, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlycitycitycountrycountry_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlycitycitycountrycountry_get: %s\n" % e)
 ```
 
 
@@ -198,7 +198,7 @@ Returns a 3-hourly forecast, where each point represents a three hour   period. 
 ```python
 import time
 import openapi_client
-from openapi_client.api import 5_day___3_hour_forecast_api
+from openapi_client.api import a_5_day___3_hour_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 from pprint import pprint
@@ -212,7 +212,7 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 5_day___3_hour_forecast_api.5Day3HourForecastApi(api_client)
+    api_instance = a_5_day___3_hour_forecast_api.A5Day3HourForecastApi(api_client)
     lat = 3.14 # float | Latitude component of location.
     lon = 3.14 # float | Longitude component of location.
     key = "key_example" # str | Your registered API key.
@@ -227,7 +227,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlylatlatlonlon_get(lat, lon, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlylatlatlonlon_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlylatlatlonlon_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
@@ -236,7 +236,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlylatlatlonlon_get(lat, lon, key, days=days, units=units, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlylatlatlonlon_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlylatlatlonlon_get: %s\n" % e)
 ```
 
 
@@ -286,7 +286,7 @@ Returns a 3-hourly forecast, where each point represents a three hour period. Ev
 ```python
 import time
 import openapi_client
-from openapi_client.api import 5_day___3_hour_forecast_api
+from openapi_client.api import a_5_day___3_hour_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 from pprint import pprint
@@ -300,7 +300,7 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 5_day___3_hour_forecast_api.5Day3HourForecastApi(api_client)
+    api_instance = a_5_day___3_hour_forecast_api.A5Day3HourForecastApi(api_client)
     postal_code = 1 # int | Postal Code. Example: 28546
     key = "key_example" # str | Your registered API key.
     country = "country_example" # str | Country Code (2 letter). (optional)
@@ -315,7 +315,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlypostal_codepostal_code_get(postal_code, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlypostal_codepostal_code_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlypostal_codepostal_code_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
@@ -324,7 +324,7 @@ with openapi_client.ApiClient() as api_client:
         api_response = api_instance.forecast3hourlypostal_codepostal_code_get(postal_code, key, country=country, days=days, units=units, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 5Day3HourForecastApi->forecast3hourlypostal_codepostal_code_get: %s\n" % e)
+        print("Exception when calling A5Day3HourForecastApi->forecast3hourlypostal_codepostal_code_get: %s\n" % e)
 ```
 
 

@@ -1,14 +1,14 @@
-# openapi_client.16DayDailyForecastApi
+# openapi_client.A16DayDailyForecastApi
 
 All URIs are relative to *https://api.weatherbit.io/v2.0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**forecast_daily_get**](16DayDailyForecastApi.md#forecast_daily_get) | **GET** /forecast/daily | Returns a daily forecast - Given City and/or State, Country.
+[**forecast_daily_get**](A16DayDailyForecastApi.md#forecast_daily_get) | **GET** /forecast/daily | Returns a daily forecast - Given City and/or State, Country.
 
 
 # **forecast_daily_get**
-> ForecastDay forecast_daily_get(city, key)
+> ForecastDay forecast_daily_get(city_id, key)
 
 Returns a daily forecast - Given City and/or State, Country.
 
@@ -19,7 +19,7 @@ Returns a daily forecast, where each point represents one day (24hr) period. Eve
 ```python
 import time
 import openapi_client
-from openapi_client.api import 16_day___daily_forecast_api
+from openapi_client.api import a_16_day___daily_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_day import ForecastDay
 from pprint import pprint
@@ -33,8 +33,8 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 16_day___daily_forecast_api.16DayDailyForecastApi(api_client)
-    city = "city_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    api_instance = a_16_day___daily_forecast_api.A16DayDailyForecastApi(api_client)
+    city_id = "city_id_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
     key = "key_example" # str | Your registered API key.
     state = "state_example" # str | Full name of state. (optional)
     country = "country_example" # str | Country Code (2 letter). (optional)
@@ -46,19 +46,19 @@ with openapi_client.ApiClient() as api_client:
     # example passing only required values which don't have defaults set
     try:
         # Returns a daily forecast - Given City and/or State, Country.
-        api_response = api_instance.forecast_daily_get(city, key)
+        api_response = api_instance.forecast_daily_get(city_id, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 16DayDailyForecastApi->forecast_daily_get: %s\n" % e)
+        print("Exception when calling A16DayDailyForecastApi->forecast_daily_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Returns a daily forecast - Given City and/or State, Country.
-        api_response = api_instance.forecast_daily_get(city, key, state=state, country=country, days=days, units=units, lang=lang, param_callback=param_callback)
+        api_response = api_instance.forecast_daily_get(city_id, key, state=state, country=country, days=days, units=units, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 16DayDailyForecastApi->forecast_daily_get: %s\n" % e)
+        print("Exception when calling A16DayDailyForecastApi->forecast_daily_get: %s\n" % e)
 ```
 
 
@@ -66,7 +66,7 @@ with openapi_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **city** | **str**| City search.. Example - &amp;city&#x3D;Raleigh,NC or &amp;city&#x3D;Berlin,DE or city&#x3D;Paris&amp;country&#x3D;FR |
+ **city_id** | **str**| City search.. Example - &amp;city&#x3D;Raleigh,NC or &amp;city&#x3D;Berlin,DE or city&#x3D;Paris&amp;country&#x3D;FR |
  **key** | **str**| Your registered API key. |
  **state** | **str**| Full name of state. | [optional]
  **country** | **str**| Country Code (2 letter). | [optional]

@@ -1,14 +1,14 @@
-# openapi_client.120HourHourlyForecastApi
+# openapi_client.A120HourHourlyForecastApi
 
 All URIs are relative to *https://api.weatherbit.io/v2.0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**forecast_hourly_get**](120HourHourlyForecastApi.md#forecast_hourly_get) | **GET** /forecast/hourly | Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
+[**forecast_hourly_get**](A120HourHourlyForecastApi.md#forecast_hourly_get) | **GET** /forecast/hourly | Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
 
 
 # **forecast_hourly_get**
-> ForecastHourly forecast_hourly_get(city, key)
+> ForecastHourly forecast_hourly_get(city_id, key)
 
 Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
 
@@ -19,7 +19,7 @@ Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
 ```python
 import time
 import openapi_client
-from openapi_client.api import 120_hour___hourly_forecast_api
+from openapi_client.api import a_120_hour___hourly_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 from pprint import pprint
@@ -33,8 +33,8 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
-    api_instance = 120_hour___hourly_forecast_api.120HourHourlyForecastApi(api_client)
-    city = "city_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    api_instance = a_120_hour___hourly_forecast_api.A120HourHourlyForecastApi(api_client)
+    city_id = "city_id_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
     key = "key_example" # str | Your registered API key.
     state = "state_example" # str | Full name of state. (optional)
     country = "country_example" # str | Country Code (2 letter). (optional)
@@ -46,19 +46,19 @@ with openapi_client.ApiClient() as api_client:
     # example passing only required values which don't have defaults set
     try:
         # Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
-        api_response = api_instance.forecast_hourly_get(city, key)
+        api_response = api_instance.forecast_hourly_get(city_id, key)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
+        print("Exception when calling A120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
 
     # example passing only required values which don't have defaults set
     # and optional values
     try:
         # Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
-        api_response = api_instance.forecast_hourly_get(city, key, state=state, country=country, units=units, lang=lang, param_callback=param_callback, hours=hours)
+        api_response = api_instance.forecast_hourly_get(city_id, key, state=state, country=country, units=units, lang=lang, param_callback=param_callback, hours=hours)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
+        print("Exception when calling A120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
 ```
 
 
@@ -66,7 +66,7 @@ with openapi_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **city** | **str**| City search.. Example - &amp;city&#x3D;Raleigh,NC or &amp;city&#x3D;Berlin,DE or city&#x3D;Paris&amp;country&#x3D;FR |
+ **city_id** | **str**| City search.. Example - &amp;city&#x3D;Raleigh,NC or &amp;city&#x3D;Berlin,DE or city&#x3D;Paris&amp;country&#x3D;FR |
  **key** | **str**| Your registered API key. |
  **state** | **str**| Full name of state. | [optional]
  **country** | **str**| Country Code (2 letter). | [optional]

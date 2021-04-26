@@ -49,7 +49,7 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import time
 import openapi_client
 from pprint import pprint
-from openapi_client.api import 120_hour___hourly_forecast_api
+from openapi_client.api import a_120_hour___hourly_forecast_api
 from openapi_client.model.error import Error
 from openapi_client.model.forecast_hourly import ForecastHourly
 # Defining the host is optional and defaults to https://api.weatherbit.io/v2.0
@@ -63,8 +63,8 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = 120_hour___hourly_forecast_api.120HourHourlyForecastApi(api_client)
-    city = "city_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
+    api_instance = a_120_hour___hourly_forecast_api.A120HourHourlyForecastApi(api_client)
+    city_id = "city_id_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
 key = "key_example" # str | Your registered API key.
 state = "state_example" # str | Full name of state. (optional)
 country = "country_example" # str | Country Code (2 letter). (optional)
@@ -75,10 +75,10 @@ hours = 1 # int | Number of hours to return. (optional)
 
     try:
         # Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
-        api_response = api_instance.forecast_hourly_get(city, key, state=state, country=country, units=units, lang=lang, param_callback=param_callback, hours=hours)
+        api_response = api_instance.forecast_hourly_get(city_id, key, state=state, country=country, units=units, lang=lang, param_callback=param_callback, hours=hours)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling 120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
+        print("Exception when calling A120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -87,8 +87,8 @@ All URIs are relative to *https://api.weatherbit.io/v2.0*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*120HourHourlyForecastApi* | [**forecast_hourly_get**](docs/120HourHourlyForecastApi.md#forecast_hourly_get) | **GET** /forecast/hourly | Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
-*16DayDailyForecastApi* | [**forecast_daily_get**](docs/16DayDailyForecastApi.md#forecast_daily_get) | **GET** /forecast/daily | Returns a daily forecast - Given City and/or State, Country.
+*A120HourHourlyForecastApi* | [**forecast_hourly_get**](docs/A120HourHourlyForecastApi.md#forecast_hourly_get) | **GET** /forecast/hourly | Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
+*A16DayDailyForecastApi* | [**forecast_daily_get**](docs/A16DayDailyForecastApi.md#forecast_daily_get) | **GET** /forecast/daily | Returns a daily forecast - Given City and/or State, Country.
 
 
 ## Documentation For Models

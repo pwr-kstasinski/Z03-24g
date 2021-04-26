@@ -1,5 +1,6 @@
 .gitignore
 .gitlab-ci.yml
+.openapi-generator-ignore
 .travis.yml
 README.md
 docs/A120HourHourlyForecastApi.md
@@ -37,4 +38,13 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
+test/test_a_120_hour___hourly_forecast_api.py
+test/test_a_16_day___daily_forecast_api.py
+test/test_error.py
+test/test_forecast.py
+test/test_forecast_day.py
+test/test_forecast_hour.py
+test/test_forecast_hour_weather.py
+test/test_forecast_hourly.py
+test/test_forecast_weather.py
 tox.ini
