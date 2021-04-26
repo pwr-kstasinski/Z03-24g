@@ -11,14 +11,14 @@
 import unittest
 
 import openapi_client
-from openapi_client.api.16_day___daily_forecast_api import 16DayDailyForecastApi  # noqa: E501
+from openapi_client.api.a16_day___daily_forecast_api import a16DayDailyForecastApi  # noqa: E501
 
 
 class Test16DayDailyForecastApi(unittest.TestCase):
     """16DayDailyForecastApi unit test stubs"""
 
     def setUp(self):
-        self.api = 16DayDailyForecastApi()  # noqa: E501
+        self.api = a16DayDailyForecastApi()  # noqa: E501
 
     def tearDown(self):
         pass

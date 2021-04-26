@@ -11,14 +11,14 @@
 import unittest
 
 import openapi_client
-from openapi_client.api.120_hour___hourly_forecast_api import 120HourHourlyForecastApi  # noqa: E501
+from openapi_client.api.a120_hour___hourly_forecast_api import a120HourHourlyForecastApi  # noqa: E501
 
 
 class Test120HourHourlyForecastApi(unittest.TestCase):
     """120HourHourlyForecastApi unit test stubs"""
 
     def setUp(self):
-        self.api = 120HourHourlyForecastApi()  # noqa: E501
+        self.api = a120HourHourlyForecastApi()  # noqa: E501
 
     def tearDown(self):
         pass
