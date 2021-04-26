@@ -112,6 +112,7 @@ class OpenApiModel(object):
 
         if name=="code":    return
         if name=="max_dhi":    return
+        if name=="rh":    return
         if name in self.openapi_types:
             required_types_mixed = self.openapi_types[name]
         elif self.additional_properties_type is None:

@@ -98,7 +98,7 @@ class Gui(tk.Frame):
         self.hourlyWeather.hours=[]
         for i in range(1):
            self.hourlyWeather.hours.append(tk.Canvas(self.hourlyWeather))
-           self.hourlyWeather.hours[-1]["height"]=120
+           self.hourlyWeather.hours[-1]["height"]=300
            self.hourlyWeather.hours[-1]["width"]=30
            self.hourlyWeather.hours[-1].create_rectangle(0, 0, 30, 10, fill="red")
            self.hourlyWeather.hours[-1].create_text(8,50,anchor=tk.SW,text="0",fill="black")
