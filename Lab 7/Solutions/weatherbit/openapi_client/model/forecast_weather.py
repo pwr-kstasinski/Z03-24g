@@ -73,7 +73,7 @@ class ForecastWeather(ModelNormal):
         """
         return {
             'icon': (str,),  # noqa: E501
-            'code': (str,),  # noqa: E501
+            'code': (int,),  # noqa: E501
             'description': (str,),  # noqa: E501
         }
 

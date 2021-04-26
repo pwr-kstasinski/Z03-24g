@@ -115,7 +115,8 @@ class a16DayDailyForecastApi(object):
             settings={
                 'response_type': (ForecastDay,),
                 'auth': [],
-                'endpoint_path': '/forecast/daily?city_id={city_id}',
+                #'endpoint_path': '/forecast/daily?city_id={city_id}',
+                'endpoint_path': '/forecast/daily',
                 'operation_id': 'forecast_dailycity_idcity_id_get',
                 'http_method': 'GET',
                 'servers': None,
@@ -211,7 +212,7 @@ class a16DayDailyForecastApi(object):
                     'param_callback': 'callback',
                 },
                 'location_map': {
-                    'city_id': 'path',
+                    'city_id': 'query',
                     'key': 'query',
                     'days': 'query',
                     'units': 'query',

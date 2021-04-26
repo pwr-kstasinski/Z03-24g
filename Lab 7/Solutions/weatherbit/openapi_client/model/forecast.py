@@ -87,6 +87,9 @@ class Forecast(ModelNormal):
             'temp': (float,),  # noqa: E501
             'dewpt': (float,),  # noqa: E501
             'max_temp': (float,),  # noqa: E501
+            'high_temp': (float,),
+            'ozone': (float,),
+            'wind_gust_spd': (float,),
             'min_temp': (float,),  # noqa: E501
             'app_max_temp': (float,),  # noqa: E501
             'app_min_temp': (float,),  # noqa: E501
@@ -100,6 +103,7 @@ class Forecast(ModelNormal):
             'vis': (float,),  # noqa: E501
             'pop': (float,),  # noqa: E501
             'moon_phase': (float,),  # noqa: E501
+            'moon_phase_lunation': (float,),  # noqa: E501
             'sunrise_ts': (int,),  # noqa: E501
             'sunset_ts': (int,),  # noqa: E501
             'moonrise_ts': (int,),  # noqa: E501
@@ -109,6 +113,7 @@ class Forecast(ModelNormal):
             'wind_dir': (int,),  # noqa: E501
             'wind_cdir': (str,),  # noqa: E501
             'wind_cdir_full': (str,),  # noqa: E501
+            'valid_date': (str,),  # noqa: E501
         }
 
     @cached_property
@@ -126,6 +131,7 @@ class Forecast(ModelNormal):
         'precip': 'precip',  # noqa: E501
         'temp': 'temp',  # noqa: E501
         'dewpt': 'dewpt',  # noqa: E501
+        'high_temp': 'max_temp',  # noqa: E501
         'max_temp': 'max_temp',  # noqa: E501
         'min_temp': 'min_temp',  # noqa: E501
         'app_max_temp': 'app_max_temp',  # noqa: E501
