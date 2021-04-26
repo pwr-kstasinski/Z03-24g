@@ -4,6 +4,7 @@
 README.md
 docs/A120HourHourlyForecastApi.md
 docs/A16DayDailyForecastApi.md
+docs/CurrentWeatherDataApi.md
 docs/Error.md
 docs/Forecast.md
 docs/ForecastDay.md
@@ -16,6 +17,7 @@ openapi_client/__init__.py
 openapi_client/api/__init__.py
 openapi_client/api/a_120_hour___hourly_forecast_api.py
 openapi_client/api/a_16_day___daily_forecast_api.py
+openapi_client/api/current_weather_data_api.py
 openapi_client/api_client.py
 openapi_client/apis/__init__.py
 openapi_client/configuration.py

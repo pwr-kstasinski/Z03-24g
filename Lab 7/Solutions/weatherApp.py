@@ -47,9 +47,10 @@ class Gui(tk.Frame):
         master.title("WeatherApp")
         self.api_client=openapi_client.ApiClient(configuration)
         self.key="30c4cec00f85498a928a09be2f62043e"
+        self.chkHour=False
         self.pack()
         self.createWidgets()
-
+        
     def createWidgets(self):
         self.cityLabel=tk.Label(self,text="city:")
         self.cityLabel.grid(row=0,column=0)
@@ -91,15 +92,16 @@ class Gui(tk.Frame):
         
 
     def createHourlyWeather(self):
+        self.chkHour=True
         self.hourlyWeather.label=tk.Label(self.hourlyWeather,text="Hourly weather:")
         self.hourlyWeather.label.grid(row=0)
         self.hourlyWeather.hours=[]
-        for i in range(20):
+        for i in range(1):
            self.hourlyWeather.hours.append(tk.Canvas(self.hourlyWeather))
-           self.hourlyWeather.hours[-1]["height"]=100
+           self.hourlyWeather.hours[-1]["height"]=120
            self.hourlyWeather.hours[-1]["width"]=30
-           self.hourlyWeather.hours[-1].create_rectangle(0, 0, 50, 30, fill="red")
-           self.hourlyWeather.hours[-1].create_text(10,50,anchor=tk.SW,text="0",fill="black")
+           self.hourlyWeather.hours[-1].create_rectangle(0, 0, 30, 10, fill="red")
+           self.hourlyWeather.hours[-1].create_text(8,50,anchor=tk.SW,text="0",fill="black")
            self.hourlyWeather.hours[-1].grid(row=1,column=i+1)
 
 
@@ -115,13 +117,14 @@ class Gui(tk.Frame):
         self.dailyWeather.update()
         
     def setHourlyWeather(self,apiResponse):
+        if not self.chkHour:    self.createHourlyWeather()
         i=0
         for hour in self.hourlyWeather.hours:
-            day["date"]["text"]=apiResponse.data[i]["datetime"]
-            hour.create_rectangle(0, 0, int(apiResponse.data[i]["temp"]*10), 30, fill="red")
-            hour.create_text(10,int(apiResponse.data[i]["temp"]*10),
+            hour.create_rectangle(0, 0, 30, int(apiResponse.data[i]["temp"]*10), fill="red")
+            hour.create_text(6,int(apiResponse.data[i]["temp"]*10),
                             anchor=tk.SW,text=apiResponse.data[i]["temp"],fill="black")
             i+=1
+            hour.update()
         self.hourlyWeather.update()
 
 
@@ -132,7 +135,7 @@ class Gui(tk.Frame):
 
     def getHourlyWeather(self):
         api_instance = current_weather_data_api.CurrentWeatherDataApi(self.api_client)
-        apiResponse = api_instance.currentcitiescities_get(city_id=self.cityInput.get(), key=self.key)
+        apiResponse = api_instance.currentcity_idcity_id_get(city_id=self.cityInput.get(), key=self.key)
         self.setHourlyWeather(apiResponse)
     
 

@@ -49,9 +49,9 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import time
 import openapi_client
 from pprint import pprint
-from openapi_client.api import a_120_hour___hourly_forecast_api
+from openapi_client.api import current_weather_data_api
+from openapi_client.model.current_obs_group import CurrentObsGroup
 from openapi_client.model.error import Error
-from openapi_client.model.forecast_hourly import ForecastHourly
 # Defining the host is optional and defaults to https://api.weatherbit.io/v2.0
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
@@ -63,22 +63,21 @@ configuration = openapi_client.Configuration(
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = a_120_hour___hourly_forecast_api.A120HourHourlyForecastApi(api_client)
+    api_instance = current_weather_data_api.CurrentWeatherDataApi(api_client)
     city_id = "city_id_example" # str | City search.. Example - &city=Raleigh,NC or &city=Berlin,DE or city=Paris&country=FR
 key = "key_example" # str | Your registered API key.
-state = "state_example" # str | Full name of state. (optional)
-country = "country_example" # str | Country Code (2 letter). (optional)
 units = "S" # str | Convert to units. Default Metric See <a target='blank' href='/api/requests'>units field description</a> (optional)
+include = "minutely" # str | Include 1 hour - minutely forecast in the response (optional) (default to "minutely")
+marine = "t" # str | Marine stations only (buoys, oil platforms, etc) (optional) (default to "t")
 lang = "ar" # str | Language (Default: English) See <a target='blank' href='/api/requests'>language field description</a> (optional)
-param_callback = "callback_example" # str | Wraps return in jsonp callback. Example: callback=func (optional)
-hours = 1 # int | Number of hours to return. (optional)
+param_callback = "callback_example" # str | Wraps return in jsonp callback - Example - callback=func (optional)
 
     try:
-        # Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
-        api_response = api_instance.forecast_hourly_get(city_id, key, state=state, country=country, units=units, lang=lang, param_callback=param_callback, hours=hours)
+        # Returns a current observation by city id.
+        api_response = api_instance.currentcity_idcity_id_get(city_id, key, units=units, include=include, marine=marine, lang=lang, param_callback=param_callback)
         pprint(api_response)
     except openapi_client.ApiException as e:
-        print("Exception when calling A120HourHourlyForecastApi->forecast_hourly_get: %s\n" % e)
+        print("Exception when calling CurrentWeatherDataApi->currentcity_idcity_id_get: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -87,6 +86,7 @@ All URIs are relative to *https://api.weatherbit.io/v2.0*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*CurrentWeatherDataApi* | [**currentcity_idcity_id_get**](docs/CurrentWeatherDataApi.md#currentcity_idcity_id_get) | **GET** /current?city_id&#x3D;{city_id} | Returns a current observation by city id.
 *A120HourHourlyForecastApi* | [**forecast_hourly_get**](docs/A120HourHourlyForecastApi.md#forecast_hourly_get) | **GET** /forecast/hourly | Returns an 120 hour (hourly forecast) - Given City and/or State, Country.
 *A16DayDailyForecastApi* | [**forecast_daily_get**](docs/A16DayDailyForecastApi.md#forecast_daily_get) | **GET** /forecast/daily | Returns a daily forecast - Given City and/or State, Country.
 
