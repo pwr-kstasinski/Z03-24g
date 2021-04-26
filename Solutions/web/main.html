@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pogoda</title>
+    <script src="eel.js"></script>
+    <script src="js/jquery-2.2.3.min.js"></script>
+    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:wght@300;400;500&display=swag" rel="stylesheet">
+</head>
+
+
+<body>
+
+    
+    
+    <div class="main">
+        <input id="location" type="text" placeholder="Wprowadz nazwę miasta..." required="" value="Warsaw">
+        <button id="show">Uznać pogodę</button>
+        <div id="info"></div>
+        <div class="container">
+          <div class="row">
+            <div id ="day1" class="col">
+              <div id ="temp_max1" class="value"></div>
+              <div id ="temp_min1" class="value"></div>
+              <div id ="desc1" class="value"></div>
+              <div id ="icon1" class="value"></div>
+              <div id ="humidity1" class="value"></div>
+              
+            </div>
+            <div id ="day2" class="col">
+              <div id ="temp_max2" class="value"></div>
+              <div id ="temp_min2" class="value"></div>
+              <div id ="desc2" class="value"></div>
+              <div id ="icon2" class="value"></div>
+              <div id ="humidity2" class="value"></div>
+              
+            </div>
+            <div id ="day3" class="col">
+              <div id ="temp_max3" class="value"></div>
+              <div id ="temp_min3" class="value"></div>
+              <div id ="desc3" class="value"></div>
+              <div id ="icon3" class="value"></div>
+              <div id ="humidity3" class="value"></div>
+              
+            </div>
+          </div>
+        </div>
+      
+    </div>
+
+
+    <script scr="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        var dict1 = new Object();
+        var dict1 = {};
+        var dict2 = new Object();
+        var dict2 = {};
+        var dict3 = new Object();
+        var dict3 = {};
+        
+        var listidday=['day1','day2','day3'];
+        var listidhumidity=['humidity2','humidity3'];
+        var listidicon=['icon2','icon3'];
+        var listidtempmin=['temp_min2','temp_min3'];
+        var listidtempmax=['temp_max2','temp_max3'];
+        var listdict=[dict1,dict2,dict3];
+        var i=0;
+        var temp="";
+        var img = new Image();
+
+    
+        async function display_weather()
+        {
+
+          let place = document.getElementById('location').value;
+          listdict =await eel.display_weather_conditions_for_n_days(3,place)();
+          for(var l in listdict)
+          {   
+            
+          
+            if('temp_min' in listdict[l])
+            {
+              document.getElementById(listidtempmin[i]).innerHTML="Temperatura min.: "+listdict[l]['temp_min'];
+              document.getElementById(listidtempmax[i]).innerHTML="Temperatura max.: "+listdict[l]['temp_max'];
+              document.getElementById(listidhumidity[i]).innerHTML="Humidity: "+listdict[l]['humidity'];
+              var pc = document.getElementById(listidicon[i]);
+              temp = listdict[l]['icon']+".png"
+              pc.innerHTML="<img src='"+temp+"'>";
+              //document.getElementById(listidicon[i]).innerHTML=img;
+              i=i+1;
+            }
+            else
+            {
+              document.getElementById('temp_min1').innerHTML="Temperatura: "+listdict[l]['temp'];
+              document.getElementById('temp_max1').innerHTML="Temperatura pocz.: "+listdict[l]['feels_like'];
+              document.getElementById('humidity1').innerHTML="Humidity: "+listdict[l]['humidity'];
+              var pc = document.getElementById('icon1');
+              temp = listdict[l]['icon']+".png"
+              pc.innerHTML="<img src='"+temp+"'>";
+              
+            }
+
+
+            
+            
+
+            
+          }
+          listdict=[];
+          i=0;
+
+         
+        }
+        
+        show.onclick = display_weather;
+        
+        
+     
+    </script>
+
+</body>
+
+</html>
