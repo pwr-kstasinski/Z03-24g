@@ -27,6 +27,7 @@ from openapi_client.exceptions import (
 
 none_type = type(None)
 file_type = io.IOBase
+ignored = {""}
 
 
 class cached_property(object):
@@ -433,7 +434,8 @@ class ModelComposed(OpenApiModel):
         if name in self.required_properties:
             self.__dict__[name] = value
             return
-
+        if name in ignored:
+            return
         # set the attribute on the correct instance
         model_instances = self._var_name_to_model_instances.get(
             name, self._additional_properties_model_instances)

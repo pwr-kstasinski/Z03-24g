@@ -91,15 +91,19 @@ class Forecast(ModelNormal):
             'ozone': (float,),
             'wind_gust_spd': (float,),
             'min_temp': (float,),  # noqa: E501
+            'low_temp': (float,),
             'app_max_temp': (float,),  # noqa: E501
             'app_min_temp': (float,),  # noqa: E501
             'rh': (int,),  # noqa: E501
             'clouds': (int,),  # noqa: E501
+            'clouds_hi': (int,),
+            'clouds_mid': (int,),
+            'clouds_low': (int,),
             'weather': (ForecastWeather,),  # noqa: E501
             'slp': (float,),  # noqa: E501
             'pres': (float,),  # noqa: E501
             'uv': (float,),  # noqa: E501
-            'max_dhi': (float,),  # noqa: E501
+            'max_dhi': (none_type,),  # noqa: E501
             'vis': (float,),  # noqa: E501
             'pop': (float,),  # noqa: E501
             'moon_phase': (float,),  # noqa: E501
