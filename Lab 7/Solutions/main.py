@@ -40,7 +40,7 @@ class WeatherProgram(Ui_MainWindow):
         p = ProcessRunnable(target=getHoursData, args=(cityName,))
 
         def filterData(hours):
-            filtered = list(filter(lambda hour: hour["timestamp_local"].find(date) != -1, hours["hours"]))
+            filtered = list(filter(lambda hour: hour.timestamp_local.find(date) != -1, hours["hours"]))
             self.displayHoursWidgets(date, filtered)
 
         p.status.captureDataFinished.connect(filterData)
@@ -93,21 +93,21 @@ class WeatherProgram(Ui_MainWindow):
         self.setState(state)
 
     def loadDayWidget(self, day, cityName):
-        avgTemperature = day["temp"]
-        minTemperature = day["min_temp"]
+        avgTemperature = day.temp
+        minTemperature = day.min_temp
         temperature = Temperature(avgTemperature, minTemperature)
-        precipitation = day["pop"]
+        precipitation = day.pop
         forecast = WeatherForecast(temperature, precipitation)
-        iconName = day["weather"]["icon"]
-        widget = DayWidget(day["datetime"], forecast)
+        iconName = day.weather.icon
+        widget = DayWidget(day.datetime, forecast)
         widget.asyncLoadImage(iconName)
         widget.mouseReleaseEvent = lambda _: self.asyncLoadHours(widget.day, cityName)
         return widget
 
     @staticmethod
     def loadHourWidget(hour):
-        temperature = hour["temp"]
-        timestampStr = hour["timestamp_local"]
+        temperature = hour.temp
+        timestampStr = hour.timestamp_local
         timeStr = timestampStr.split("T")[1]
         hourStr = timeStr[:timeStr.rfind(":")]
         return HourWidget(temperature, hourStr)

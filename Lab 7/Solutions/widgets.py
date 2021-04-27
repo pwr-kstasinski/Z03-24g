@@ -32,7 +32,11 @@ class DayWidget(QWidget, Ui_DayWidget):
 
     def setupUi(self, Widget):
         super(DayWidget, self).setupUi(Widget)
-        self.dayNameLabel.setText(self.day)
+        dayName = self.day
+        todayName = date.today().strftime("%Y-%m-%d")
+        if dayName == todayName:
+            dayName = "Dziś"
+        self.dayNameLabel.setText(dayName)
         self.dayAvgTemperatureLabel.setText(str(self.forecast.temperature.avgT) + "°C")
         self.nightAvgTemperatureLabel.setText(str(self.forecast.temperature.minT) + "°C")
         self.percentageLabel.setText(str(self.forecast.precipitationProbability) + "%")

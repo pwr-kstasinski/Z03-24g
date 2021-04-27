@@ -28,14 +28,14 @@ class ProcessRunnable(QRunnable):
 def getDaysData(cityName):
     api = SixteenDayDailyForecastApi()
     forecast_daily = api.forecast_daily_get(cityName, days=3, key="f8c636b607224c2c8fc99a19443584df")
-    days = forecast_daily["data"]
+    days = forecast_daily.data
     return {"days": days}
 
 
 def getHoursData(cityName):
     api = HundredTwentyHourHourlyForecastApi()
     forecast_hourly = api.forecast_hourly_get(cityName, hours=120, key="f8c636b607224c2c8fc99a19443584df")
-    hours = forecast_hourly["data"]
+    hours = forecast_hourly.data
     return {"hours": hours}
 
 
