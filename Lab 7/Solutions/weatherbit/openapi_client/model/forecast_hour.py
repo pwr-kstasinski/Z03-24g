@@ -90,6 +90,9 @@ class ForecastHour(ModelNormal):
             'app_temp': (float,),  # noqa: E501
             'rh': (int,),  # noqa: E501
             'clouds': (int,),  # noqa: E501
+            'clouds_hi': (int,),  # noqa: E501
+            'clouds_mid': (int,),  # noqa: E501
+            'clouds_low': (int,),  # noqa: E501
             'weather': (ForecastHourWeather,),  # noqa: E501
             'slp': (float,),  # noqa: E501
             'pres': (float,),  # noqa: E501
@@ -101,10 +104,12 @@ class ForecastHour(ModelNormal):
             'vis': (float,),  # noqa: E501
             'pod': (str,),  # noqa: E501
             'pop': (float,),  # noqa: E501
+            'ozone': (float,),
             'wind_spd': (float,),  # noqa: E501
             'wind_dir': (int,),  # noqa: E501
             'wind_cdir': (str,),  # noqa: E501
             'wind_cdir_full': (str,),  # noqa: E501
+            'wind_gust_spd': (float,),  # noqa: E501
         }
 
     @cached_property
