@@ -1,0 +1,29 @@
+class User:
+    def __init__(self, id: str, name: str):
+        self.id = id
+        self.name = name
+
+    @classmethod
+    def fromDict(cls, data):
+        return cls(data["id"], data["attributes"]["name"])
+
+
+class Message:
+
+    def __init__(self, id: str, content: str, sender_id, receiver_id):
+        self.receiver_id = receiver_id
+        self.sender_id = sender_id
+        self.id = id
+        self.content = content
+
+    def __hash__(self):
+        return hash(self.id)
+
+    @classmethod
+    def fromDict(cls, data):
+        id_ = data['id']
+        content_ = data["attributes"]["content"]
+        user_id_ = data["attributes"]["from_user_id"]
+        to_user_id_ = data["attributes"]["to_user_id"]
+        message = Message(id_, content_, user_id_, to_user_id_)
+        return message
