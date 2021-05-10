@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is a documentation of my chat API."
-  version: "1.0.1"
+  version: "1.0.2"
   title: "ChatApp"
 host: "localhost:5000"
 tags:
@@ -65,7 +65,7 @@ paths:
       tags:
       - "user"
       summary: "Register user"
-      description: "This can only be done by the logged in user."
+      description: ""
       operationId: "register"
       produces:
       - "text/plain"
@@ -81,11 +81,11 @@ paths:
         "200":
           description: "Succesfully registered"
   /login:
-    post:
+    get:
       tags:
       - "user"
-      summary: "Register user"
-      description: "This can only be done by the logged in user."
+      summary: "Login user"
+      description: ""
       operationId: "login"
       produces:
       - "text/plain"
