@@ -6,15 +6,15 @@ from flask_restful import Api, Resource
 app = Flask(__name__)
 api = Api(app)
 app.config['SWAGGER'] = {
-    'title': 'Massangar focebok',
+    'title': 'Messengerify',
     'uiversion': 3
 }
 swag = Swagger(app)
 
 users = [
-    {'uuid': '1a', 'login': 'awesome_user', 'password': 'awesome_password'},
-    {'uuid': '2b', 'login': 'ugly_user', 'password': 'ugly_password'},
-    {'uuid': '3c', 'login': 'fabulous_user', 'password': 'fabulous_password'},
+    {'uuid': '1a', 'login': 'pawel', 'password': 'bytner'},
+    {'uuid': '2b', 'login': 'drugiPawel', 'password': 'drugiBytner'},
+    {'uuid': '3c', 'login': 'trzeciPawel', 'password': 'trzeciBytner'},
 ]
 
 messages = {
