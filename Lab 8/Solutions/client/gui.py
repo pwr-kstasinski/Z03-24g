@@ -187,11 +187,12 @@ class GUI:
         self.entryMsg.delete(0, END)
   
     def receive(self):
-        received = msgapi.send(id=self.me)
-        messages.extend(received)
-        for x in received:
-            self.addMSG(x)
-        time.sleep(5)
+        while(True):
+            received = msgapi.receive(id=self.me)
+            messages.extend(received)
+            for x in received:
+                self.addMSG(x)
+            time.sleep(2)
 
 if __name__ == "__main__":
     g = GUI()
