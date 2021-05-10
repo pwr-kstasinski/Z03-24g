@@ -740,6 +740,9 @@ margin-bottom: 20px;
                       <a href="#api-Messages-send">send</a>
                     </li>
                   <li class="nav-header" data-group="User"><a href="#api-User">API Methods - User</a></li>
+                    <li data-group="User" data-name="login" class="">
+                      <a href="#api-User-login">login</a>
+                    </li>
                     <li data-group="User" data-name="register" class="">
                       <a href="#api-User-register">register</a>
                     </li>
@@ -756,7 +759,7 @@ margin-bottom: 20px;
         <div id="header">
           <div id="api-_">
             <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
-              <div class="app-desc">Version: 1.0.0</div>
+              <div class="app-desc">Version: 1.0.2</div>
             <hr>
             <div>This is a documentation of my chat API.</div>
           </div>
@@ -1338,6 +1341,262 @@ $(document).ready(function() {
                   </section>
                 <section id="api-User">
                   <h1>User</h1>
+                    <div id="api-User-login">
+                      <article id="api-User-login-0" data-group="User" data-name="login" data-version="0">
+                        <div class="pull-left">
+                          <h1>login</h1>
+                          <p>Login user</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/login</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-User-login-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-User-login-0-java">Java</a></li>
+                          <li class=""><a href="#examples-User-login-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-User-login-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-User-login-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-User-login-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-User-login-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-User-login-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-User-login-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-User-login-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-User-login-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-User-login-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "http://localhost:5000/login?id="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-User-login-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.UserApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UserApiExample {
+
+    public static void main(String[] args) {
+        
+        UserApi apiInstance = new UserApi();
+        String id = id_example; // String | User id
+        try {
+            apiInstance.login(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UserApi#login");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-User-login-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.UserApi;
+
+public class UserApiExample {
+
+    public static void main(String[] args) {
+        UserApi apiInstance = new UserApi();
+        String id = id_example; // String | User id
+        try {
+            apiInstance.login(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UserApi#login");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-User-login-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-User-login-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // User id
+
+UserApi *apiInstance = [[UserApi alloc] init];
+
+// Login user
+[apiInstance loginWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-User-login-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var ChatApp = require('chat_app');
+
+var api = new ChatApp.UserApi()
+
+var id = id_example; // {String} User id
+
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.login(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-User-login-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-User-login-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class loginExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new UserApi();
+            var id = id_example;  // String | User id
+
+            try
+            {
+                // Login user
+                apiInstance.login(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling UserApi.login: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-User-login-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\UserApi();
+$id = id_example; // String | User id
+
+try {
+    $api_instance->login($id);
+} catch (Exception $e) {
+    echo 'Exception when calling UserApi->login: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-User-login-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::UserApi;
+
+my $api_instance = WWW::SwaggerClient::UserApi->new();
+my $id = id_example; # String | User id
+
+eval { 
+    $api_instance->login(id => $id);
+};
+if ($@) {
+    warn "Exception when calling UserApi->login: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-User-login-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.UserApi()
+id = id_example # String | User id
+
+try: 
+    # Login user
+    api_instance.login(id)
+except ApiException as e:
+    print("Exception when calling UserApi->login: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">id*</td>
+<td>
+
+
+    <div id="d2e199_login_id">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        User id
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Succesfully logged in </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 400 - Invalid input </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-User-register">
                       <article id="api-User-register-0" data-group="User" data-name="register" data-version="0">
                         <div class="pull-left">
@@ -1347,7 +1606,7 @@ $(document).ready(function() {
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">This can only be done by the logged in user.</p>
+                        <p class="marked"></p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/register</span></code></pre>
