@@ -2,6 +2,6 @@
   <h1
   class="text-h2 pa-12 text-center mt-12"
   >
-    Welcome to Messengerify
+    Hello, you are at massangar Facbok
   </h1>
 </template>

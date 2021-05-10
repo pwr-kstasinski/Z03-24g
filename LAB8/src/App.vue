@@ -1,31 +1,9 @@
 <template>
   <v-app>
-
     <v-navigation-drawer
         v-model="drawer"
         app
     >
-      <v-sheet
-          color="grey lighten-4"
-          class="pa-4"
-      >
-        <div
-            class="text-center"
-        >
-          <v-icon
-              color="blue lighten-1"
-              size="64"
-          >mdi-forum
-          </v-icon>
-        </div>
-
-        <div
-            class="text-center"
-        >
-          Messengerify
-        </div>
-      </v-sheet>
-
       <v-divider></v-divider>
 
       <v-list>
