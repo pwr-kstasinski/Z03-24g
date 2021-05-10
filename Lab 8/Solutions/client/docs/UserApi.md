@@ -4,16 +4,14 @@ All URIs are relative to *http://localhost:5000*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**login**](UserApi.md#login) | **POST** /login | Register user
+[**login**](UserApi.md#login) | **GET** /login | Login user
 [**register**](UserApi.md#register) | **POST** /register | Register user
 
 
 # **login**
 > login(id)
 
-Register user
-
-This can only be done by the logged in user.
+Login user
 
 ### Example
 
@@ -37,7 +35,7 @@ with openapi_client.ApiClient() as api_client:
 
     # example passing only required values which don't have defaults set
     try:
-        # Register user
+        # Login user
         api_instance.login(id)
     except openapi_client.ApiException as e:
         print("Exception when calling UserApi->login: %s\n" % e)
@@ -76,8 +74,6 @@ No authorization required
 > register(id)
 
 Register user
-
-This can only be done by the logged in user.
 
 ### Example
 
