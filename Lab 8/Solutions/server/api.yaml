@@ -1,10 +1,9 @@
 swagger: "2.0"
 info:
   description: "This is a documentation of my chat API."
-  version: "1.0.0"
+  version: "1.0.1"
   title: "ChatApp"
-host: "petstore.swagger.io"
-basePath: "/v2"
+host: "localhost:5000"
 tags:
 - name: "messages"
   description: "Message-related operations"
@@ -81,6 +80,26 @@ paths:
           description: "Invalid input"
         "200":
           description: "Succesfully registered"
+  /login:
+    post:
+      tags:
+      - "user"
+      summary: "Register user"
+      description: "This can only be done by the logged in user."
+      operationId: "login"
+      produces:
+      - "text/plain"
+      parameters:
+      - in: "query"
+        name: "id"
+        description: "User id"
+        required: true
+        type: "string"
+      responses:
+        "400":
+            description: "Invalid input"
+        "200":
+            description: "Succesfully logged in"
 definitions:
   Message:
     type: "object"
