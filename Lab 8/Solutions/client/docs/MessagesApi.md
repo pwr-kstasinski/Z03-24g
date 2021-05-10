@@ -1,6 +1,6 @@
 # openapi_client.MessagesApi
 
-All URIs are relative to *http://petstore.swagger.io/v2*
+All URIs are relative to *http://localhost:5000*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -21,10 +21,10 @@ import openapi_client
 from openapi_client.api import messages_api
 from openapi_client.model.message import Message
 from pprint import pprint
-# Defining the host is optional and defaults to http://petstore.swagger.io/v2
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://petstore.swagger.io/v2"
+    host = "http://localhost:5000"
 )
 
 
@@ -85,10 +85,10 @@ import openapi_client
 from openapi_client.api import messages_api
 from openapi_client.model.message import Message
 from pprint import pprint
-# Defining the host is optional and defaults to http://petstore.swagger.io/v2
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://petstore.swagger.io/v2"
+    host = "http://localhost:5000"
 )
 
 
