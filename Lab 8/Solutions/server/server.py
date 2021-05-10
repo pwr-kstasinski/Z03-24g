@@ -55,7 +55,7 @@ def download_messages():
         return bad_request("ID not registered")
     result, rest = [], []
     for x in messages:
-        (result, rest)[x["to"]==uid].append(x)
+        (result, rest)[x["to"]!=uid].append(x)
     messages = rest
     return jsonify(result)
 
