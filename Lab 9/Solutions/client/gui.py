@@ -48,18 +48,24 @@ class GUI:
                              relheight = 0.12,
                              relx = 0.35,
                              rely = 0.2)
+        self.entryPassword = Entry(self.login, 
+                             font = "Helvetica 14")
+        self.entryPassword.place(relwidth = 0.4, 
+                             relheight = 0.12,
+                             relx = 0.35,
+                             rely = 0.35)
           
         self.loginButton = Button(self.login,
                          text = "LOGIN", 
                          font = "Helvetica 14 bold", 
-                         command = lambda: self.logIn(self.entryName.get()))
+                         command = lambda: self.logIn(self.entryName.get(),self.entryPassword.get()))
         self.loginButton.place(relx = 0.3,
                          rely = 0.55)
         
         self.registerButton = Button(self.login,
                          text = "REGISTER", 
                          font = "Helvetica 14 bold", 
-                         command = lambda: self.registerIn(self.entryName.get()))
+                         command = lambda: self.registerIn(self.entryName.get(),self.entryPassword.get()))
         self.registerButton.place(relx = 0.5,
                       rely = 0.55)
         
