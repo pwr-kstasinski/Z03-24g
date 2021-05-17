@@ -1,8 +1,8 @@
 import requests
 
-r = requests.post('http://127.0.0.1:5000/register',params={'id':'iandonlyi'})
+r = requests.post('http://127.0.0.1:5000/register',params={'id':'iandonlyi','pass':'ipass'})
 print(r)
-r = requests.post('http://127.0.0.1:5000/register',params={'id':'someofyou'})
+r = requests.post('http://127.0.0.1:5000/register',params={'id':'someofyou','pass':'ypass'})
 print(r)
 r = requests.post('http://127.0.0.1:5000/send',json={'from':'someofyou','to':'iandonlyi','message':'hello there'})
 print(r)
