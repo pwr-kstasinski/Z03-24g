@@ -71,11 +71,11 @@ class GUI:
         
         self.Window.mainloop()
   
-    def registerIn(self, name):
-        userapi.register(id=name)
+    def registerIn(self, name, passw):
+        userapi.register(id=name,_pass=passw)
     
-    def logIn(self, name):
-        userapi.login(id=name)
+    def logIn(self, name, passw):
+        userapi.login(id=name,_pass=passw)
 
         self.me = name
         self.login.destroy()

@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **login**
-> login(id)
+> login(id, _pass)
 
 Login user
 
@@ -32,11 +32,12 @@ with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = user_api.UserApi(api_client)
     id = "id_example" # str | User id
+    _pass = "pass_example" # str | User password
 
     # example passing only required values which don't have defaults set
     try:
         # Login user
-        api_instance.login(id)
+        api_instance.login(id, _pass)
     except openapi_client.ApiException as e:
         print("Exception when calling UserApi->login: %s\n" % e)
 ```
@@ -47,6 +48,7 @@ with openapi_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| User id |
+ **_pass** | **str**| User password |
 
 ### Return type
 
@@ -71,7 +73,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **register**
-> register(id)
+> register(id, _pass)
 
 Register user
 
@@ -94,11 +96,12 @@ with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = user_api.UserApi(api_client)
     id = "id_example" # str | User id
+    _pass = "pass_example" # str | User password
 
     # example passing only required values which don't have defaults set
     try:
         # Register user
-        api_instance.register(id)
+        api_instance.register(id, _pass)
     except openapi_client.ApiException as e:
         print("Exception when calling UserApi->register: %s\n" % e)
 ```
@@ -109,6 +112,7 @@ with openapi_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| User id |
+ **_pass** | **str**| User password |
 
 ### Return type
 
