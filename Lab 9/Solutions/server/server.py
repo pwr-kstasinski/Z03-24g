@@ -2,6 +2,7 @@ from flask import Flask,request,jsonify,render_template
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+from dataclasses import dataclass
 
 ser = Flask(__name__)
 ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
@@ -9,28 +10,32 @@ db = SQLAlchemy(ser)
 messageID = 0
 
 def getNextMessageID():
+    global messageID
     messageID+=1
     return messageID
 
+def nmessage(fr,to,msg):
+    return messages(id=getNextMessageID(),fr=fr,to=to,msg=msg)
+
+@dataclass
 class messages(db.Model):
+    id:int
+    fr:str
+    to:str
+    msg:str
     id = db.Column("id",db.Integer,primary_key=True)
     fr = db.Column("from",db.String(30))
     to = db.Column("to",db.String(30))
     msg = db.Column("message",db.String(300))
-    def __init__(self,fr,to,msg):
-        self.id = getNextMessageID()
-        self.fr = fr
-        self.to = to
-        self.msg = msg
-        
+
+def nuser(login,password):
+    return users(login=login,password=password,lastQuery=datetime.datetime.now())
+
+@dataclass
 class users(db.Model):
     login = db.Column("id",db.String(30),primary_key=True)
     password = db.Column("password",db.String(30))
     lastQuery = db.Column("lastQuery",db.DateTime)
-    def __init__(self,login,password):
-        self.login = login
-        self.password = password
-        self.lastQuery = datetime.datetime.now()
 
 def bad_request(message=None,status_code=400):
     payload = {'error': HTTP_STATUS_CODES.get(status_code, 'Unknown error')}
@@ -79,7 +84,7 @@ def download_messages():
         return bad_request("ID not registered")
     result = messages.query.filter_by(to=uid)
     user.lastQuery = datetime.datetime.now()
-    json = jsonify(result)
+    json = jsonify(result.all())
     result.delete()
     db.session.commit()
     return json
@@ -122,7 +127,7 @@ def accept_message():
     if not user:
         return bad_request("Sender's ID not registered")
     user.lastQuery = datetime.datetime.now()
-    db.session.add(messages(data["from"],data["to"],data["message"]))###
+    db.session.add(nmessage(data["from"],data["to"],data["message"]))###
     db.session.commit()
     return "OK"
 
@@ -151,7 +156,7 @@ def register_user():
     user = users.query.filter_by(login=uid).first()
     if user:
         return bad_request("ID already registered")
-    usr = users(data["id"],data["password"])
+    usr = nuser(data["id"],data["pass"])
     db.session.add(usr)
     db.session.commit()
     return "OK"
