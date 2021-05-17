@@ -8,33 +8,6 @@ config = Configuration(host="http://127.0.0.1:5000")
 messObj = MessagesApi(ApiClient(config))
 usrObj = UsersApi(ApiClient(config))
 global flag
-# res = usrObj.put_register_post({"login": "Tomek",
-#                                             "password": "dorian"})
-#
-# print(res)
-
-# res2 = usrObj.put_login_post({"login": "Tomek",
-#                               "password": "dorian"})
-#
-# print(res2)
-
-# res3 = messObj.post_send_sender_username_receiver_username_message_post("Dorian", "Tomek", "Hea" )
-# print(res3
-#       )
-# res5 = messObj.post_send_sender_username_receiver_username_message_post("Dorian", "Adam", "Hej" )
-# print(res5)
-# res6 = messObj.post_send_sender_username_receiver_username_message_post("Adam", "Tomek", "Hejka" )
-# print(res6)
-# res9 = messObj.get_get_name_get("Adam")
-# print(res9)
-# us = "Adam"
-# res4 = usrObj.logout_logout_post({"login": f"{us}","password": "dorian"})
-# print(res4)
-# res7 = usrObj.active_users_active_users_get()
-# print(res7)
-# res8= messObj.post_send_all_post("Adam", "all", "Joł")
-
-
 
 
 def checkForMessages():
