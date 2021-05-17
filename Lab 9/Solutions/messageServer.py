@@ -57,7 +57,14 @@ def home():
 
 @app.route('/api/users/all', methods=['GET'])
 def api_users_all():
-    return jsonify(users.keys())
+    connection = engine.connect()
+    query=db.select([users])
+    resultProxy = connection.execute(query)
+    resultSet = resultProxy.fetchall()
+    res=[]
+    for u in resultSet:
+        res.append({"userId":u[0],"active":u[2]})
+    return jsonify(res)
 
 
 @app.route('/api/users/register', methods=['POST'])
@@ -117,8 +124,21 @@ def verifyUser(id,password):
     if (len(resultSet)==0):
         return False
     
-    if((resultSet[0]["id"]==id) and (resultSet[0]["password"]==password)):
+    if(str((resultSet[0]["id"])==str(id)) and (str(resultSet[0]["password"])==str(password))):
         return True
+
+
+@app.route('/api/users/logout', methods=['POST'])
+def api_logout_user():
+    data=request.form
+    id=data["userId"]
+    if(not verifyUser(id,data["password"])):
+        return "User not recognised"
+
+    connection = engine.connect()
+    query=db.update(users).values(active = False).where(users.columns.id==id)
+    resultProxy = connection.execute(query)
+    return "Logout successfull"
 
 
 @app.route('/api/users', methods=['GET'])
@@ -130,12 +150,12 @@ def api_user_recieve():
     connection = engine.connect()
     query=db.select([messages])
     query=query.where(db.and_(messages.columns.send == False
-        ,db.or_(messages.columns.srcId == data["userId"], messages.columns.dstId == data["userId"])))
+        , messages.columns.dstId == data["userId"]))
     resultProxy = connection.execute(query)
     resultSet = resultProxy.fetchall()
 
     query=db.update(messages).values(send = True).where(db.and_(messages.columns.send == False
-        ,db.or_(messages.columns.srcId == data["userId"], messages.columns.dstId == data["userId"])))
+        , messages.columns.dstId == data["userId"]))
     resultProxy = connection.execute(query)
 
     print(resultSet)
@@ -152,7 +172,7 @@ def api_user_send():
         return "User not valid"
 
     connection = engine.connect()
-    query = db.insert(messages).values(srcIc=data["userId"], dstId=data["userDstId"],msg=data["msg"])
+    query = db.insert(messages).values(srcId=data["userId"], dstId=data["dstUserId"],msg=data["msg"])
     resultProxy = connection.execute(query)
     
     return "message send"
@@ -170,7 +190,8 @@ def api_user_send_everone():
     resultSet = resultProxy.fetchall()
     msgList=[]
     for u in resultSet:
-        msgList.append({"srcId":data["userId"],"dstId":u[0],"msg":data["msg"]})
+        if(u[0]!=data["userId"]):
+            msgList.append({"srcId":data["userId"],"dstId":u[0],"msg":data["msg"]})
     query = db.insert(messages)
     resultProxy = connection.execute(query,msgList)
     return "messages send"
