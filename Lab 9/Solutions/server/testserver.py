@@ -8,7 +8,7 @@ r = requests.post('http://127.0.0.1:5000/send',json={'from':'someofyou','to':'ia
 print(r)
 r = requests.post('http://127.0.0.1:5000/send',json={'from':'iandonlyi','to':'someofyou','message':'general kenobi'})
 print(r)
-r = requests.get('http://127.0.0.1:5000/login',params={'id':'iandonlyi'})
+r = requests.get('http://127.0.0.1:5000/login',params={'id':'iandonlyi','pass':'ipass'})
 print(r)
 r = requests.get('http://127.0.0.1:5000/receive',params={'id':'iandonlyi'})
 print(r)
