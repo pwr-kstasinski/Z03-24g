@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**_from** | **str** |  | [optional] 
+**fr** | **str** |  | [optional] 
 **to** | **str** |  | [optional] 
 **message** | **str** |  | [optional] 
 
