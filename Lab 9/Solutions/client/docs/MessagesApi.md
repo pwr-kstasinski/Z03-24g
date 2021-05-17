@@ -97,7 +97,7 @@ with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = messages_api.MessagesApi(api_client)
     message = Message(
-        _from="you",
+        fr="you",
         to="me",
         message="Hello there",
     ) # Message | Message definition

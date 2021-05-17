@@ -38,6 +38,7 @@ class UserApi(object):
         def __login(
             self,
             id,
+            _pass,
             **kwargs
         ):
             """Login user  # noqa: E501
@@ -45,11 +46,12 @@ class UserApi(object):
             This method makes a synchronous HTTP request by default. To make an
             asynchronous HTTP request, please pass async_req=True
 
-            >>> thread = api.login(id, async_req=True)
+            >>> thread = api.login(id, _pass, async_req=True)
             >>> result = thread.get()
 
             Args:
                 id (str): User id
+                _pass (str): User password
 
             Keyword Args:
                 _return_http_data_only (bool): response data without head status
@@ -98,6 +100,8 @@ class UserApi(object):
             kwargs['_host_index'] = kwargs.get('_host_index')
             kwargs['id'] = \
                 id
+            kwargs['_pass'] = \
+                _pass
             return self.call_with_http_info(**kwargs)
 
         self.login = _Endpoint(
@@ -112,9 +116,11 @@ class UserApi(object):
             params_map={
                 'all': [
                     'id',
+                    '_pass',
                 ],
                 'required': [
                     'id',
+                    '_pass',
                 ],
                 'nullable': [
                 ],
@@ -131,12 +137,16 @@ class UserApi(object):
                 'openapi_types': {
                     'id':
                         (str,),
+                    '_pass':
+                        (str,),
                 },
                 'attribute_map': {
                     'id': 'id',
+                    '_pass': 'pass',
                 },
                 'location_map': {
                     'id': 'query',
+                    '_pass': 'query',
                 },
                 'collection_format_map': {
                 }
@@ -152,6 +162,7 @@ class UserApi(object):
         def __register(
             self,
             id,
+            _pass,
             **kwargs
         ):
             """Register user  # noqa: E501
@@ -159,11 +170,12 @@ class UserApi(object):
             This method makes a synchronous HTTP request by default. To make an
             asynchronous HTTP request, please pass async_req=True
 
-            >>> thread = api.register(id, async_req=True)
+            >>> thread = api.register(id, _pass, async_req=True)
             >>> result = thread.get()
 
             Args:
                 id (str): User id
+                _pass (str): User password
 
             Keyword Args:
                 _return_http_data_only (bool): response data without head status
@@ -212,6 +224,8 @@ class UserApi(object):
             kwargs['_host_index'] = kwargs.get('_host_index')
             kwargs['id'] = \
                 id
+            kwargs['_pass'] = \
+                _pass
             return self.call_with_http_info(**kwargs)
 
         self.register = _Endpoint(
@@ -226,9 +240,11 @@ class UserApi(object):
             params_map={
                 'all': [
                     'id',
+                    '_pass',
                 ],
                 'required': [
                     'id',
+                    '_pass',
                 ],
                 'nullable': [
                 ],
@@ -245,12 +261,16 @@ class UserApi(object):
                 'openapi_types': {
                     'id':
                         (str,),
+                    '_pass':
+                        (str,),
                 },
                 'attribute_map': {
                     'id': 'id',
+                    '_pass': 'pass',
                 },
                 'location_map': {
                     'id': 'query',
+                    '_pass': 'query',
                 },
                 'collection_format_map': {
                 }

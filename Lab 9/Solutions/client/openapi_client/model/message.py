@@ -72,7 +72,7 @@ class Message(ModelNormal):
                 and the value is attribute type.
         """
         return {
-            '_from': (str,),  # noqa: E501
+            'fr': (str,),  # noqa: E501
             'to': (str,),  # noqa: E501
             'message': (str,),  # noqa: E501
         }
@@ -83,7 +83,7 @@ class Message(ModelNormal):
 
 
     attribute_map = {
-        '_from': 'from',  # noqa: E501
+        'fr': 'fr',  # noqa: E501
         'to': 'to',  # noqa: E501
         'message': 'message',  # noqa: E501
     }
@@ -134,7 +134,7 @@ class Message(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            _from (str): [optional]  # noqa: E501
+            fr (str): [optional]  # noqa: E501
             to (str): [optional]  # noqa: E501
             message (str): [optional]  # noqa: E501
         """
