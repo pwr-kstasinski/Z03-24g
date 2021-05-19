@@ -59,13 +59,19 @@ def invalid_request(message=None, status_code=400):
 @app.route('/download', methods=['GET'])
 def download_messages():
     data = request.args
-    print(data)
     if 'user_id' not in data or 'partner_id' not in data:
         return invalid_request('Necessary parameters not given')
     user = db.session.query(User).filter_by(id=data['partner_id']).first()
     user2 = db.session.query(User).filter_by(id=data['user_id']).first()
-    if user is None or user2 is None:
+    partner_id: int = int(data['partner_id'])
+    if partner_id == 0:
+        messages = Message.query.filter((Message.receiver_id == data['partner_id']))
+        message_schema = MessageSchema(many=True)
+        result = message_schema.dump(messages)
+        return jsonify(result)
+    elif user is None or user2 is None:
         return invalid_request('One of the users doesnt exist')
+
     messages = Message.query.filter(((Message.sender_id == data['user_id']) &
                                     (Message.receiver_id == data['partner_id'])) |
                                     ((Message.sender_id == data['partner_id']) &
@@ -73,15 +79,12 @@ def download_messages():
                                     ).order_by(Message.date).all()
     message_schema = MessageSchema(many=True)
     result = message_schema.dump(messages)
-    print(messages)
-    print(result)
     return jsonify(result)
 
 
 @app.route('/send', methods=['POST'])
 def send_message():
     data = request.get_json() or {}
-    print(data)
     if 'sender_id' not in data or 'receiver_id' not in data or 'message' not in data or 'date' not in data:
         return invalid_request('Any of necessary parameters not found')
     message = Message(receiver_id=data['receiver_id'], sender_id=data['sender_id'], message=data['message'],
@@ -137,7 +140,6 @@ def get_logged_users():
     user = User.query.all()
     user_schema = UserSchema(many=True)
     output = user_schema.dump(user)
-    print(output)
     return jsonify(output)
 
 
