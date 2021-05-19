@@ -246,6 +246,9 @@ class MainWindow(QMainWindow):
         self.logged_layout.addWidget(self.buttons[-1])
         self.buttons.append(QLabel('Not active'))
         self.users_layout.addWidget(self.buttons[-1])
+        self.buttons.append(QPushButton('#General'))
+        self.logged_layout.addWidget(self.buttons[-1])
+        self.buttons[-1].pressed.connect(lambda: self.select_user())
         for u in self.users:
             if u['username'] == self.nick:
                 self.id = u['id']
@@ -264,16 +267,32 @@ class MainWindow(QMainWindow):
     def select_user(self):
         self.model.clear()
         name = self.sender().text()
-        name = name.split()
-        self.partner_id = int(name[0])
-        self.partner_name = name[1]
-        messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
-        for m in messages:
-            date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
-            if m['sender_id'] == self.id:
-                self.model.add_message(USER_ME, m['message'], date, self.nick)
-            else:
-                self.message_from(m['message'], date, self.partner_name)
+        if name == '#General':
+            self.partner_name = name
+            self.partner_id = 0
+            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
+            for m in messages:
+                date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
+                if m['sender_id'] == self.id:
+                    self.model.add_message(USER_ME, m['message'], date, self.nick)
+                else:
+                    sender_name = ''
+                    for u in self.users:
+                        if m['sender_id'] == u['id']:
+                            sender_name = u['username']
+                            break
+                    self.message_from(m['message'], date, sender_name)
+        else:
+            name = name.split()
+            self.partner_id = int(name[0])
+            self.partner_name = name[1]
+            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
+            for m in messages:
+                date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
+                if m['sender_id'] == self.id:
+                    self.model.add_message(USER_ME, m['message'], date, self.nick)
+                else:
+                    self.message_from(m['message'], date, self.partner_name)
         self.messages.scrollToBottom()
 
     def refresh(self):
@@ -286,7 +305,12 @@ class MainWindow(QMainWindow):
             if m['sender_id'] == self.id:
                 self.model.add_message(USER_ME, m['message'], date, self.nick)
             else:
-                self.message_from(m['message'], date, self.partner_name)
+                sender_name = ''
+                for u in self.users:
+                    if m['sender_id'] == u['id']:
+                        sender_name = u['username']
+                        break
+                self.message_from(m['message'], date, sender_name)
         self.messages.scrollToBottom()
 
 
