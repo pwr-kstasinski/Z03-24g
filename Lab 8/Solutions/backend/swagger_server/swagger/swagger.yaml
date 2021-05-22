@@ -1,0 +1,158 @@
+openapi: 3.0.1
+info:
+  title: Server for chatting
+  description: API for chatting between the clients
+  version: "1.0"
+servers:
+- url: http://localhost:5000/
+tags:
+- name: login
+  description: Login of users
+- name: messenger
+  description: Communication between users
+paths:
+  /login:
+    post:
+      tags:
+      - login
+      summary: Login to system
+      description: Logs the user to the system using login
+      operationId: login_post
+      parameters:
+      - name: login
+        in: query
+        description: User login
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Session token
+          content:
+            text/plain:
+              schema:
+                type: number
+                example: 123908129038190283
+                x-content-type: text/plain
+        "404":
+          description: Invalid login
+          content: {}
+      x-openapi-router-controller: swagger_server.controllers.login_controller
+  /logout:
+    post:
+      tags:
+      - login
+      summary: Logout from the system
+      operationId: logout_post
+      parameters:
+      - name: token
+        in: query
+        description: Token
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Logout successful
+      x-openapi-router-controller: swagger_server.controllers.login_controller
+  /receivers:
+    get:
+      tags:
+      - messenger
+      summary: List all receivers
+      description: Lists all messages receivers in the system
+      operationId: receivers_get
+      responses:
+        "200":
+          description: List of receivers
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "List of receivers, seperated by ;"
+                example: maciej;mateusz;grzegorz;łukasz
+                x-content-type: text/plain
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+  /send:
+    post:
+      tags:
+      - messenger
+      summary: Sends message
+      description: Sends message to the server
+      operationId: send_post
+      parameters:
+      - name: token
+        in: query
+        description: User token
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: receiver
+        in: query
+        description: Message receiver login
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: message
+        in: query
+        description: Message to send
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Sent message to client
+        "404":
+          description: Receipient not found!
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+  /receive:
+    get:
+      tags:
+      - messenger
+      summary: Receives messages
+      description: Receivies all messages from server
+      operationId: receive_get
+      parameters:
+      - name: token
+        in: query
+        description: User token
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: nadawca
+        in: query
+        description: "Message sender, optional"
+        required: false
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: All messages from server or from message sender
+          content:
+            application/json:
+              schema:
+                description: Dict entry with key as user login and list of messages
+                example: "{12301239:['test','test'], 3129412:['test2', 'test3']"
+                x-content-type: application/json
+        "201":
+          description: No new messages!
+        "404":
+          description: Sender not found!
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+components: {}
+
