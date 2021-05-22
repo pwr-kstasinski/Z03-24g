@@ -22,7 +22,7 @@ paths:
       - name: login
         in: query
         description: User login
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -33,8 +33,7 @@ paths:
           content:
             text/plain:
               schema:
-                type: number
-                example: 123908129038190283
+                example: "123908129038190283"
                 x-content-type: text/plain
         "404":
           description: Invalid login
@@ -50,7 +49,7 @@ paths:
       - name: token
         in: query
         description: Token
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -88,15 +87,15 @@ paths:
       - name: token
         in: query
         description: User token
-        required: false
+        required: true
         style: form
         explode: true
         schema:
-          type: number
+          type: integer
       - name: receiver
         in: query
         description: Message receiver login
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -104,7 +103,7 @@ paths:
       - name: message
         in: query
         description: Message to send
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -114,6 +113,8 @@ paths:
           description: Sent message to client
         "404":
           description: Receipient not found!
+        "400":
+          description: Invalid arguments
       x-openapi-router-controller: swagger_server.controllers.messenger_controller
   /receive:
     get:
@@ -126,16 +127,15 @@ paths:
       - name: token
         in: query
         description: User token
-        required: false
+        required: true
         style: form
         explode: true
         schema:
-          type: number
-      - name: nadawca
+          type: integer
+      - name: sender
         in: query
         description: "Message sender, optional"
         required: false
-        allowEmptyValue: true
         style: form
         explode: true
         schema:
@@ -146,13 +146,13 @@ paths:
           content:
             application/json:
               schema:
-                description: Dict entry with key as user login and list of messages
-                example: "{12301239:['test','test'], 3129412:['test2', 'test3']"
+                description: List of dict entries
+                example: "[{\"sender\": \"maciej\", \"receiver\": \"grzegorz\", \"message\": \"TEST\", \"send_time\": \"2021-05-17 15:16:21.207167\"}]"
                 x-content-type: application/json
         "201":
           description: No new messages!
         "404":
-          description: Sender not found!
+          description: User not found!
       x-openapi-router-controller: swagger_server.controllers.messenger_controller
 components: {}
 

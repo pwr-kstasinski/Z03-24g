@@ -17,7 +17,7 @@ class TestMessengerController(BaseTestCase):
 
         Receives messages
         """
-        query_string = [('token', 1.2),
+        query_string = [('token', 56),
                         ('nadawca', 'nadawca_example')]
         response = self.client.open(
             '//receive',
@@ -42,7 +42,7 @@ class TestMessengerController(BaseTestCase):
 
         Sends message
         """
-        query_string = [('token', 1.2),
+        query_string = [('token', 56),
                         ('receiver', 'receiver_example'),
                         ('message', 'message_example')]
         response = self.client.open(
