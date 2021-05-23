@@ -38,6 +38,19 @@ class TestLoginController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_register_post(self):
+        """Test case for register_post
+
+        Register new login in system
+        """
+        query_string = [('login', 'login_example')]
+        response = self.client.open(
+            '//register',
+            method='POST',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     import unittest

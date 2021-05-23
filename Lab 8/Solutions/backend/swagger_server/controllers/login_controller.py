@@ -24,10 +24,8 @@ def login_post(login=None):
         return user.login_to_system()
 
 
-def logout_post(token=None):  # noqa: E501
+def logout_post(token=None):
     """Logout from the system
-
-     # noqa: E501
 
     :param token: Token
     :type token: str
@@ -41,3 +39,21 @@ def logout_post(token=None):  # noqa: E501
         return 'not_found', 404
     user.logout()
     return 'logged_out'
+
+def register_post(login): 
+    """Register new login in system
+
+    Register new user in system by creating new login
+
+    :param login: New user login (must be unique)
+    :type login: str
+
+    :rtype: None
+    """
+    if login is None:
+        return 'invalid_login', 400
+    result = GLOBAL_SERVER.add_client(login)
+    if result is False:
+        return 'already_exists', 409
+
+    return 'user_created', 201
