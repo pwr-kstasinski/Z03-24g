@@ -74,7 +74,7 @@ class Message(ModelNormal):
         return {
             'fr': (str,),  # noqa: E501
             'to': (str,),  # noqa: E501
-            'message': (str,),  # noqa: E501
+            'msg': (str,),  # noqa: E501
         }
 
     @cached_property

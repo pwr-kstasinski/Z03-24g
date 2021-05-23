@@ -89,7 +89,7 @@ class GUI:
         self.Window.title("CHATROOM")
         self.Window.resizable(width = False,
                               height = False)
-        self.Window.configure(width = 470,
+        self.Window.configure(width = 720,
                               height = 550,
                               bg = "#17202A")
         
@@ -117,7 +117,18 @@ class GUI:
                              padx = 5,
                              pady = 5)
         self.textCons.place(relheight = 0.745,
-                            relwidth = 1, 
+                            relwidth = 0.7, 
+                            rely = 0.08)
+        self.userCons = Text(self.Window,
+                             width = 20, 
+                             height = 2,
+                             bg = "#17202A",
+                             fg = "#EAECEE",
+                             font = "Helvetica 14", 
+                             padx = 5,
+                             pady = 5)
+        self.userCons.place(relheight = 0.745,
+                            relwidth = 0.3, 
                             rely = 0.08)
         
         self.labelBottom = Label(self.Window,
@@ -130,7 +141,7 @@ class GUI:
                               bg = "#2C3E50",
                               fg = "#EAECEE",
                               font = "Helvetica 13")
-        self.entryMsg.place(relwidth = 0.74,
+        self.entryMsg.place(relwidth = 0.68,
                             relheight = 0.04,
                             rely = 0.008,
                             relx = 0.08)
@@ -140,7 +151,7 @@ class GUI:
                               bg = "#2C3E50",
                               fg = "#EAECEE",
                               font = "Helvetica 13")
-        self.entryTarget.place(relwidth = 0.64,
+        self.entryTarget.place(relwidth = 0.56,
                             relheight = 0.025,
                             rely = 0.05,
                             relx = 0.18)
