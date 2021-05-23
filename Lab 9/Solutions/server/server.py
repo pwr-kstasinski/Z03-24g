@@ -3,6 +3,7 @@ from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from dataclasses import dataclass
+from flask_swagger import swagger
 
 ser = Flask(__name__)
 ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
@@ -24,9 +25,9 @@ class messages(db.Model):
     to:str
     msg:str
     id = db.Column("id",db.Integer,primary_key=True)
-    fr = db.Column("from",db.String(30))
+    fr = db.Column("fr",db.String(30))
     to = db.Column("to",db.String(30))
-    msg = db.Column("message",db.String(300))
+    msg = db.Column("msg",db.String(300))
 
 def nuser(login,password):
     return users(login=login,password=password,lastQuery=datetime.datetime.now())
@@ -65,13 +66,13 @@ def download_messages():
                 items:
                     type: "object"
                     properties:
-                        from:
+                        fr:
                             type: "string"
                             example: "you"
                         to:
                             type: "string"
                             example: "me"
-                        message:
+                        msg:
                             type: "string"
                             example: "Hello there"
     """
@@ -101,13 +102,13 @@ def accept_message():
         schema:
             type: "object"
             properties:
-                from:
+                fr:
                     type: "string"
                     example: "you"
                 to:
                     type: "string"
                     example: "me"
-                message:
+                msg:
                     type: "string"
                     example: "Hello there"
     responses:
@@ -141,6 +142,11 @@ def register_user():
         description: "User id"
         required: true
         type: "string"
+      - in: "query"
+        name: "pass"
+        description: "User password"
+        required: true
+        type: "string"
     responses:
         "400":
             description: "Invalid input"
@@ -171,6 +177,11 @@ def login_user():
         description: "User id"
         required: true
         type: "string"
+      - in: "query"
+        name: "pass"
+        description: "User password"
+        required: true
+        type: "string"
     responses:
         "400":
             description: "Invalid input"
@@ -198,14 +209,19 @@ def get_active_users():
     responses:
         "200":
             description: "Succesfully logged in"
+            schema:
+                type: "array"
+                items:
+                    type: "string"
+                    example: "thatsme"
     """
     timeTreshold = datetime.datetime.now() - datetime.timedelta(seconds=5)
-    ausrs = users.query.filter(users.lastQuery>timeTreshold)
-    return "OK"
+    ausrs = users.query.filter(users.lastQuery>timeTreshold).all()
+    return jsonify([u.login for u in ausrs])
 
 @ser.route("/api",methods=["GET"])
 def render_api():
-    return render_template("index.html")
+    return jsonify(swagger(ser))
 
 if __name__ == "__main__":
     db.create_all()
