@@ -6,7 +6,7 @@
 # raise a `RecursionError`.
 # In order to avoid this, import only the API that you directly need like:
 #
-#   from .api.messages_api import MessagesApi
+#   from .api.default_api import DefaultApi
 #
 # or import this package, but before doing it, use:
 #
@@ -14,5 +14,4 @@
 #   sys.setrecursionlimit(n)
 
 # Import APIs into API package:
-from openapi_client.api.messages_api import MessagesApi
-from openapi_client.api.user_api import UserApi
+from openapi_client.api.default_api import DefaultApi
