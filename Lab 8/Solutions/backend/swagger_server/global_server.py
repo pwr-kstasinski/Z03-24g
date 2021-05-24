@@ -14,9 +14,6 @@ class Client:
     def logout(self):
         self.token = 0
 
-    def DEBUG_TO_DELETE(self, id):
-        self.token = id
-
 
 class Message:
     def __init__(self, sender, receiver, message):
@@ -52,15 +49,27 @@ class GlobalServer:
         sender = self.get_client_token(token)
         if sender is None:
             return 1
-        target = self.get_client(receiver)
-        if target is None:
-            return 2
-        if receiver in self.messages.keys():
-            list_mess = self.messages[receiver]
+        if receiver is not None:
+            target = self.get_client(receiver)
+            if target is None:
+                return 2
+            if receiver in self.messages.keys():
+                list_mess = self.messages[receiver]
+            else:
+                list_mess = []
+            list_mess.append(Message(sender.login, receiver, message))
+            self.messages[receiver] = list_mess
         else:
-            list_mess = []
-        list_mess.append(Message(sender.login, target.login, message))
-        self.messages[receiver] = list_mess
+            for client in self.clients:
+                receiver = client.login
+                if receiver != sender.login:
+                    if receiver in self.messages.keys():
+                        list_mess = self.messages[receiver]
+                    else:
+                        list_mess = []
+                    list_mess.append(Message(sender.login, receiver, message))
+                    self.messages[receiver] = list_mess
+
         return 0
 
     def get_all_messages(self, token: int, target_login: str = None):
@@ -83,10 +92,3 @@ class GlobalServer:
 
 
 GLOBAL_SERVER = GlobalServer()
-
-GLOBAL_SERVER.add_client("maciej")
-GLOBAL_SERVER.add_client("grzegorz")
-GLOBAL_SERVER.add_client("lukasz")
-
-GLOBAL_SERVER.get_client("maciej").DEBUG_TO_DELETE(10)
-GLOBAL_SERVER.get_client("grzegorz").DEBUG_TO_DELETE(12)

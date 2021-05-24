@@ -117,8 +117,8 @@ paths:
           type: integer
       - name: receiver
         in: query
-        description: Message receiver login
-        required: true
+        description: Message receiver login (leave blank if for all users)
+        required: false
         style: form
         explode: true
         schema:

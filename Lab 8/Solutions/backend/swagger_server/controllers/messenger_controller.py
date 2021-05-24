@@ -40,10 +40,10 @@ def receivers_get():
     return ";".join(GLOBAL_SERVER.list_clients())
 
 
-def send_post(token=None, receiver=None, message=None):  # noqa: E501
+def send_post(token=None, receiver=None, message=None):
     """Sends message
 
-    Sends message to the server # noqa: E501
+    Sends message to the server
 
     :param token: User token
     :type token: int
@@ -54,7 +54,7 @@ def send_post(token=None, receiver=None, message=None):  # noqa: E501
 
     :rtype: None
     """
-    if message is None or receiver is None or token is None:
+    if message is None or token is None:
         return "invalid_arguments", 400
     response = GLOBAL_SERVER.send_message(int(token), receiver, message)
     if response == 2:
