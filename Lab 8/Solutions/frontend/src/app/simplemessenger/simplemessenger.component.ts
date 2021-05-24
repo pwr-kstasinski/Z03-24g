@@ -25,6 +25,7 @@ export class SimplemessengerComponent implements OnInit {
   actualToken: number = NaN
 
   messageList: any[] = []
+  usersList: string = ""
 
   constructor(private loginService: LoginService, private messengerService: MessengerService) {
 
@@ -75,6 +76,20 @@ export class SimplemessengerComponent implements OnInit {
         list.forEach((value: any) => {
           this.messageList.push(value)
         })
+
+      },
+      (err) => {
+        console.log(err)
+      },
+      () => {
+        console.log("completed")
+      }
+    )
+
+    this.messengerService.receiversGet().subscribe(
+      (response) => {
+        console.log(response)
+        this.usersList = response
 
       },
       (err) => {

@@ -22,7 +22,7 @@ Aktualny token: {{actualToken}}
 <h3>Chat</h3>
 <div>
   <ng-container *ngIf = "actualToken != 0; else notLoggedIn">
-    <input type="button" value="Pobierz nowe wiadomości" (click)="refresh()">
+    <input type="button" value="Pobierz nowe wiadomości i odśwież listę odbiorców" (click)="refresh()">
   </ng-container>
   <ng-template #notLoggedIn>
     <p>Zaloguj się, aby zacząć korzystać z chatu</p>
@@ -50,3 +50,5 @@ Odbiorca:
 {{sendSuccess}}
 {{sendError}}
 
+<h4>Lista użytkowników:</h4>
+{{usersList}}
