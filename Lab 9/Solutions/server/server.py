@@ -4,23 +4,17 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 from dataclasses import dataclass
 from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 
 ser = Flask(__name__)
 ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
 db = SQLAlchemy(ser)
-messageID = 0
-
-def getNextMessageID():
-    global messageID
-    messageID+=1
-    return messageID
 
 def nmessage(fr,to,msg):
-    return messages(id=getNextMessageID(),fr=fr,to=to,msg=msg)
+    return messages(fr=fr,to=to,msg=msg)
 
 @dataclass
 class messages(db.Model):
-    id:int
     fr:str
     to:str
     msg:str
@@ -119,16 +113,22 @@ def accept_message():
     """
     data = request.get_json() or {}
     print(data)
-    if "from" not in data or "to" not in data or "message" not in data:
+    if "fr" not in data or "to" not in data or "msg" not in data:
         return bad_request("Any of necessary parameters from/to/message not found")
-    user = users.query.filter_by(login=data["to"]).first()
-    if not user:
-        return bad_request("Receiver's ID not registered")
-    user = users.query.filter_by(login=data["from"]).first()
+    user = users.query.filter_by(login=data["fr"]).first()
     if not user:
         return bad_request("Sender's ID not registered")
     user.lastQuery = datetime.datetime.now()
-    db.session.add(nmessage(data["from"],data["to"],data["message"]))###
+    if not data["to"]:
+        for x in users.query.all():
+            if x.login != data["fr"]:
+                db.session.add(nmessage(data["fr"],x.login,data["msg"]))
+    else:
+        user = users.query.filter_by(login=data["to"]).first()
+        if not user:
+            return bad_request("Receiver's ID not registered")
+        db.session.add(nmessage(data["fr"],data["to"],data["msg"]))
+    
     db.session.commit()
     return "OK"
 
@@ -221,8 +221,16 @@ def get_active_users():
 
 @ser.route("/api",methods=["GET"])
 def render_api():
-    return jsonify(swagger(ser))
+    swag = swagger(ser)
+    swag['host'] = "localhost:5000"
+    return jsonify(swag)
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    "/docs",
+    "http://localhost:5000/api"
+)
 
 if __name__ == "__main__":
     db.create_all()
+    ser.register_blueprint(swaggerui_blueprint)
     ser.run(debug=True, host="0.0.0.0")

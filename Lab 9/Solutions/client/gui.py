@@ -5,15 +5,18 @@ from tkinter import font
 from tkinter import ttk
 from openapi_client.api.messages_api import MessagesApi
 from openapi_client.api.user_api import UserApi
+from openapi_client.api.default_api import DefaultApi
 from openapi_client.model.message import Message
 
 
 msgapi = MessagesApi()
 userapi = UserApi()
+defapi = DefaultApi()
 messages = []
+USER_REFRESH_DELAY = 3
 
 def createMessage(fr,to,msg):
-    return Message(_from=fr,to=to,message=msg)
+    return Message(fr=fr,to=to,msg=msg)
 
 class GUI:
     def __init__(self):
@@ -128,7 +131,8 @@ class GUI:
                              padx = 5,
                              pady = 5)
         self.userCons.place(relheight = 0.745,
-                            relwidth = 0.3, 
+                            relwidth = 0.3,
+                            relx = 0.7,
                             rely = 0.08)
         
         self.labelBottom = Label(self.Window,
@@ -190,7 +194,7 @@ class GUI:
     def addMSG(self,msg):
         self.textCons.config(state = NORMAL)
         self.textCons.insert(END,
-                                msg._from+": "+msg.message+"\n\n")
+                                msg.fr+": "+msg.msg+"\n\n")
             
         self.textCons.config(state = DISABLED)
         self.textCons.see(END)
@@ -204,12 +208,24 @@ class GUI:
         self.entryMsg.delete(0, END)
   
     def receive(self):
+        ct=0
         while(True):
-            received = msgapi.receive(id=self.me)
+            #received = defapi.receive(id=self.me)
+            received = defapi.receive_get(id=self.me)
             messages.extend(received)
             for x in received:
                 self.addMSG(x)
             time.sleep(2)
-
+            ct-=1
+            if ct<=0:
+                usrs = defapi.logged_get()
+                self.textCons.config(state = NORMAL)
+                self.userCons.delete('1.0', END)
+                for u in usrs:
+                    self.userCons.insert(END,u+"\n")
+                    self.textCons.config(state = DISABLED)
+                    self.textCons.see(END)
+                ct = USER_REFRESH_DELAY
+                
 if __name__ == "__main__":
     g = GUI()

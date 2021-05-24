@@ -25,7 +25,4 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_default_api.py
-test/test_inline_object.py
-test/test_inline_response200.py
 tox.ini
