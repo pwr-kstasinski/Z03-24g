@@ -108,7 +108,8 @@ export class SimplemessengerComponent implements OnInit {
     {
       this.messengerService.sendPost(this.actualToken, message).subscribe(
         (response) => {
-
+          let newMsg = {sender: 'ja -> wszyscy', message: message}
+          this.messageList.push(newMsg)
           this.sendSuccess = "Wiadomość wysłano"
         },
         (err) => {
@@ -123,7 +124,8 @@ export class SimplemessengerComponent implements OnInit {
     {
       this.messengerService.sendPost(this.actualToken, message, receiverLogin).subscribe(
         (response) => {
-
+          let newMsg = {sender: 'ja -> ' + receiverLogin, message: message}
+          this.messageList.push(newMsg)
           this.sendSuccess = "Wiadomość wysłano"
         },
         (err) => {
