@@ -1,6 +1,6 @@
 # openapi_client.DefaultApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://localhost:5000*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -23,10 +23,10 @@ import time
 import openapi_client
 from openapi_client.api import default_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 
@@ -81,10 +81,10 @@ import time
 import openapi_client
 from openapi_client.api import default_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 
@@ -146,10 +146,10 @@ import openapi_client
 from openapi_client.api import default_api
 from openapi_client.model.inline_response200 import InlineResponse200
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 
@@ -209,10 +209,10 @@ import time
 import openapi_client
 from openapi_client.api import default_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 
@@ -274,10 +274,10 @@ import openapi_client
 from openapi_client.api import default_api
 from openapi_client.model.inline_object import InlineObject
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 

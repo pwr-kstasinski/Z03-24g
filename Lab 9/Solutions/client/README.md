@@ -52,10 +52,10 @@ from pprint import pprint
 from openapi_client.api import default_api
 from openapi_client.model.inline_object import InlineObject
 from openapi_client.model.inline_response200 import InlineResponse200
-# Defining the host is optional and defaults to http://localhost
+# Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost"
+    host = "http://localhost:5000"
 )
 
 
@@ -75,7 +75,7 @@ with openapi_client.ApiClient(configuration) as api_client:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://localhost:5000*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
