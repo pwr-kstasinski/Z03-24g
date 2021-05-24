@@ -9,4 +9,5 @@
 # import sys
 # sys.setrecursionlimit(n)
 
-from openapi_client.model.message import Message
+from openapi_client.model.inline_object import InlineObject
+from openapi_client.model.inline_response200 import InlineResponse200
