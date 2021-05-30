@@ -2,6 +2,8 @@ from flask import Flask,request,jsonify,render_template
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import websockets
+import asyncio
 from dataclasses import dataclass
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -15,13 +17,18 @@ def nmessage(fr,to,msg):
 
 @dataclass
 class messages(db.Model):
+    id:int
     fr:str
     to:str
     msg:str
+    sent:datetime.datetime
+    read:bool
     id = db.Column("id",db.Integer,primary_key=True)
     fr = db.Column("fr",db.String(30))
     to = db.Column("to",db.String(30))
     msg = db.Column("msg",db.String(300))
+    sent = db.Column("sent",db.DateTime)
+    read = db.Column("read",db.Boolean,default=False)
 
 def nuser(login,password):
     return users(login=login,password=password,lastQuery=datetime.datetime.now())
@@ -219,6 +226,63 @@ def get_active_users():
     ausrs = users.query.filter(users.lastQuery>timeTreshold).all()
     return jsonify([u.login for u in ausrs])
 
+@ser.route("/read",methods=["PUT"])
+def mark_message_read():
+    """Endpoint for marking messages as read
+    ---
+      - in: "query"
+        name: "id"
+        description: "Id of message to mark as read"
+        required: true
+        type: "int"
+    responses:
+        "400":
+            description: "Invalid input"
+        "200":
+            description: "Succesfully marked as read"
+    """
+    
+    data = request.args
+    if "id" not in data:
+        return bad_request("Necessary parameter id not given")
+    msg = messages.query.filter_by(id=data["id"]).first()
+    msg.read = True
+    return "OK"
+
+@ser.route("/unread",methods=["GET"])
+def get_unread_messages_count():
+    """Endpoint for getting active users
+    ---
+      - in: "query"
+        name: "fr"
+        description: "Id of user who sent messages"
+        required: true
+        type: "string"
+      - in: "query"
+        name: "id"
+        description: "Current user id"
+        required: true
+        type: "string"
+    responses:
+        "200":
+            description: "Number of unread messages in that conversation"
+            schema:
+                type: "int"
+                example: "10"
+    """
+    data = request.args
+    if "id" not in data:
+        return bad_request("Necessary parameter id not given")
+    if "fr" not in data:
+        return bad_request("Necessary parameter fr not given")
+    uid=data["id"]
+    user = users.query.filter_by(login=data["id"]).first()
+    if not user:
+        return bad_request("ID not registered")
+    result = messages.query.filter_by(to=uid,fr=data["fr"])
+    user.lastQuery = datetime.datetime.now()
+    return result.count()
+
 @ser.route("/api",methods=["GET"])
 def render_api():
     swag = swagger(ser)
@@ -230,7 +294,11 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     "http://localhost:5000/api"
 )
 
+async def autoresponse(websocket, path):
+    await websocket.send({"code":"usrlog"})
+
 if __name__ == "__main__":
     db.create_all()
     ser.register_blueprint(swaggerui_blueprint)
     ser.run(debug=True, host="0.0.0.0")
+    start_server = websockets.serve(autoresponse, "localhost", 5001)
