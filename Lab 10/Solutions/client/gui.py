@@ -1,5 +1,7 @@
 import threading
 import time
+import websockets
+import asyncio
 from tkinter import *
 from tkinter import font
 from tkinter import ttk
@@ -14,6 +16,7 @@ userapi = UserApi()
 defapi = DefaultApi()
 messages = []
 USER_REFRESH_DELAY = 3
+wsuri = "ws://localhost:5001"
 
 def createMessage(fr,to,msg):
     return Message(fr=fr,to=to,msg=msg)
@@ -85,6 +88,7 @@ class GUI:
         self.layout(name)
           
         rcv = threading.Thread(target=self.receive)
+        asyncio.get_event_loop().run_until_complete(self.listen())
         rcv.start()
   
     def layout(self,name):
@@ -206,7 +210,31 @@ class GUI:
         msgapi.send(newmsg)
         self.addMSG(newmsg)
         self.entryMsg.delete(0, END)
-  
+
+    def refreshUsers(self):
+        pass
+    def refreshUsersAndSort(self):
+        print("received")
+        pass
+    def refreshChatOrUnread(self):
+        pass
+    def refreshRead(self):
+        pass
+
+    async def listen(self):
+        with websockets.connect(wsuri) as websocket:
+            response = await websocket.recv()
+            code = response["code"]
+            print(code)
+            def codedict(val):
+                return {
+                    "usrreg":self.refreshUsers,
+                    "usrlog":self.refreshUsersAndSort,
+                    "msgrec":self.refreshChatOrUnread,
+                    "msgrea":self.refreshRead
+                }[val]
+
+    
     def receive(self):
         ct=0
         while(True):
