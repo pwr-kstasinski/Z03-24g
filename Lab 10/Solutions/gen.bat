@@ -1,0 +1,1 @@
+java -jar "C:\Users\Jarom\codespace\OAPIGEN\openapi-generator-cli.jar" generate -g python --minimal-update -i "C:\Users\Jarom\Z03-24g\Lab 9\Solutions\server\api.yaml" -o "C:\Users\Jarom\Z03-24g\Lab 9\Solutions\client"
