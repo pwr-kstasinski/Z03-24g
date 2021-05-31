@@ -2,18 +2,30 @@ from flask import Flask,request,jsonify,render_template
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import json
 import websockets
 import asyncio
+import multiprocessing
 from dataclasses import dataclass
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 
 ser = Flask(__name__)
 ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
+ser.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
 db = SQLAlchemy(ser)
+wsbuffer = []
 
 def nmessage(fr,to,msg):
     return messages(fr=fr,to=to,msg=msg)
+
+def sendToWS(data):
+    wsbuffer.append(data)
+
+async def wsLoop(websocket, path):
+    while wsbuffer:
+        cd = wsbuffer.pop(0)
+        await websocket.send(cd)
 
 @dataclass
 class messages(db.Model):
@@ -38,6 +50,7 @@ class users(db.Model):
     login = db.Column("id",db.String(30),primary_key=True)
     password = db.Column("password",db.String(30))
     lastQuery = db.Column("lastQuery",db.DateTime)
+    active = db.Column("active",db.Boolean,default=False)
 
 def bad_request(message=None,status_code=400):
     payload = {'error': HTTP_STATUS_CODES.get(status_code, 'Unknown error')}
@@ -135,8 +148,8 @@ def accept_message():
         if not user:
             return bad_request("Receiver's ID not registered")
         db.session.add(nmessage(data["fr"],data["to"],data["msg"]))
-    
     db.session.commit()
+    sendToWS({"code":"msgrec","to":data["to"]})
     return "OK"
 
 @ser.route("/register",methods=["POST"])
@@ -172,6 +185,7 @@ def register_user():
     usr = nuser(data["id"],data["pass"])
     db.session.add(usr)
     db.session.commit()
+    sendToWS({"code":"usrreg","uid":uid})
     return "OK"
 
 @ser.route("/login",methods=["GET"])
@@ -206,7 +220,37 @@ def login_user():
     if not user:
         return bad_request("ID or password wrong")
     user.lastQuery = datetime.datetime.now()
+    user.active = True
     db.session.commit()
+    sendToWS({"code":"usrlog","uid":uid})
+    return "OK"
+
+@ser.route("/logout",methods=["GET"])
+def logout_user():
+    """Endpoint for user logout
+    ---
+    parameters:
+      - in: "query"
+        name: "id"
+        description: "User id"
+        required: true
+        type: "string"
+    responses:
+        "400":
+            description: "Invalid input"
+        "200":
+            description: "Succesfully logged out"
+    """
+    data = request.args
+    if "id" not in data:
+        return bad_request("Necessary parameter id not given")
+    uid = data["id"]
+    user = users.query.filter_by(login=uid).first()
+    if not user:
+        return bad_request("Wrong ID")
+    user.active = True
+    db.session.commit()
+    sendToWS({"code":"usrlog","uid":uid})
     return "OK"
 
 @ser.route("/logged",methods=["GET"])
@@ -223,7 +267,7 @@ def get_active_users():
                     example: "thatsme"
     """
     timeTreshold = datetime.datetime.now() - datetime.timedelta(seconds=5)
-    ausrs = users.query.filter(users.lastQuery>timeTreshold).all()
+    ausrs = users.query.filter(users.active==True).all()
     return jsonify([u.login for u in ausrs])
 
 @ser.route("/read",methods=["PUT"])
@@ -294,11 +338,29 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     "http://localhost:5000/api"
 )
 
-async def autoresponse(websocket, path):
-    await websocket.send({"code":"usrlog"})
+async def respond(websocket, path):
+    while True:
+        message = json.dumps({"code":"usrlog","uid":"arg"})
+        await websocket.send(message)
+        await asyncio.sleep(3)
 
-if __name__ == "__main__":
+def runFlask():
     db.create_all()
     ser.register_blueprint(swaggerui_blueprint)
-    ser.run(debug=True, host="0.0.0.0")
-    start_server = websockets.serve(autoresponse, "localhost", 5001)
+    ser.run(debug=True, host="localhost")
+
+def runWebsockets():
+    try:
+        start_server = websockets.serve(respond, "localhost", 6000)
+    finally:
+        pass
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
+
+if __name__ == "__main__":
+    p_flask = multiprocessing.Process(target=runFlask)
+    p_ws = multiprocessing.Process(target=runWebsockets)
+    p_flask.start()
+    p_ws.start()
+    p_flask.join()
+    p_ws.join()
