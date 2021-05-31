@@ -71,6 +71,8 @@ class ServerConnection(threading.Thread):
                     self.server.api_register_user(self,object)
                 if(action=="getUsers"):
                     self.server.api_get_users(self,object)
+                if(action=="unredCount"):
+                    self.server.api_unred_count(self,object)
                 if(action=="messageHistory"):
                     self.server.api_message_history(self,object)
                 if(action=="recieve"):

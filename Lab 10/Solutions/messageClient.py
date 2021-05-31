@@ -177,14 +177,14 @@ class Gui(tk.Frame):
         i=0
         self.userList=[]
         while(res[i]!=None):
-            self.userList.append((res[i]["userId"],res[i]["active"],3))
-            status="passive"
+            self.userList.append((res[i]["userId"],res[i]["active"],res[i]["count"]))
+            status="      passive"
             if(self.userList[-1][1]):
-                status="active"
-            unred=""
+                status="      \tactive"
+            unred=" "
             if(self.userList[-1][2]>0):
-                unred=f"{self.userList[-1][2]} new"
-            user=(self.userList[-1][0],status,unred)
+                unred=f"      ({self.userList[-1][2]} new)"
+            user=self.userList[-1][0]+status+unred
             self.selectUserListbox.insert(i+2,user)
             i+=1
         self.userListFrame.update()
@@ -268,13 +268,13 @@ class Gui(tk.Frame):
         res.append(None)
         j=0
         while(res[j]!=None):
-            if(res[j]["srcId"]==self.dstUserId or res[j]["red"]):
+            if(res[j]["dstId"]==self.dstUserId or res[j]["srcId"]==self.dstUserId or res[j]["red"]):
                 column=0
                 if(res[j]["srcId"]==self.userId):
                     column=1
-                timestamp=res[j]["time"]
+                timestamp=res[j]["time"]+", red"
                 self.addMsg(res[j]["msg"],timestamp,column)
-                if(not res[j]["red"]):
+                if((not res[j]["red"]) and (res[j]["dstId"]==self.userId) ):        #oznacza wszystko jako odczytane przy zmianie chatu
                     data={"userId":self.userId,"password":self.userPass
                         ,"srcId":self.dstUserId,"dstId":self.userId,"time":res[j]["time"]}
                     data={"action":"markRed","data":data}
@@ -295,7 +295,8 @@ class Gui(tk.Frame):
             ,"time":getTime()}
             data={"action":"send","data":data}
             self.conn.send(data)
-        self.addMsg(self.msgEntry.get(),getTime(),1)
+        timestamp=getTime()+", unred"
+        self.addMsg(self.msgEntry.get(),timestamp,1)
         self.msgEntry.delete(0,1000)
         self.msgEntry.update()
 

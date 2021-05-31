@@ -113,6 +113,7 @@ class Server():
             data="Registered successfully"
             data={"action":"register","data":data}
             sc.send(data)
+            self.connectionsGetUsers()
 
 
     def api_login_user(self,sc,data):
@@ -144,10 +145,11 @@ class Server():
         query=db.update(users).values(active = True).where(users.columns.id==id)
         resultProxy = connection.execute(query)
         self.connections[data["userId"]]=sc
+        #print(self.connections.keys())
         data="Login successfull"
         data={"action":"login","data":data}
         sc.send(data)
-
+        self.connectionsGetUsers()
 
     def api_logout_user(self,sc,data):
         id=data["userId"]
@@ -160,10 +162,11 @@ class Server():
         connection = engine.connect()
         query=db.update(users).values(active = False).where(users.columns.id==id)
         resultProxy = connection.execute(query)
-        self.connections.pop([data["userId"]])
+        self.connections.pop(data["userId"])
         data="Logout successfull"
         data={"action":"logout","data":data}
         sc.send(data)
+        self.connectionsGetUsers()
 
 
     def api_get_users(self,sc,data):
@@ -173,7 +176,24 @@ class Server():
         resultSet = resultProxy.fetchall()
         res=[]
         for u in resultSet:
-            res.append({"userId":u[0],"active":u[2]})
+            query=db.select([messages])
+            query=query.where(db.and_(messages.columns.red == False
+                , db.and_(messages.columns.dstId == data["userId"],messages.columns.srcId == u[0])))
+            resultProxy = connection.execute(query)
+            count = len(resultProxy.fetchall())
+            res.append({"userId":u[0],"active":u[2],"count":count})
+        data={"action":"getUsers","data":res}
+        sc.send(data)
+
+
+    def api_unred_count(self,sc,data):
+        connection = engine.connect()
+        query=db.select([messages])
+        query=query.where(db.and_(messages.columns.red == False
+            , db.and_(messages.columns.dstId == data["userId"],messages.columns.srcId == data["srcId"])))
+        resultProxy = connection.execute(query)
+        resultSet = resultProxy.fetchall()
+        res=len(resultSet)
         data={"action":"getUsers","data":res}
         sc.send(data)
 
@@ -187,9 +207,9 @@ class Server():
 
         connection = engine.connect()
         query=db.select([messages])
-        query=query.where(db.and_(messages.columns.red == True
-            , db.or_(db.and_(messages.columns.dstId == data["userId"],messages.columns.srcId == data["chatId"])
-            ,db.and_(messages.columns.dstId == data["chatId"],messages.columns.srcId == data["userId"]))))
+        query=query.where(db.or_(db.and_(messages.columns.red == True
+            ,messages.columns.dstId == data["userId"],messages.columns.srcId == data["chatId"])
+            ,db.and_(messages.columns.dstId == data["chatId"],messages.columns.srcId == data["userId"])))
         resultProxy = connection.execute(query)
         resultSet = resultProxy.fetchall()
 
@@ -245,6 +265,7 @@ class Server():
         data="marked as red"
         data={"action":"markRed","data":data}
         sc.send(data)
+        self.connectionsGetUsers()
 
 
     def api_send(self,sc,data):
@@ -267,6 +288,7 @@ class Server():
         data="message send"
         data={"action":"send","data":data}
         sc.send(data)
+        self.connectionsGetUsers()
 
 
     def api_send_everyone(self,sc,data):
@@ -289,6 +311,25 @@ class Server():
         data="messages send"
         data={"action":"sendEveryone","data":data}
         sc.send(data)
+        self.connectionsGetUsers()
+
+
+    def connectionsGetUsers(self):
+        connection = engine.connect()
+        query=db.select([users])
+        resultProxy = connection.execute(query)
+        resultSet = resultProxy.fetchall()
+        for usrc in self.connections.keys():
+            res=[]
+            for u in resultSet:
+                query=db.select([messages])
+                query=query.where(db.and_(messages.columns.red == False
+                    , db.and_(messages.columns.dstId == usrc,messages.columns.srcId == u[0])))
+                resultProxy = connection.execute(query)
+                count = len(resultProxy.fetchall())
+                res.append({"userId":u[0],"active":u[2],"count":count})
+            data={"action":"getUsers","data":res}
+            self.connections[usrc].send(data)
 
 
 Server().mainLoop()
