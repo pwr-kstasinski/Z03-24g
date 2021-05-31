@@ -302,6 +302,7 @@ Retrieve Membership items from the Conversation memberships \"to-many\" relation
 ### Example
 
 * Basic Authentication (BasicAuth):
+
 ```python
 import time
 import openapi_client
@@ -312,10 +313,11 @@ from openapi_client.model.jsonapi_error405 import JsonapiError405
 from openapi_client.model.jsonapi_error404 import JsonapiError404
 from openapi_client.model.jsonapi_error400 import JsonapiError400
 from pprint import pprint
+
 # Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost:5000"
+    host="http://localhost:5000"
 )
 
 # The client must configure the authentication and authorization parameters
@@ -325,30 +327,30 @@ configuration = openapi_client.Configuration(
 
 # Configure HTTP basic authorization: BasicAuth
 configuration = openapi_client.Configuration(
-    username = 'YOUR_USERNAME',
-    password = 'YOUR_PASSWORD'
+    username='YOUR_USERNAME',
+    password='YOUR_PASSWORD'
 )
 
 # Enter a context with an instance of the API client
 with openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = conversations_api.ConversationsApi(api_client)
-    include = "include_example" # str | Membership relationships to include (csv) (optional)
-    fields_membership = "user_id,conversation_id,last_download,last_read" # str | Membership fields to include (csv) (optional) if omitted the server will use the default value of "user_id,conversation_id,last_download,last_read"
-    page_offset = 0 # int | Page offset (optional) if omitted the server will use the default value of 0
-    page_limit = 10 # int | Max number of items (optional) if omitted the server will use the default value of 10
-    sort = "user_id,conversation_id,last_download,last_read,id" # str | Sort order (optional) if omitted the server will use the default value of "user_id,conversation_id,last_download,last_read,id"
-    filter_user_id = "filter[user_id]_example" # str | user_id attribute filter (csv) (optional)
-    filter_conversation_id = "filter[conversation_id]_example" # str | conversation_id attribute filter (csv) (optional)
-    filter_last_download = "filter[last_download]_example" # str | last_download attribute filter (csv) (optional)
-    filter_last_read = "filter[last_read]_example" # str | last_read attribute filter (csv) (optional)
-    filter_id = "filter[id]_example" # str | id attribute filter (csv) (optional)
-    filter = "filter_example" # str | Custom Membership filter (optional)
+    include = "include_example"  # str | Membership relationships to include (csv) (optional)
+    fields_membership = "user_id,conversation_id,last_download,last_read"  # str | Membership fields to include (csv) (optional) if omitted the server will use the default value of "user_id,conversation_id,last_download,last_read"
+    page_offset = 0  # int | Page offset (optional) if omitted the server will use the default value of 0
+    page_limit = 10  # int | Max number of items (optional) if omitted the server will use the default value of 10
+    sort = "user_id,conversation_id,last_download,last_read,id"  # str | Sort order (optional) if omitted the server will use the default value of "user_id,conversation_id,last_download,last_read,id"
+    filter_user_id = "filter[user_id]_example"  # str | user_id attribute filter (csv) (optional)
+    filter_conversation_id = "filter[conversation_id]_example"  # str | conversation_id attribute filter (csv) (optional)
+    filter_last_download = "filter[last_download]_example"  # str | last_download attribute filter (csv) (optional)
+    filter_last_read = "filter[last_read]_example"  # str | last_read attribute filter (csv) (optional)
+    filter_id = "filter[id]_example"  # str | id attribute filter (csv) (optional)
+    filter = "filter_example"  # str | Custom Membership filter (optional)
 
     # example passing only required values which don't have defaults set
     try:
         # Retrieve Membership from memberships
-        api_response = api_instance.retrieve_membershipfrommemberships1()
+        api_response = api_instance.get_memberships()
         pprint(api_response)
     except openapi_client.ApiException as e:
         print("Exception when calling ConversationsApi->retrieve_membershipfrommemberships1: %s\n" % e)
@@ -357,7 +359,13 @@ with openapi_client.ApiClient(configuration) as api_client:
     # and optional values
     try:
         # Retrieve Membership from memberships
-        api_response = api_instance.retrieve_membershipfrommemberships1(include=include, fields_membership=fields_membership, page_offset=page_offset, page_limit=page_limit, sort=sort, filter_user_id=filter_user_id, filter_conversation_id=filter_conversation_id, filter_last_download=filter_last_download, filter_last_read=filter_last_read, filter_id=filter_id, filter=filter)
+        api_response = api_instance.get_memberships(include=include, fields_membership=fields_membership,
+                                                    page_offset=page_offset, page_limit=page_limit, sort=sort,
+                                                    filter_user_id=filter_user_id,
+                                                    filter_conversation_id=filter_conversation_id,
+                                                    filter_last_download=filter_last_download,
+                                                    filter_last_read=filter_last_read, filter_id=filter_id,
+                                                    filter=filter)
         pprint(api_response)
     except openapi_client.ApiException as e:
         print("Exception when calling ConversationsApi->retrieve_membershipfrommemberships1: %s\n" % e)

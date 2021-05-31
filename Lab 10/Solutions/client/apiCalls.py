@@ -1,18 +1,16 @@
 import json
-import time
 
-from PyQt5 import sip
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable, QThreadPool
 
 import data_classes
 from messages_api_4.openapi_client.api.conversations_api import ConversationsApi
-from messages_api_4.openapi_client.api.users_api import UsersApi
 from messages_api_4.openapi_client.api.memberships_api import MembershipsApi
 from messages_api_4.openapi_client.api.messages_api import MessagesApi
-from messages_api_4.openapi_client.model.user_inst1 import UserInst
-from messages_api_4.openapi_client.model.message_inst1 import MessageInst
+from messages_api_4.openapi_client.api.users_api import UsersApi
 from messages_api_4.openapi_client.model.conversation_inst1 import ConversationInst
 from messages_api_4.openapi_client.model.membership_inst1 import MembershipInst
+from messages_api_4.openapi_client.model.message_inst1 import MessageInst
+from messages_api_4.openapi_client.model.user_inst1 import UserInst
 
 users_api = UsersApi()
 messages_api = MessagesApi()
@@ -70,13 +68,14 @@ def async_load_users(callback):
     do_async(lambda data: callback(data["users"]), get_users)
 
 
-def async_register_user(callback, name, password):
+def async_register_user(callback, name, password, icon_number):
     def register():
         user = UserInst(data={
             "attributes": {
                 "name": name,
                 "id": "123",
-                "password": password
+                "password": password,
+                "icon_number": icon_number
             },
             "type": "User"
         })
@@ -101,13 +100,22 @@ def async_get_user_with_name(callback, name):
     do_async(callback, filter_user)
 
 
-def async_load_memberships(callback, user_id):
+def async_load_user_memberships(callback, user_id):
     def get_memberships_for_user_id():
         messages = users_api.get_memberships(user_id=user_id)
         data = messages.data
         return {"data": data}
 
     do_async(lambda data: callback(data), get_memberships_for_user_id)
+
+
+def async_load_conversation_memberships(callback, conversation_id):
+    def filter_memberships():
+        memberships = conversations_api.get_memberships(conversation_id=conversation_id)
+        data = {"data": memberships.data}
+        return data
+
+    do_async(callback, filter_memberships)
 
 
 def async_create_membership(callback, membership: data_classes.Membership):
@@ -207,5 +215,3 @@ def async_send_message(callback, message: data_classes.Message):
         return {"data": data}
 
     do_async(callback, send_message)
-
-

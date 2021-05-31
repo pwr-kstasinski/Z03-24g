@@ -1,27 +1,29 @@
 import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 
 class User:
-    def __init__(self, id: str, name: str, logged: str):
+    def __init__(self, id: str, name: str, logged: str, icon_number: int):
         self.id = id
         self.name = name
         self.password = ""
         self.logged = logged
+        self.icon_number = icon_number
 
     @classmethod
     def fromDict(cls, data):
-        return cls(data["id"], data["attributes"]["name"], data["attributes"]["logged"])
+        return cls(data["id"], data["attributes"]["name"], data["attributes"]["logged"],
+                   data["attributes"]["icon_number"])
 
 
 class Message:
-
     def __init__(self, id: str, content: str, send_date: str, user_id: str, conversation_id: str):
         self.id = id
         self.content = content
         self.conversation_id = conversation_id
         self.user_id = user_id
         self.send_date = send_date
+        self.status_users = []
 
     def __hash__(self):
         return hash(self.id)
@@ -53,24 +55,25 @@ class Membership:
 
 class Conversation:
     def __init__(self, id: str, name: str, users_ids: [] = [], last_active=None):
-        self.last_active = last_active if last_active is not None else datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.last_active = last_active if last_active is not None else datetime.datetime.now().strftime(
+            '%Y-%m-%d %H:%M:%S')
         self.users_ids = users_ids
         self.id = id
         self.name = name
-        self.membership: Optional[Membership] = None
+        self.memberships: Dict[str, Membership] = {}
         self.messages: List[Message] = []
 
-    def online_users(self, users: List[User], max_online_difference=2):
-        current_date = datetime.datetime.now()
+    def online_users(self, users: Dict[str, User]):
         online_users_number_ids = []
 
-        for user in users:
-            if user.id in self.users_ids:
-                if user.logged:
-                    online_users_number_ids.append(user.id)
+        for user_id in self.users_ids:
+            if user_id in users.keys():
+                if users[user_id].logged:
+                    online_users_number_ids.append(user_id)
 
         return online_users_number_ids
 
     @classmethod
     def fromDict(cls, data):
-        return cls(data["id"], data["attributes"]["name"], data["attributes"]["users_ids"], data["attributes"]["last_active"])
+        return cls(data["id"], data["attributes"]["name"], data["attributes"]["users_ids"],
+                   data["attributes"]["last_active"])

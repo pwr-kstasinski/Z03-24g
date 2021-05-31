@@ -1,19 +1,19 @@
 import datetime
 import logging
 import sys
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import QWidget, QPushButton
+from PyQt5.QtGui import QMovie, QPixmap, QPainter
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel
 
 from apiCalls import *
-from websocket_calls import *
 from data_classes import User, Message, Conversation, Membership
-from gui.message_widget import *
 from gui.conversation_widget import *
+from gui.message_widget import *
 from gui.user_widget import *
 from gui.window import *
+from websocket_calls import *
 
 logging.basicConfig(level=logging.NOTSET)
 log = logging.getLogger("client")
@@ -30,6 +30,26 @@ CONVERSATIONS_PAGE_INDEX = 5
 
 WEBSOCKET_ADDRESS = 'ws://localhost:8765'
 
+ICONS_PATH = ".\\gui\\icons\\"
+DEFAULT_ICON_NAME = "00"
+ICONS_EXTENSION = ".png"
+
+
+class IconWidget(QLabel):
+    def __init__(self, height: int, icon_number: int, select_icon):
+        super().__init__()
+        self.icon_number = icon_number
+        self.height = height
+        self.setupUi()
+        self.select_icon = select_icon
+        self.mouseReleaseEvent = lambda _: select_icon(self)
+
+    def setupUi(self):
+        icon_name = (str(self.icon_number) if self.icon_number is not None else DEFAULT_ICON_NAME) + ICONS_EXTENSION
+        pixmap = QPixmap(ICONS_PATH + icon_name)
+        pixmap = pixmap.scaled(self.height, self.height, Qt.KeepAspectRatio)
+        self.setPixmap(pixmap)
+
 
 class UserWidget(QWidget, Ui_UserWidget):
     def __init__(self, user: User, button_click_callback):
@@ -37,13 +57,21 @@ class UserWidget(QWidget, Ui_UserWidget):
         self.callback = button_click_callback
         self.user = user
         self.setupUi(self)
+        self.mouseReleaseEvent = lambda _: self.callback(self.user)
 
     def setupUi(self, widget):
         super(UserWidget, self).setupUi(widget)
         self.name_label.setText(self.user.name)
-        self.pushButton.clicked.connect(lambda: self.callback(self.user))
         if not self.user.logged:
             self.online_label.setHidden(True)
+        self.set_user_icon()
+
+    def set_user_icon(self):
+        icon_height = self.user_icon_label_user_widget.height()
+        icon_name = str(self.user.icon_number) + ".png" if self.user.icon_number is not None else DEFAULT_ICON_NAME + ICONS_EXTENSION
+        pixmap = QPixmap(ICONS_PATH + icon_name)
+        pixmap = pixmap.scaled(icon_height, icon_height, Qt.KeepAspectRatio)
+        self.user_icon_label_user_widget.setPixmap(pixmap)
 
 
 class ConversationWidget(QWidget, Ui_ConversationWidget):
@@ -54,26 +82,27 @@ class ConversationWidget(QWidget, Ui_ConversationWidget):
         self.callback = open_conversation_callback
         self.conversation = conversation
         self.setupUi(self)
+        self.mouseReleaseEvent = lambda _: self.callback(self.conversation.id)
 
     def setupUi(self, widget):
         super(ConversationWidget, self).setupUi(widget)
         self.conversation_name_label.setText(self.conversation.name)
-        self.open_conversation_button.clicked.connect(lambda: self.callback(self.conversation.id))
         online_users_id_without_logged = list(
             filter(lambda user_id: user_id != self.logged_user.id, self.online_users()))
         if len(online_users_id_without_logged) < 1:
             self.online_label.setHidden(True)
-        if self.conversation.membership is None:
+        if self.logged_user.id not in self.conversation.memberships.keys():
             self.not_readed_number_label.setHidden(True)
             return
-        not_read_messages_number = len(self.conversation.membership.not_read_messages)
+        user_membership = self.conversation.memberships[self.logged_user.id]
+        not_read_messages_number = len(user_membership.not_read_messages)
         if not_read_messages_number == 0:
             self.not_readed_number_label.setHidden(True)
             return
         self.not_readed_number_label.setText(str(not_read_messages_number))
 
     def online_users(self):
-        return self.conversation.online_users(self.get_users(), MAX_ONLINE_DIFFERENCE)
+        return self.conversation.online_users(self.get_users())
 
 
 class MessageWidget(QWidget, Ui_MessageWidget):
@@ -87,13 +116,37 @@ class MessageWidget(QWidget, Ui_MessageWidget):
     def setupUi(self, widget):
         super(MessageWidget, self).setupUi(widget)
         self.message_label.setText(self.message.content)
-        self.send_date_label.setText(self.message.send_date)
+
+        self.set_send_date_label()
         self.status_label.setHidden(True)
         if self.right:
-            self.setLayoutDirection(Qt.RightToLeft)
-            self.author_label.setText(self.author.name)
+            self.message_inner_widget.setLayoutDirection(Qt.RightToLeft)
+            self.set_author_icon()
         else:
+            self.message_inner_widget.setLayoutDirection(Qt.LeftToRight)
             self.author_label.setHidden(True)
+        self.update()
+
+    def set_send_date_label(self):
+        now = datetime.datetime.now()
+        send_datetime = datetime.datetime.strptime(self.message.send_date, '%Y-%m-%d %H:%M:%S')
+        date_text = ""
+        if now.year != send_datetime.year:
+            date_text = send_datetime.strftime('%d %B %Y')
+        elif now.date() == send_datetime.date():
+            date_text = send_datetime.strftime("%I %p")
+        else:
+            date_text = send_datetime.strftime("%d %B")
+        self.send_date_label.setText(date_text)
+
+    def set_author_icon(self):
+        icon_height = self.author_label.height()
+        icon_width = self.author_label.width()
+        icon_name = str(self.author.icon_number) + ICONS_EXTENSION if self.author.icon_number is not None else "00"
+        pixmap = QPixmap(ICONS_PATH + icon_name)
+        pixmap = pixmap.scaled(icon_width, icon_height, Qt.KeepAspectRatio)
+        self.author_label.setPixmap(pixmap)
+        self.author_label.setToolTip(self.author.name)
 
     def setStatus(self, status: str):
         self.status_label.setVisible(True)
@@ -115,13 +168,14 @@ def clear_layout(layout):
 class MessagesClient(Ui_MainWindow):
     def __init__(self):
         super(MessagesClient, self).__init__()
-        self.users: List[User] = []
-        self.conversations: List[Conversation] = []
+        self.users: Dict[str, User] = {}
+        self.conversations: Dict[str, Conversation] = {}
         self.logged_user: Optional[User] = None
         self.observers = []
         self.other_user = None
         self.showed_messages_widgets: List[MessageWidget] = []
-        self.last_loaded_conversation: Optional[Conversation] = None
+        self.last_loaded_conversation_id: Optional[str] = None
+        self.selected_icon = None
 
     def run(self) -> None:
 
@@ -145,7 +199,7 @@ class MessagesClient(Ui_MainWindow):
         self.password_login_page_edit_line.setText("test2")
 
     def setup_default_pages(self):
-        self.setup_register_page_buttons()
+        self.setup_register_page()
         self.setup_login_page_buttons()
         self.setup_users_page_buttons()
         self.setup_conversations_page_buttons()
@@ -180,9 +234,21 @@ class MessagesClient(Ui_MainWindow):
         self.login_page_register_button.clicked.connect(self.change_page_on_register)
         self.login_page_login_button.clicked.connect(self.login_user)
 
-    def setup_register_page_buttons(self):
+    def setup_register_page(self):
         self.register_page_register_button.clicked.connect(self.register_user)
         self.register_page_login_button.clicked.connect(self.change_page_on_login)
+
+        def select_icon(icon):
+            if self.selected_icon is not None:
+                self.selected_icon.setStyleSheet("")
+            self.selected_icon = icon
+            icon.setStyleSheet("border: 1px solid black;")
+
+        for i in range(1, 5):
+            for j in range(1, 5):
+                file_number = int(f"{i}{j}")
+                icon_widget = IconWidget(60, file_number, select_icon)
+                self.icons_layout.addWidget(icon_widget, i-1, j-1)
 
     def change_page_on_register(self):
         self.change_page(REGISTER_PAGE_INDEX)
@@ -219,30 +285,55 @@ class MessagesClient(Ui_MainWindow):
             if self.logged_user is None:
                 return
             conversation = Conversation.fromDict(conversation_dict)
-            self.show_conversation(conversation)
+            self.conversations[conversation.id] = conversation
+            self.load_memberships(conversation.id, lambda: self.show_conversation(conversation.id))
 
         async_load_conversation(callback, conversation_id)
 
-    def show_conversation(self, conversation: Conversation):
+    def load_memberships(self, conversation_id: str, after_loaded_callback):
+        def callback(data):
+            memberships_data = data["data"]
+            for membership_data in memberships_data:
+                membership = Membership.fromDict(membership_data)
+                self.conversations[conversation_id].memberships[membership.user_id] = membership
+            after_loaded_callback()
+
+        async_load_conversation_memberships(callback, conversation_id)
+
+    def show_conversation(self, conversation_id: str):
         disconnectButton(self.sendButton)
         self.sendButton.clicked.connect(
-            lambda _: self.send_message(conversation.id, self.message_line_edit.text(), str(datetime.datetime.now())))
+            lambda _: self.send_message(conversation_id, self.message_line_edit.text(),
+                                        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         self.sendButton.clicked.connect(lambda _: self.message_line_edit.setText(""))
-        self.conversation_name_label.setText(conversation.name)
-        self.last_loaded_conversation = conversation
+        self.conversation_name_label.setText(self.conversations[conversation_id].name)
+        self.last_loaded_conversation_id = conversation_id
         self.reload_messages()
 
     def show_message(self, message, status=None):
         display_on_right_side = self.logged_user.id != message.user_id
-        filtered_list = list(filter(lambda u: u.id == message.user_id, self.users))
-        if len(filtered_list) == 0:
+        if message.user_id not in self.users.keys():
             return
-        user = filtered_list[0]
+        user = self.users[message.user_id]
         message_widget = MessageWidget(message, display_on_right_side, user)
-        self.showed_messages_widgets.append(message_widget)
         self.messages_layout.addWidget(message_widget)
         if status is not None:
             message_widget.setStatus(status)
+        elif len(message.status_users) != 0:
+            status = ", ".join([user.name for user in message.status_users])
+            message_widget.status_label.setToolTip(status)
+            icon_height = message_widget.status_label.height()
+            pixmaps = QPixmap(icon_height * len(message.status_users), icon_height)
+            pixmaps.fill(Qt.transparent)
+            painter = QPainter(pixmaps)
+            for i, user in enumerate(message.status_users):
+                icon_name = str(user.icon_number) + ".png" if user.icon_number is not None else DEFAULT_ICON_NAME
+                pixmap = QPixmap(ICONS_PATH + icon_name)
+                pixmap = pixmap.scaled(icon_height, icon_height, Qt.KeepAspectRatio)
+                painter.drawPixmap(i*icon_height, 0, icon_height, icon_height, pixmap)
+            painter.end()
+            message_widget.status_label.setPixmap(pixmaps)
+            message_widget.status_label.setVisible(True)
 
     def send_message(self, conversation_id: str, message_content: str, send_date: str):
         message = Message("", message_content, send_date, self.logged_user.id, conversation_id)
@@ -255,7 +346,8 @@ class MessagesClient(Ui_MainWindow):
         async_send_message(callback, message)
 
     def update_message_status(self, message: Message, status: str):
-        for widget in self.showed_messages_widgets:
+        for i in range(self.messages_layout.count()):
+            widget = self.messages_layout.itemAt(i).widget()
             if widget.message.id == message.id:
                 widget.setStatus(status)
                 break
@@ -267,7 +359,7 @@ class MessagesClient(Ui_MainWindow):
                 return
             for conversation_dict in conversations_dict:
                 conversation = Conversation.fromDict(conversation_dict)
-                self.conversations.append(conversation)
+                self.conversations[conversation.id] = conversation
             log.info("conversation loaded")
             after_load_callback()
 
@@ -277,10 +369,12 @@ class MessagesClient(Ui_MainWindow):
         self.change_page_on_loading()
         layout = self.conversations_list.layout()
         clear_layout(layout)
-        self.conversations = reversed(sorted(self.conversations, key=lambda c: datetime.datetime.strptime(c.last_active, '%Y-%m-%d %H:%M:%S')))
-        self.conversations = sorted(self.conversations, key=lambda c: len(c.online_users(self.users, MAX_ONLINE_DIFFERENCE)) == 1)
-        for conversation in self.conversations:
-            conversation_widget = ConversationWidget(conversation, self.load_conversation, self.logged_user, lambda: self.users)
+        conversations_list = reversed(
+            sorted(self.conversations.values(), key=lambda c: datetime.datetime.strptime(c.last_active, '%Y-%m-%d %H:%M:%S')))
+        conversations_list = sorted(conversations_list, key=lambda c: len(c.online_users(self.users)) != 0)
+        for conversation in conversations_list:
+            conversation_widget = ConversationWidget(conversation, self.load_conversation, self.logged_user,
+                                                     lambda: self.users)
             layout.addWidget(conversation_widget)
         self.change_page_on_conversations()
 
@@ -290,7 +384,7 @@ class MessagesClient(Ui_MainWindow):
                 return
             for user_data in users_data:
                 user = User.fromDict(user_data)
-                self.users.append(user)
+                self.users[user.id] = user
             log.info("users loaded")
 
         async_load_users(callback)
@@ -299,9 +393,9 @@ class MessagesClient(Ui_MainWindow):
         self.change_page_on_loading()
         layout = self.users_list.layout()
         clear_layout(layout)
-        self.users = list(reversed(sorted(self.users, key=lambda u: u.logged)))
+        sorted_users = list(reversed(sorted(self.users.values(), key=lambda u: u.logged)))
 
-        for user in self.users:
+        for user in sorted_users:
             if user.id != self.logged_user.id:
                 user_widget = UserWidget(user, self.create_conversation_with_user)
                 layout.addWidget(user_widget)
@@ -316,7 +410,7 @@ class MessagesClient(Ui_MainWindow):
             conversation = Conversation.fromDict(conversation_dict)
             self.add_user_to_conversation(self.logged_user, conversation, self.change_page_on_conversations)
             self.add_user_to_conversation(user, conversation)
-            self.conversations.append(conversation)
+            self.conversations[conversation.id] = conversation
             self.show_conversations()
 
         async_create_conversation(callback, conversation_name)
@@ -325,16 +419,34 @@ class MessagesClient(Ui_MainWindow):
         def callback(messages_data: dict):
             messages_list = messages_data["data"]
             log.info(f"{len(messages_list)} messages downloaded")
-            self.last_loaded_conversation.messages = [Message.fromDict(m) for m in messages_list]
-            self.show_messages(self.last_loaded_conversation)
+            self.conversations[self.last_loaded_conversation_id].messages = [Message.fromDict(m) for m in messages_list]
+            self.show_messages(self.last_loaded_conversation_id)
 
-        async_load_conversation_messages(callback, self.last_loaded_conversation.id)
+        async_load_conversation_messages(callback, self.last_loaded_conversation_id)
 
-    def show_messages(self, conversation: Conversation):
+    def show_messages(self, conversation_id: str):
         self.change_page_on_loading()
 
         clear_layout(self.messages_layout)
-        sorted_messages = sorted(conversation.messages, key=lambda m: m.send_date)
+        sorted_messages = sorted(self.conversations[conversation_id].messages,
+                                 key=lambda m: datetime.datetime.strptime(m.send_date, '%Y-%m-%d %H:%M:%S'))
+        for message in sorted_messages:
+            message.status_users = []
+
+        for user_id in self.conversations[conversation_id].users_ids:
+            if user_id == self.logged_user.id:
+                continue
+            memberships = self.conversations[conversation_id].memberships
+            if user_id in memberships.keys():
+                membership = memberships[user_id]
+                last_download = datetime.datetime.strptime(membership.last_download, '%Y-%m-%d %H:%M:%S')
+                i = -1
+                while (i+1 < len(sorted_messages)) and (datetime.datetime.strptime(sorted_messages[i+1].send_date, '%Y-%m-%d %H:%M:%S') < last_download):
+                    i += 1
+
+                if i != -1:
+                    sorted_messages[i].status_users.append(self.users[user_id])
+
         for m in sorted_messages:
             self.show_message(m)
         self.change_page_on_conversation()
@@ -358,6 +470,8 @@ class MessagesClient(Ui_MainWindow):
 
         name = self.login_line_edit.text()
         password = self.password_line_edit.text()
+        selected_icon = self.selected_icon
+        icon_number = selected_icon.icon_number
         set_name_and_password(name, password)
 
         def after_register_callback(data: dict):
@@ -372,7 +486,7 @@ class MessagesClient(Ui_MainWindow):
 
             self.find_conversation_with_name(EVERYONE_CONVERSATION_NAME, after_finding_callback)
 
-        async_register_user(after_register_callback, name, password)
+        async_register_user(after_register_callback, name, password, icon_number)
 
     def login_user(self):
         self.change_page_on_loading()
@@ -380,6 +494,15 @@ class MessagesClient(Ui_MainWindow):
         name = self.name_login_page_line_edit.text()
         password = self.password_login_page_edit_line.text()
         self.login_user_to_server(name, password)
+
+    def set_user_icon(self):
+        icon_height = self.user_icon_label_conversations_page.height()
+        icon_width = self.user_icon_label_conversations_page.width()
+        icon_name = str(self.logged_user.icon_number) + ".png" if self.logged_user.icon_number is not None else "00"
+        pixmap = QPixmap(ICONS_PATH + icon_name
+                         )
+        pixmap = pixmap.scaled(icon_width, icon_height, Qt.KeepAspectRatio)
+        self.user_icon_label_conversations_page.setPixmap(pixmap)
 
     def login_user_to_server(self, name, password):
         set_name_and_password(name, password)
@@ -394,13 +517,16 @@ class MessagesClient(Ui_MainWindow):
             log.info(f"User {user.name} logged in")
             self.logged_user = user
 
+            self.set_user_icon()
+
             def after_get_conversations_callback():
                 memberships_list = data["memberships"]
                 for membership_dict in memberships_list:
                     membership = Membership.fromDict(membership_dict)
                     self.assign_membership_to_conversation(membership)
                 self.show_conversations()
-                async_connect_websocket(self.handle_websocket_update, WEBSOCKET_ADDRESS, asyncio.get_event_loop(), log, lambda: self.logged_user)
+                async_connect_websocket(self.handle_websocket_update, WEBSOCKET_ADDRESS, asyncio.get_event_loop(), log,
+                                        lambda: self.logged_user)
 
             self.load_conversations(after_get_conversations_callback)
             self.load_users()
@@ -413,15 +539,13 @@ class MessagesClient(Ui_MainWindow):
         async_get_user_with_name(_login_user, name)
 
     def assign_membership_to_conversation(self, membership: Membership):
-        for conversation in self.conversations:
-            if conversation.id == membership.conversation_id:
-                conversation.membership = membership
-                continue
+        conversation = self.conversations[membership.conversation_id]
+        conversation.memberships[membership.user_id] = membership
 
     def logout_user(self):
         self.logged_user = None
-        self.conversations = []
-        self.users = []
+        self.conversations = {}
+        self.users = {}
         self.change_page_on_login()
         log.info("user logged out")
         clear_name_and_password()
@@ -430,29 +554,36 @@ class MessagesClient(Ui_MainWindow):
         target_type = data["type"]
         if target_type == "User":
             user = User.fromDict(data)
-
-            inserted = False
-            for i in range(len(self.users)):
-                if self.users[i].id == user.id:
-                    self.users.pop(i)
-                    self.users.insert(i, user)
-                    inserted = True
-            if not inserted:
-                self.users.append(user)
+            self.users[user.id] = user
 
             if self.stackedWidget.currentIndex() == USERS_PAGE_INDEX:
                 self.show_users()
-
-            if self.stackedWidget.currentIndex() == CONVERSATIONS_PAGE_INDEX:
+            elif self.stackedWidget.currentIndex() == CONVERSATIONS_PAGE_INDEX:
                 self.show_conversations()
 
         elif target_type == "Message":
             message = Message.fromDict(data)
-            if self.last_loaded_conversation.id == message.conversation_id:
-                if message.user_id != self.logged_user.id:
-                    self.last_loaded_conversation.messages.append(message)
-                    if self.stackedWidget.currentIndex() == CONVERSATION_PAGE_INDEX:
-                        self.show_messages(self.last_loaded_conversation)
+
+            if self.last_loaded_conversation_id is not None:
+                if self.last_loaded_conversation_id == message.conversation_id:
+                    if message.user_id != self.logged_user.id:
+                        self.conversations[self.last_loaded_conversation_id].messages.append(message)
+                        if self.stackedWidget.currentIndex() == CONVERSATION_PAGE_INDEX:
+                            self.show_messages(self.last_loaded_conversation_id)
+
+            if self.stackedWidget.currentIndex() == CONVERSATIONS_PAGE_INDEX:
+                self.show_conversations()
+
+        elif target_type == "Membership":
+            membership = Membership.fromDict(data)
+            self.conversations[membership.conversation_id].memberships[membership.user_id] = membership
+
+            if self.stackedWidget.currentIndex() == CONVERSATIONS_PAGE_INDEX:
+                self.show_conversations()
+                print("conversations reloaded")
+            elif self.stackedWidget.currentIndex() == CONVERSATION_PAGE_INDEX:
+                self.show_messages(self.last_loaded_conversation_id)
+                print("messages_reloaded")
 
         else:
             log.warning("websockets - not handled update")

@@ -20,13 +20,13 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: white; border: 1px solid black;</string>
+   <string notr="true">background: white;</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QWidget" name="widget" native="true">
      <property name="styleSheet">
-      <string notr="true">border: 1px solid lightgrey;</string>
+      <string notr="true"/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
@@ -45,7 +45,10 @@
        <number>2</number>
       </property>
       <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,6,2,1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,0,6,0,3">
+        <property name="spacing">
+         <number>10</number>
+        </property>
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
@@ -86,23 +89,14 @@
            <string>userName</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">margin: 10px;border: 1px solid black;</string>
-          </property>
+         <widget class="QLabel" name="user_icon_label_user_widget">
           <property name="text">
-           <string>Select</string>
+           <string>TextLabel</string>
           </property>
          </widget>
         </item>

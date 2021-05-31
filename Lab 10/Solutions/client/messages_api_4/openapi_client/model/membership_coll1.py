@@ -72,7 +72,11 @@ class MembershipColl1(ModelNormal):
                 and the value is attribute type.
         """
         return {
-            'data': (str,),  # noqa: E501
+            'data': (list,),  # noqa: E501
+            'included': (list,),
+            'jsonapi': (dict,),
+            'links': (dict,),
+            'meta': (dict,),
         }
 
     @cached_property

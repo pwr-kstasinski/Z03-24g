@@ -2,16 +2,15 @@ import asyncio
 import datetime
 import json
 import logging
-import time
-from typing import Dict
+import threading
+from typing import Dict, Optional
 
 import websockets
-from PyQt5.QtCore import pyqtSignal
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from websockets import exceptions
-import threading
+
 import safrs
 
 db = SQLAlchemy()
@@ -50,7 +49,7 @@ def verify_password(username_or_token, password):
         conversation_id = request.view_args["ConversationId"]
         membership = list(filter(lambda m: m.conversation_id == conversation_id, user.memberships))
         if len(membership) == 1:
-            membership[0].last_download = datetime.datetime.now()
+            membership[0].last_download = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     return True
 
 
@@ -66,6 +65,7 @@ class User(safrs.SAFRSBase, db.Model):
     _password = db.Column(db.String(30))
     name = db.Column(db.String(30), unique=True)
     logged = db.Column(db.Boolean, default=False)
+    icon_number = db.Column(db.Integer)
 
     memberships = db.relationship("Membership")
     memberships.http_methods = ["get"]
@@ -103,8 +103,8 @@ def insert_user_event_handler(mapper, connection, target):
 @db.event.listens_for(User.logged, "set")
 def logged_change_user_event_handler(target, value, oldvalue, initiator):
     try:
-        attributes = target.to_dict() # ._s_jsonapi_encode()
-        attributes["logged"] = not oldvalue
+        attributes = target.to_dict()  # ._s_jsonapi_encode()
+        attributes["logged"] = value
         add_to_queues(json.dumps({"attributes": attributes, "id": target.id, "type": "User"}))
     except RuntimeError as e:
         print("user runtime error logged change handler")
@@ -130,16 +130,20 @@ class Conversation(safrs.SAFRSBase, db.Model):
     messages = db.relationship("Message")  # , lazy='dynamic')
     messages.http_methods = ["get"]
 
+    memberships = db.relationship("Membership")  # , lazy='dynamic')
+    memberships.http_methods = ["get"]
+
     users = db.relationship("User", secondary="Memberships",
                             primaryjoin="Conversation.id == Membership.conversation_id",
                             secondaryjoin="Membership.user_id == User.id",
-                            viewonly=True,
-                            lazy='dynamic')
+                            viewonly=True)
     users.http_methods = ["get"]
 
     @safrs.jsonapi_attr
     def users_ids(self):
-        return list(map(lambda u: u.id, self.users.all()))
+        conversation = Conversation.query.filter_by(id=self.id).first()
+        users = conversation.users
+        return list(map(lambda u: u.id, users))
 
     @safrs.jsonapi_attr
     def last_active(self):
@@ -199,6 +203,21 @@ class Membership(safrs.SAFRSBase, db.Model):
         return not_read_messages_ids
 
 
+@db.event.listens_for(Membership, "after_update")
+def insert_update_membership_event_handler(mapper, connection, target: Membership):
+    try:
+        data_dict = target._s_jsonapi_encode()
+
+        conversation: Conversation = Conversation.query.filter_by(id=target._conversation_id).first()
+        for user in conversation.users:
+            if user.id in sessions.keys():
+                session = sessions[user.id]
+                with session.lock:
+                    session.queue.put(json.dumps(data_dict))
+    except RuntimeError:
+        print("user runtime error insert user handler")
+
+
 class Message(safrs.SAFRSBase, db.Model):
     """
         description: Message description
@@ -220,7 +239,8 @@ def insert_message_event_handler(mapper, connection, target):
     try:
         data_dict = target._s_jsonapi_encode()
         for session in sessions.values():
-            membership = Membership.query.filter_by(_user_id=session.user_id, _conversation_id=target.conversation_id).first()
+            membership = Membership.query.filter_by(_user_id=session.user_id,
+                                                    _conversation_id=target.conversation_id).first()
             membership.last_download = datetime.datetime.now()
         add_to_queues(json.dumps(data_dict))
     except RuntimeError:

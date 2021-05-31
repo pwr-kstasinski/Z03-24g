@@ -471,7 +471,7 @@ class ConversationsApi(object):
             This method makes a synchronous HTTP request by default. To make an
             asynchronous HTTP request, please pass async_req=True
 
-            >>> thread = api.retrieve_membershipfrommemberships1(conversation_id="jsonapi_id_string", async_req=True)
+            >>> thread = api.get_memberships(conversation_id="jsonapi_id_string", async_req=True)
             >>> result = thread.get()
 
             Args:
@@ -537,7 +537,7 @@ class ConversationsApi(object):
                 conversation_id
             return self.call_with_http_info(**kwargs)
 
-        self.retrieve_membershipfrommemberships1 = _Endpoint(
+        self.get_memberships = _Endpoint(
             settings={
                 'response_type': (ConversationMembershipsRelColl,),
                 'auth': [
@@ -1181,3 +1181,189 @@ class ConversationsApi(object):
             api_client=api_client,
             callable=__retrieveacollectionof_conversationobjects0
         )
+
+        def __retrieve_membershipfrommemberships1(
+            self,
+            conversation_id="531f31a7-5f11-44ae-8d26-9aa0e033181d",
+            **kwargs
+        ):
+            """Retrieve Membership from memberships  # noqa: E501
+
+            Retrieve Membership items from the Conversation memberships \"to-many\" relationship  # noqa: E501
+            This method makes a synchronous HTTP request by default. To make an
+            asynchronous HTTP request, please pass async_req=True
+
+            >>> thread = api.get_memberships(conversation_id="531f31a7-5f11-44ae-8d26-9aa0e033181d", async_req=True)
+            >>> result = thread.get()
+
+            Args:
+                conversation_id (str): Conversation item. defaults to "531f31a7-5f11-44ae-8d26-9aa0e033181d", must be one of ["531f31a7-5f11-44ae-8d26-9aa0e033181d"]
+
+            Keyword Args:
+                include (str): Membership relationships to include (csv). [optional]
+                fields_membership (str): Membership fields to include (csv). [optional] if omitted the server will use the default value of "last_download,user_id,conversation_id,not_read_messages"
+                page_offset (int): Page offset. [optional] if omitted the server will use the default value of 0
+                page_limit (int): Max number of items. [optional] if omitted the server will use the default value of 10
+                sort (str): Sort order. [optional] if omitted the server will use the default value of "last_download,user_id,conversation_id,not_read_messages,id"
+                filter_last_download (str): last_download attribute filter (csv). [optional]
+                filter_user_id (str): user_id attribute filter (csv). [optional]
+                filter_conversation_id (str): conversation_id attribute filter (csv). [optional]
+                filter_not_read_messages (str): not_read_messages attribute filter (csv). [optional]
+                filter_id (str): id attribute filter (csv). [optional]
+                filter (str): Custom Membership filter. [optional]
+                _return_http_data_only (bool): response data without head status
+                    code and headers. Default is True.
+                _preload_content (bool): if False, the urllib3.HTTPResponse object
+                    will be returned without reading/decoding response data.
+                    Default is True.
+                _request_timeout (float/tuple): timeout setting for this request. If one
+                    number provided, it will be total request timeout. It can also
+                    be a pair (tuple) of (connection, read) timeouts.
+                    Default is None.
+                _check_input_type (bool): specifies if type checking
+                    should be done one the data sent to the server.
+                    Default is True.
+                _check_return_type (bool): specifies if type checking
+                    should be done one the data received from the server.
+                    Default is True.
+                _host_index (int/None): specifies the index of the server
+                    that we want to use.
+                    Default is read from the configuration.
+                async_req (bool): execute request asynchronously
+
+            Returns:
+                ConversationMembershipsRelColl
+                    If the method is called asynchronously, returns the request
+                    thread.
+            """
+            kwargs['async_req'] = kwargs.get(
+                'async_req', False
+            )
+            kwargs['_return_http_data_only'] = kwargs.get(
+                '_return_http_data_only', True
+            )
+            kwargs['_preload_content'] = kwargs.get(
+                '_preload_content', True
+            )
+            kwargs['_request_timeout'] = kwargs.get(
+                '_request_timeout', None
+            )
+            kwargs['_check_input_type'] = kwargs.get(
+                '_check_input_type', True
+            )
+            kwargs['_check_return_type'] = kwargs.get(
+                '_check_return_type', True
+            )
+            kwargs['_host_index'] = kwargs.get('_host_index')
+            kwargs['conversation_id'] = \
+                conversation_id
+            return self.call_with_http_info(**kwargs)
+
+        self.get_memberships = _Endpoint(
+            settings={
+                'response_type': (ConversationMembershipsRelColl,),
+                'auth': [
+                    'BasicAuth'
+                ],
+                'endpoint_path': '/Conversations/{ConversationId}/memberships',
+                'operation_id': 'retrieve_membershipfrommemberships1',
+                'http_method': 'GET',
+                'servers': None,
+            },
+            params_map={
+                'all': [
+                    'conversation_id',
+                    'include',
+                    'fields_membership',
+                    'page_offset',
+                    'page_limit',
+                    'sort',
+                    'filter_last_download',
+                    'filter_user_id',
+                    'filter_conversation_id',
+                    'filter_not_read_messages',
+                    'filter_id',
+                    'filter',
+                ],
+                'required': [
+                    'conversation_id',
+                ],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
+            },
+            root_map={
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                    'conversation_id':
+                        (str,),
+                    'include':
+                        (str,),
+                    'fields_membership':
+                        (str,),
+                    'page_offset':
+                        (int,),
+                    'page_limit':
+                        (int,),
+                    'sort':
+                        (str,),
+                    'filter_last_download':
+                        (str,),
+                    'filter_user_id':
+                        (str,),
+                    'filter_conversation_id':
+                        (str,),
+                    'filter_not_read_messages':
+                        (str,),
+                    'filter_id':
+                        (str,),
+                    'filter':
+                        (str,),
+                },
+                'attribute_map': {
+                    'conversation_id': 'ConversationId',
+                    'include': 'include',
+                    'fields_membership': 'fields[Membership]',
+                    'page_offset': 'page[offset]',
+                    'page_limit': 'page[limit]',
+                    'sort': 'sort',
+                    'filter_last_download': 'filter[last_download]',
+                    'filter_user_id': 'filter[user_id]',
+                    'filter_conversation_id': 'filter[conversation_id]',
+                    'filter_not_read_messages': 'filter[not_read_messages]',
+                    'filter_id': 'filter[id]',
+                    'filter': 'filter',
+                },
+                'location_map': {
+                    'conversation_id': 'path',
+                    'include': 'query',
+                    'fields_membership': 'query',
+                    'page_offset': 'query',
+                    'page_limit': 'query',
+                    'sort': 'query',
+                    'filter_last_download': 'query',
+                    'filter_user_id': 'query',
+                    'filter_conversation_id': 'query',
+                    'filter_not_read_messages': 'query',
+                    'filter_id': 'query',
+                    'filter': 'query',
+                },
+                'collection_format_map': {
+                }
+            },
+            headers_map={
+                'accept': [
+                    '*/*'
+                ],
+                'content_type': [],
+            },
+            api_client=api_client,
+            callable=__retrieve_membershipfrommemberships1
+        )
+

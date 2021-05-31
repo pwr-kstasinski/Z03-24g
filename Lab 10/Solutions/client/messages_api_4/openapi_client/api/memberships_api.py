@@ -468,7 +468,7 @@ class MembershipsApi(object):
             This method makes a synchronous HTTP request by default. To make an
             asynchronous HTTP request, please pass async_req=True
 
-            >>> thread = api.retrieveacollectionof_membershipobjects0(content_type="application/vnd.api+json", async_req=True)
+            >>> thread = api.get_memberships(content_type="application/vnd.api+json", async_req=True)
             >>> result = thread.get()
 
             Args:
@@ -534,7 +534,7 @@ class MembershipsApi(object):
                 content_type
             return self.call_with_http_info(**kwargs)
 
-        self.retrieveacollectionof_membershipobjects0 = _Endpoint(
+        self.get_memberships = _Endpoint(
             settings={
                 'response_type': (MembershipColl1,),
                 'auth': [
