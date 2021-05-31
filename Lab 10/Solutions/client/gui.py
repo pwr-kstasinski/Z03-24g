@@ -2,6 +2,7 @@ import threading
 import time
 import websockets
 import asyncio
+import json
 from tkinter import *
 from tkinter import font
 from tkinter import ttk
@@ -16,15 +17,48 @@ userapi = UserApi()
 defapi = DefaultApi()
 messages = []
 USER_REFRESH_DELAY = 3
-wsuri = "ws://localhost:5001"
+wsuri = "ws://localhost:6000"
 
 def createMessage(fr,to,msg):
     return Message(fr=fr,to=to,msg=msg)
+
+class MessageBox(Label):
+    def __init__(self,parent,pos,msg,sent):
+        super().__init__(parent, 
+            text = "",
+            justify = LEFT, 
+            font = "Helvetica 14")
+        fromLabel = Label(self, 
+            text = msg.fr+" "+msg.sent+" "+("\u2173" if msg.read else "..."),
+            justify = LEFT if sent else RIGHT, 
+            font = "Helvetica 14 bold")
+        fromLabel.pack(side=TOP)
+        textLabel = Label(self, 
+            text = msg.msg,
+            justify = LEFT, 
+            font = "Helvetica 14")
+        textLabel.pack(side=BOTTOM)
+        self.grid(row=pos,sticky=E if sent else W)
+
+class UserButton(Button):
+    def __init__(self,parent,pos,uid,call):
+        super().__init__(parent,
+                         text = uid, 
+                         font = "Helvetica 14 bold", 
+                         command = lambda: call(uid))
+        self.grid(row=pos,sticky=W+N)
 
 class GUI:
     def __init__(self):
         self.Window = Tk()
         self.Window.withdraw()
+        def on_closing():
+            if self.me:
+                self.Window.destroy()
+            if self.rcv:
+                self.rcv.join()
+
+        self.Window.protocol("WM_DELETE_WINDOW", on_closing)
         
         self.login = Toplevel()
         self.login.title("Login")
@@ -76,7 +110,10 @@ class GUI:
                       rely = 0.55)
         
         self.Window.mainloop()
-  
+
+    def runWebsocket(self):
+        asyncio.get_event_loop().run_until_complete(self.listen())
+
     def registerIn(self, name, passw):
         userapi.register(id=name,_pass=passw)
     
@@ -87,9 +124,9 @@ class GUI:
         self.login.destroy()
         self.layout(name)
           
-        rcv = threading.Thread(target=self.receive)
-        asyncio.get_event_loop().run_until_complete(self.listen())
-        rcv.start()
+        #rcv = threading.Thread(target=self.receive)
+        self.rcv = threading.Thread(target=self.runWebsocket)
+        self.rcv.start()
   
     def layout(self,name):
         self.Window.deiconify()
@@ -101,9 +138,9 @@ class GUI:
                               bg = "#17202A")
         
         self.labelHead = Label(self.Window,
-                             bg = "#17202A", 
-                              fg = "#EAECEE",
-                              text = self.me ,
+                               bg = "#17202A", 
+                               fg = "#EAECEE",
+                               text = self.me ,
                                font = "Helvetica 13 bold",
                                pady = 5)
         self.labelHead.place(relwidth = 1)
@@ -211,10 +248,18 @@ class GUI:
         self.addMSG(newmsg)
         self.entryMsg.delete(0, END)
 
-    def refreshUsers(self):
+    def switchToUser(self,uid):
         pass
+
+    def refreshUsers(self):
+        ct=0
+        users = []
+        #get users
+        #sort users?
+        for u in users:
+            UserButton(self.userPanel,ct,u,self.switchToUser)
     def refreshUsersAndSort(self):
-        print("received")
+        self.refreshUsers()
         pass
     def refreshChatOrUnread(self):
         pass
@@ -222,17 +267,19 @@ class GUI:
         pass
 
     async def listen(self):
-        with websockets.connect(wsuri) as websocket:
-            response = await websocket.recv()
-            code = response["code"]
-            print(code)
-            def codedict(val):
-                return {
-                    "usrreg":self.refreshUsers,
-                    "usrlog":self.refreshUsersAndSort,
-                    "msgrec":self.refreshChatOrUnread,
-                    "msgrea":self.refreshRead
-                }[val]
+        async with websockets.connect(wsuri) as websocket:
+            async for message in websocket:
+                response = json.loads(message)
+                code = response["code"]
+                print(code)
+                def codedict(val):
+                    return {
+                        "usrreg":self.refreshUsers,
+                        "usrlog":self.refreshUsersAndSort,
+                        "msgrec":self.refreshChatOrUnread,
+                        "msgrea":self.refreshRead
+                    }[val]
+                codedict(code)()
 
     
     def receive(self):
