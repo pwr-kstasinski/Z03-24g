@@ -12,7 +12,7 @@ from ClientHandler import ClientHandler
 import threading
 
 def getTime():
-    return dt.datetime.now().strftime("%d.%m.%Y %H:%M")
+    return dt.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
 
 
@@ -137,6 +137,7 @@ class Gui(tk.Frame):
             self.pack()
             self.update()
             self.sendGetMessageHistory()
+            self.sendRecieve()
             return
 
         self.chatFrame=tk.Frame(self.userFrame)
@@ -160,6 +161,7 @@ class Gui(tk.Frame):
         self.msgEntryButton.grid(row=0,column=1)
 
         self.sendGetMessageHistory()
+        self.sendRecieve()
 
 
     def sendUpdateUserList(self):
@@ -255,11 +257,18 @@ class Gui(tk.Frame):
         self.conn.send(data)
 
 
+    def sendRecieve(self):
+        data={"userId":self.userId,"password":self.userPass
+            ,"srcId":self.dstUserId}
+        data={"action":"recieve","data":data}
+        self.conn.send(data)
+
+
     def recieveMessage(self,res):
         res.append(None)
         j=0
         while(res[j]!=None):
-            if(res[j]["srcId"]==self.dstUserId or not res[j]["red"]):
+            if(res[j]["srcId"]==self.dstUserId or res[j]["red"]):
                 column=0
                 if(res[j]["srcId"]==self.userId):
                     column=1
@@ -267,9 +276,9 @@ class Gui(tk.Frame):
                 self.addMsg(res[j]["msg"],timestamp,column)
                 if(not res[j]["red"]):
                     data={"userId":self.userId,"password":self.userPass
-                        ,"srcId":self.dstUserId,"dstId":self.userId}
+                        ,"srcId":self.dstUserId,"dstId":self.userId,"time":res[j]["time"]}
                     data={"action":"markRed","data":data}
-                    self.conn.send()
+                    self.conn.send(data)
             j+=1
         self.msgFrame.update()
     

@@ -210,20 +210,19 @@ class Server():
 
         connection = engine.connect()
         query=db.select([messages])
-        query=query.where(db.and_(messages.columns.send == False
-            , messages.columns.dstId == data["userId"]))
+        query=query.where(db.and_(messages.columns.red == False
+            , db.and_(messages.columns.dstId == data["userId"],messages.columns.srcId == data["srcId"])))
         resultProxy = connection.execute(query)
         resultSet = resultProxy.fetchall()
 
-        query=db.update(messages).values(send = True).where(db.and_(messages.columns.send == False
+        """query=db.update(messages).values(send = True).where(db.and_(messages.columns.send == False
             , messages.columns.dstId == data["userId"]))
-        resultProxy = connection.execute(query)
+        resultProxy = connection.execute(query)"""
 
         #print(resultSet)
         res=[]
         for msg in resultSet:
-            res.append({"srcId":msg[0],"dstId":msg[1],"msg":msg[2],"time":msg[5]})
-        data="User not valid"
+            res.append({"srcId":msg[0],"dstId":msg[1],"msg":msg[2],"red":msg[4],"time":msg[5]})
         data={"action":"recieve","data":res}
         sc.send(data)
 
@@ -239,7 +238,7 @@ class Server():
         query=db.select([messages])
 
         query=db.update(messages).values(red = True).where(db.and_(messages.columns.srcId == data["srcId"]
-            , (messages.columns.dstId == data["dstId"])))
+            , db.and_(messages.columns.dstId == data["dstId"],messages.columns.time == data["time"])))
         resultProxy = connection.execute(query)
 
         #print(resultSet)
