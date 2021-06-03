@@ -1,41 +1,37 @@
 from flask import Flask,request,jsonify,render_template
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_,and_
 import datetime
 import json
-import websockets
-import asyncio
-import multiprocessing
-from dataclasses import dataclass
+#import websockets
+#import asyncio
+#import multiprocessing
+from dataclasses import dataclass,asdict
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_socketio import send, SocketIO
 
 ser = Flask(__name__)
 ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
 ser.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
+#ser.config['SECRET_KEY'] = 'secret!'
+ser.config['FLASK_ENV'] = 'development'
 db = SQLAlchemy(ser)
-wsbuffer = []
+socketio = SocketIO(ser)
 
 def nmessage(fr,to,msg):
-    return messages(fr=fr,to=to,msg=msg)
-
-def sendToWS(data):
-    wsbuffer.append(data)
-
-async def wsLoop(websocket, path):
-    while wsbuffer:
-        cd = wsbuffer.pop(0)
-        await websocket.send(cd)
+    return messages(fr=fr,to=to,msg=msg,sent=datetime.datetime.now(),read=False)
 
 @dataclass
 class messages(db.Model):
-    id:int
+    _id:int
     fr:str
     to:str
     msg:str
     sent:datetime.datetime
     read:bool
-    id = db.Column("id",db.Integer,primary_key=True)
+    _id = db.Column("_id",db.Integer,primary_key=True)
     fr = db.Column("fr",db.String(30))
     to = db.Column("to",db.String(30))
     msg = db.Column("msg",db.String(300))
@@ -70,6 +66,11 @@ def download_messages():
         description: "User id"
         required: true
         type: "string"
+      - in: "query"
+        name: "fr"
+        description: "Other user id"
+        required: true
+        type: "string"
     responses:
         "400":
             description: "Invalid input"
@@ -80,6 +81,9 @@ def download_messages():
                 items:
                     type: "object"
                     properties:
+                        _id:
+                            type: "int"
+                            example: "1"
                         fr:
                             type: "string"
                             example: "you"
@@ -89,20 +93,30 @@ def download_messages():
                         msg:
                             type: "string"
                             example: "Hello there"
+                        read:
+                            type: "boolean"
+                            example: "true"
+                        sent:
+                            type: "string"
+                            example: "123132"
     """
     data = request.args
     if "id" not in data:
         return bad_request("Necessary parameter id not given")
+    if "fr" not in data:
+        return bad_request("Necessary parameter id not given")
     uid = data["id"]
-    user = users.query.filter_by(login=uid).first()
-    if not user:
-        return bad_request("ID not registered")
-    result = messages.query.filter_by(to=uid)
-    user.lastQuery = datetime.datetime.now()
-    json = jsonify(result.all())
-    result.delete()
+    if uid == "":
+        result = messages.query.filter(messages.to=="")
+    else:
+        user = users.query.filter_by(login=uid).first()
+        if not user:
+            return bad_request("ID not registered")
+        user.lastQuery = datetime.datetime.now()
+        result = messages.query.filter(or_(and_(messages.to==uid,messages.fr==data["fr"]),and_(messages.to==data["fr"],messages.fr==uid)))
+    list = [asdict(x) for x in result.order_by(messages.sent).all()]
     db.session.commit()
-    return json
+    return jsonify(list)
 
 @ser.route("/send",methods=["POST"])
 def accept_message():
@@ -140,16 +154,14 @@ def accept_message():
         return bad_request("Sender's ID not registered")
     user.lastQuery = datetime.datetime.now()
     if not data["to"]:
-        for x in users.query.all():
-            if x.login != data["fr"]:
-                db.session.add(nmessage(data["fr"],x.login,data["msg"]))
+        db.session.add(nmessage(data["fr"],data["to"],data["msg"]))
     else:
         user = users.query.filter_by(login=data["to"]).first()
         if not user:
             return bad_request("Receiver's ID not registered")
         db.session.add(nmessage(data["fr"],data["to"],data["msg"]))
     db.session.commit()
-    sendToWS({"code":"msgrec","to":data["to"]})
+    socketio.emit('any',json.dumps({"code":"msgrec","to":data["to"],"fr":data["fr"]}))
     return "OK"
 
 @ser.route("/register",methods=["POST"])
@@ -179,13 +191,15 @@ def register_user():
     if "pass" not in data:
         return bad_request("Necessary parameter pass not given")
     uid = data["id"]
+    if uid == "ALL":
+        return bad_request("Forbidden ID")
     user = users.query.filter_by(login=uid).first()
     if user:
         return bad_request("ID already registered")
     usr = nuser(data["id"],data["pass"])
     db.session.add(usr)
     db.session.commit()
-    sendToWS({"code":"usrreg","uid":uid})
+    socketio.emit('any',json.dumps({"code":"usrreg","uid":uid}))
     return "OK"
 
 @ser.route("/login",methods=["GET"])
@@ -222,7 +236,7 @@ def login_user():
     user.lastQuery = datetime.datetime.now()
     user.active = True
     db.session.commit()
-    sendToWS({"code":"usrlog","uid":uid})
+    socketio.emit('any',json.dumps({"code":"usrlog","uid":uid}))
     return "OK"
 
 @ser.route("/logout",methods=["GET"])
@@ -248,9 +262,9 @@ def logout_user():
     user = users.query.filter_by(login=uid).first()
     if not user:
         return bad_request("Wrong ID")
-    user.active = True
+    user.active = False
     db.session.commit()
-    sendToWS({"code":"usrlog","uid":uid})
+    socketio.emit('any',json.dumps({"code":"usrlog","uid":uid}))
     return "OK"
 
 @ser.route("/logged",methods=["GET"])
@@ -259,7 +273,7 @@ def get_active_users():
     ---
     responses:
         "200":
-            description: "Succesfully logged in"
+            description: "Succesfully obtained logged users"
             schema:
                 type: "array"
                 items:
@@ -270,10 +284,54 @@ def get_active_users():
     ausrs = users.query.filter(users.active==True).all()
     return jsonify([u.login for u in ausrs])
 
+@ser.route("/users",methods=["GET"])
+def get_users():
+    """Endpoint for getting all users
+    ---
+    parameters:
+      - in: "query"
+        name: "id"
+        description: "User id"
+        required: true
+        type: "string"
+    responses:
+        "200":
+            description: "Succesfully parsed request"
+            schema:
+                type: "array"
+                items:
+                    type: "object"
+                    properties:
+                        uid:
+                            type: "string"
+                            example: "him"
+                        active:
+                            type: "boolean"
+                            example: "false"
+                        last:
+                            type: "string"
+                            example: "123123"
+    """
+    data = request.args
+    if "id" not in data:
+        return bad_request("Necessary parameter id not given")
+    timeTreshold = datetime.datetime.now() - datetime.timedelta(seconds=5)
+    ausrs = users.query.all()
+    def queryForLastMsg(fr,to):
+        f = messages.query.filter(messages.fr==fr,messages.to==to).order_by(messages.sent.desc()).first()
+        t = messages.query.filter(messages.fr==to,messages.to==fr).order_by(messages.sent.desc()).first()
+        if not f:
+            return t.sent if t else datetime.datetime.min
+        if not t:
+            return f.sent if f else datetime.datetime.min
+        return f.sent if f.sent>t.sent else t.sent
+    return jsonify([{"uid":u.login,"active":u.active,"last":queryForLastMsg(u.login,data["id"])} for u in ausrs])
+
 @ser.route("/read",methods=["PUT"])
 def mark_message_read():
     """Endpoint for marking messages as read
     ---
+    parameters:
       - in: "query"
         name: "id"
         description: "Id of message to mark as read"
@@ -289,14 +347,17 @@ def mark_message_read():
     data = request.args
     if "id" not in data:
         return bad_request("Necessary parameter id not given")
-    msg = messages.query.filter_by(id=data["id"]).first()
+    msg = messages.query.filter_by(_id=data["id"]).first()
     msg.read = True
+    socketio.emit('any',json.dumps({"code":"usrlog","fr":msg.fr,"to":msg.to,"id":msg._id}))
+    db.session.commit()
     return "OK"
 
 @ser.route("/unread",methods=["GET"])
 def get_unread_messages_count():
     """Endpoint for getting active users
     ---
+    parameters:
       - in: "query"
         name: "fr"
         description: "Id of user who sent messages"
@@ -320,12 +381,16 @@ def get_unread_messages_count():
     if "fr" not in data:
         return bad_request("Necessary parameter fr not given")
     uid=data["id"]
-    user = users.query.filter_by(login=data["id"]).first()
-    if not user:
-        return bad_request("ID not registered")
-    result = messages.query.filter_by(to=uid,fr=data["fr"])
-    user.lastQuery = datetime.datetime.now()
-    return result.count()
+    if not uid:
+        result = messages.query.filter(messages.to=="",messages.fr!=data["fr"],messages.read==False)
+    else:
+        user = users.query.filter_by(login=data["id"]).first()
+        if not user:
+            return bad_request("ID not registered")
+        result = messages.query.filter_by(to=uid,fr=data["fr"],read=False)
+        user.lastQuery = datetime.datetime.now()
+    ct = result.count()
+    return str(ct) if ct else "0"
 
 @ser.route("/api",methods=["GET"])
 def render_api():
@@ -338,29 +403,10 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     "http://localhost:5000/api"
 )
 
-async def respond(websocket, path):
-    while True:
-        message = json.dumps({"code":"usrlog","uid":"arg"})
-        await websocket.send(message)
-        await asyncio.sleep(3)
-
 def runFlask():
     db.create_all()
     ser.register_blueprint(swaggerui_blueprint)
-    ser.run(debug=True, host="localhost")
-
-def runWebsockets():
-    try:
-        start_server = websockets.serve(respond, "localhost", 6000)
-    finally:
-        pass
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
+    socketio.run(ser,debug=True, host="localhost")
 
 if __name__ == "__main__":
-    p_flask = multiprocessing.Process(target=runFlask)
-    p_ws = multiprocessing.Process(target=runWebsockets)
-    p_flask.start()
-    p_ws.start()
-    p_flask.join()
-    p_ws.join()
+    runFlask()
