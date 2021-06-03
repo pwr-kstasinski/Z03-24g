@@ -52,6 +52,7 @@ from pprint import pprint
 from openapi_client.api import default_api
 from openapi_client.model.inline_object import InlineObject
 from openapi_client.model.inline_response200 import InlineResponse200
+from openapi_client.model.inline_response2001 import InlineResponse2001
 # Defining the host is optional and defaults to http://localhost:5000
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
@@ -81,15 +82,20 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DefaultApi* | [**logged_get**](docs/DefaultApi.md#logged_get) | **GET** /logged | Endpoint for getting active users
 *DefaultApi* | [**login_get**](docs/DefaultApi.md#login_get) | **GET** /login | Endpoint for logging users
+*DefaultApi* | [**logout_get**](docs/DefaultApi.md#logout_get) | **GET** /logout | Endpoint for user logout
+*DefaultApi* | [**read_put**](docs/DefaultApi.md#read_put) | **PUT** /read | Endpoint for marking messages as read
 *DefaultApi* | [**receive_get**](docs/DefaultApi.md#receive_get) | **GET** /receive | Endpoint for receiving messages
 *DefaultApi* | [**register_post**](docs/DefaultApi.md#register_post) | **POST** /register | Endpoint for registering users
 *DefaultApi* | [**send_post**](docs/DefaultApi.md#send_post) | **POST** /send | Endpoint for sending messages
+*DefaultApi* | [**unread_get**](docs/DefaultApi.md#unread_get) | **GET** /unread | Endpoint for getting active users
+*DefaultApi* | [**users_get**](docs/DefaultApi.md#users_get) | **GET** /users | Endpoint for getting all users
 
 
 ## Documentation For Models
 
  - [InlineObject](docs/InlineObject.md)
  - [InlineResponse200](docs/InlineResponse200.md)
+ - [InlineResponse2001](docs/InlineResponse2001.md)
 
 
 ## Documentation For Authorization
