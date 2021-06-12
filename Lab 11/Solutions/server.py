@@ -56,13 +56,6 @@ Session = sqlalchemy.orm.sessionmaker()
 Session.configure(bind=engine)
 
 
-# conn = mariadb.connect(
-#         password="root",
-#         user="root",
-#         host="db",
-#         port=3306,
-    
-# )
 
 Base = declarative_base()
 
