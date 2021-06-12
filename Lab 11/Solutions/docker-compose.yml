@@ -1,0 +1,29 @@
+version: "3.8"
+
+
+services: 
+    chat-server:
+        image: chat
+        restart: always
+        ports:
+        - 5001:5001
+        - 5050:5050
+        environment: 
+            DB_HOST: db
+            DB_PASSWORD: root
+            DB_USER: root
+            DB_PORT: 3306
+            DB_DEFAULT: mysql
+
+    db:
+        image: mariadb
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            
+        
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
