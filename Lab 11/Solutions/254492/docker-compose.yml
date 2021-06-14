@@ -6,8 +6,6 @@ services:
         build: ./src
         ports: 
             - "5000:5000"
-        depends_on: 
-            - db
         environment: 
             DB_HOST: database
             DB_USER: root
