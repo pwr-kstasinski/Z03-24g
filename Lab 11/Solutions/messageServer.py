@@ -10,6 +10,8 @@ import time
 import threading
 import json
 import os
+from http import HTTPStatus
+from flask import Response
 
 from ServerConnection import ServerConnection
 
@@ -334,6 +336,35 @@ class Server():
             data={"action":"getUsers","data":res}
             self.connections[usrc].send(data)
 
+health=True
+
+app = flask.Flask(__name__)
+app.config["DEBUG"] = False
+
+@app.route('/', methods=['GET','post'])
+def home():
+    return '''<h1>Messenge server</h1>
+<p>hello</p>'''
+
+@app.route('/chkHealth', methods=['GET'])
+def chkHealth():
+    print(health)
+    if(health):     return ""
+    else:   
+        print("killed")
+        return "",500
+
+@app.route('/kill', methods=['GET','post'])
+def killServer():
+    #os._exit(1)
+    global health
+    health=False
+    return '''<h1>Killed server</h1>'''
+        
+def runApi():
+    app.run(host="0.0.0.0",port=5002)
+
+threading.Thread(target=runApi).start()
 
 Server().mainLoop()
 
