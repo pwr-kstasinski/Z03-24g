@@ -9,7 +9,7 @@ COPY . .
 
 EXPOSE 5000
 
-ENV DB_CONNECT_STR=mysql+pymysql://serverusr:spass@mdb/usrnmess
+#ENV DB_CONNECT_STR=mysql+pymysql://serverusr:spass@mdb/usrnmess
 
 HEALTHCHECK --interval=5s --timeout=5s --start-period=5s --retries=3 CMD curl --fail http://localhost:5000/users || exit 1
 

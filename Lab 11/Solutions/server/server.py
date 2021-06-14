@@ -22,9 +22,13 @@ ser.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
 ser.config['FLASK_ENV'] = 'development'
 db = SQLAlchemy(ser)
 socketio = SocketIO(ser)
+serhost = os.getenv("SERVER_HOST","0.0.0.0")
+serport = int(os.getenv("SERVER_PORT","5000"))
 
 def nmessage(fr,to,msg):
     return messages(fr=fr,to=to,msg=msg,sent=datetime.datetime.now(),read=False)
+def localserhost():
+    return "localhost" if serhost=="0.0.0.0" else serhost
 
 @dataclass
 class messages(db.Model):
@@ -398,7 +402,7 @@ def get_unread_messages_count():
 @ser.route("/api",methods=["GET"])
 def render_api():
     swag = swagger(ser)
-    swag['host'] = "localhost:5000"
+    swag['host'] = "{}:{}".format(localserhost(),serport)
     return jsonify(swag)
 
 @ser.route("/")
@@ -407,15 +411,30 @@ def index():
 
 @ser.route("/healthcheck")
 def healthcheck():
+    """Endpoint for healthchecks
+    ---
+    responses:
+        "200":
+            description: "I'm fine, thanks"
+            schema:
+                type: "str"
+                example: "I'm fine, thanks"
+    """
     return "I'm fine, thanks"
 
 @ser.route("/fail")
 def fail():
+    """Endpoint for making the server shut down. You monster.
+    ---
+    responses:
+        "500":
+            description: "Exited, thus no further response"
+    """
     exit(0)
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     "/docs",
-    "http://localhost:5000/api"
+    "http://{}:{}/api".format(localserhost(),serport)
 )
 
 def runFlask():
@@ -424,8 +443,8 @@ def runFlask():
     #print(os.getenv('DB_CONNECT_STR','nope'))
     #ser.run(debug=True, host='0.0.0.0')
     print("fun")
-    socketio.run(ser,debug=True, host="0.0.0.0")
-    print("hello")
+    socketio.run(ser,debug=True, host=serhost, port=serport)
+    #print("hello")
 
 if __name__ == "__main__":
     runFlask()
