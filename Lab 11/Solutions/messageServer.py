@@ -9,11 +9,14 @@ import socket
 import time
 import threading
 import json
+import os
 
 from ServerConnection import ServerConnection
 
 host,port ="0.0.0.0", 5000
-engine = db.create_engine('sqlite:///msgServer.db')
+dbstr=f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASS']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
+print(dbstr)
+engine = db.create_engine(dbstr)
 connection = engine.connect()
 metadata = db.MetaData()
 
