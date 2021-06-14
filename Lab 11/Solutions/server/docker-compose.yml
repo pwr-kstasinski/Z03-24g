@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - 5000:5000
+      - 5500:5500
     env_file:
       - cs.env
     links:
