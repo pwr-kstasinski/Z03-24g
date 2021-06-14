@@ -5,6 +5,7 @@ from sqlalchemy import or_,and_
 import datetime
 import json
 import os
+from sys import exit
 #import websockets
 #import asyncio
 #import multiprocessing
@@ -403,6 +404,14 @@ def render_api():
 @ser.route("/")
 def index():
     return render_template('index.html', title="page")
+
+@ser.route("/healthcheck")
+def healthcheck():
+    return "I'm fine, thanks"
+
+@ser.route("/fail")
+def fail():
+    exit(0)
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     "/docs",
