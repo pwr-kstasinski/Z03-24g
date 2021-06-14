@@ -280,7 +280,7 @@ class GUI:
         self.refreshUnread("ALL")
         for u in users:
             if u.uid!=self.me:
-                print(u.last)
+                #print(u.last)
                 UserButton(self.userCons,ct,u.uid,u.active,self.switchToUser)
                 self.refreshUnread(u.uid)
                 ct+=1

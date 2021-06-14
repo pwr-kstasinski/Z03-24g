@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_,and_
 import datetime
 import json
+import os
 #import websockets
 #import asyncio
 #import multiprocessing
@@ -13,7 +14,8 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_socketio import send, SocketIO
 
 ser = Flask(__name__)
-ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
+#ser.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///mudb.sqlite3"
+ser.config["SQLALCHEMY_DATABASE_URI"]=os.getenv("DB_CONNECT_STR","sqlite:///mudb.sqlite3")
 ser.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
 #ser.config['SECRET_KEY'] = 'secret!'
 ser.config['FLASK_ENV'] = 'development'
@@ -398,6 +400,10 @@ def render_api():
     swag['host'] = "localhost:5000"
     return jsonify(swag)
 
+@ser.route("/")
+def index():
+    return render_template('index.html', title="page")
+
 swaggerui_blueprint = get_swaggerui_blueprint(
     "/docs",
     "http://localhost:5000/api"
@@ -406,7 +412,11 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 def runFlask():
     db.create_all()
     ser.register_blueprint(swaggerui_blueprint)
-    socketio.run(ser,debug=True, host="localhost")
+    #print(os.getenv('DB_CONNECT_STR','nope'))
+    #ser.run(debug=True, host='0.0.0.0')
+    print("fun")
+    socketio.run(ser,debug=True, host="0.0.0.0")
+    print("hello")
 
 if __name__ == "__main__":
     runFlask()

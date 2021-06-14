@@ -1,0 +1,6 @@
+flask-sqlalchemy
+flask-swagger
+flask-swagger-ui
+flask-socketio
+gevent-websocket
+pymysql
