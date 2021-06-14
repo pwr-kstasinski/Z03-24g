@@ -1,3 +1,0 @@
-CREATE DATABASE usrnmess;
-CREATE USER serverusr@'%' IDENTIFIED BY 'spass';
-GRANT ALL ON usrnmess.* to 'serverusr'@'%' IDENTIFIED BY 'spass' WITH GRANT OPTION;
