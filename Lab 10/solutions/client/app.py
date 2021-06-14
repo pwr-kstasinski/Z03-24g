@@ -5,7 +5,7 @@ import sys
 import socketio
 import asyncio
 
-from client import login_window
+from client import login_window, openapi_client
 from PyQt5.QtCore import QAbstractListModel, QMargins, QPoint, Qt, QSize, QObject, QThread, pyqtSignal
 from PyQt5.QtGui import QColor, QTextDocument, QTextOption, QIcon
 from PyQt5.QtWidgets import (
@@ -67,6 +67,7 @@ QPushButton:pressed {
 }'''
 
 sio = socketio.AsyncClient()
+
 
 class MessageDelegate(QStyledItemDelegate):
     """
@@ -199,14 +200,6 @@ class Worker(QObject):
     def send_message(self):
         self.message_api.send(self.message)
         self.finished.emit()
-
-    def download_messages(self):
-        print(self.user_id)
-        print(self.partner_id)
-        messages = self.message_api.receive(user_id=self.user_id, partner_id=self.partner_id)
-        self.message_api.mark_read(user_id=self.user_id, partner_id=self.partner_id)
-        self.finished.emit()
-        self.messages.emit(messages)
 
 
 class SocketThread(QObject):
@@ -380,8 +373,8 @@ class MainWindow(QMainWindow):
         if name.split()[0] == '#General':
             self.partner_name = name
             self.partner_id = 0
-            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
             self.message_api.mark_read(user_id=self.id, partner_id=self.partner_id)
+            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
             for m in messages:
                 date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
                 if m['sender_id'] == self.id:
@@ -397,8 +390,8 @@ class MainWindow(QMainWindow):
             name = name.split()
             self.partner_id = int(name[0])
             self.partner_name = name[1]
-            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
             self.message_api.mark_read(user_id=self.id, partner_id=self.partner_id)
+            messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
             for m in messages:
                 date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
                 if m['sender_id'] == self.id:
@@ -408,9 +401,40 @@ class MainWindow(QMainWindow):
         self.messages.scrollToBottom()
         self.list_users_data()
 
+    def show_msg(self):
+        print('raz')
+        messages = self.message_api.receive(user_id=self.id, partner_id=self.partner_id)
+        print('dwa')
+        print(messages)
+        self.model.clear()
+        if self.partner_name == '#General':
+            for m in messages:
+                date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
+                if m['sender_id'] == self.id:
+                    self.model.add_message(USER_ME, m['message'], date, self.nick, m['read'])
+                else:
+                    sender_name = ''
+                    for u in self.users:
+                        if m['sender_id'] == u['id']:
+                            sender_name = u['username']
+                            break
+                    self.message_from(m['message'], date, sender_name, m['read'])
+        else:
+            for m in messages:
+                date = datetime.datetime.strptime(m['date'], '%Y-%m-%dT%H:%M:%S')
+                if m['sender_id'] == self.id:
+                    self.model.add_message(USER_ME, m['message'], date, self.nick, m['read'])
+                else:
+                    self.message_from(m['message'], date, self.partner_name, m['read'])
+        self.messages.scrollToBottom()
+
     def handle_socket(self, data):
         data1 = json.loads(data)
-        if data1['action'] == 'user_refresh':
+        print(data1)
+        if data1['action'] == 'read':
+            if data1['sender_id'] == str(self.id) and data1['receiver_id'] == str(self.partner_id):
+                self.show_msg()
+        elif data1['action'] == 'user_refresh':
             if self.thread.isRunning():
                 self.thread.terminate()
                 self.list_users_data()
@@ -430,6 +454,7 @@ class MainWindow(QMainWindow):
                         break
                 self.message_from(data1['message'], datetime.datetime.strptime(data1['date'], "%m/%d/%Y, %H:%M:%S"),
                                   sender_name, True)
+                self.message_api.mark_read(user_id=self.id, partner_id=self.partner_id)
                 self.messages.scrollToBottom()
                 return
             if data1['receiver_id'] == 0 or data1['receiver_id'] == self.id:

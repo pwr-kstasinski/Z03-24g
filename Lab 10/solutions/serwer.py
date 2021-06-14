@@ -203,6 +203,9 @@ def mark_as_read():
         for m in messages:
             m.read = True
             db.session.commit()
+    socketio.emit('all', json.dumps({'action': 'read',
+                                     'sender_id': data['partner_id'],
+                                     'receiver_id': data['user_id']}))
 
     return 'OK'
 
