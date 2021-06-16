@@ -1,4 +1,5 @@
 import json
+import os
 from flask import Flask, request, jsonify
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +8,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_marshmallow import Marshmallow
 from flask_socketio import SocketIO
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{os.environ["DB_USER"]}:{os.environ["DB_PASS"]}@{os.environ["DB_HOST"]}/{os.environ["DB_NAME"]}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -69,14 +70,14 @@ def download_messages():
     user2 = db.session.query(User).filter_by(id=data['user_id']).first()
     partner_id: int = int(data['partner_id'])
     if partner_id == 0:
-        messages = Message.query.filter((Message.receiver_id == data['partner_id']))
+        messages = db.session.query(Message).filter((Message.receiver_id == data['partner_id']))
         message_schema = MessageSchema(many=True)
         result = message_schema.dump(messages)
         return jsonify(result)
     elif user is None or user2 is None:
         return invalid_request('One of the users doesnt exist')
 
-    messages = Message.query.filter(((Message.sender_id == data['user_id']) &
+    messages = db.session.query(Message).filter(((Message.sender_id == data['user_id']) &
                                      (Message.receiver_id == data['partner_id'])) |
                                     ((Message.sender_id == data['partner_id']) &
                                      (Message.receiver_id == data['user_id']))
@@ -108,7 +109,7 @@ def register_user():
     data = request.get_json() or {}
     if 'username' not in data or 'password' not in data:
         return invalid_request('Necessary parameters not given')
-    user = User.query.filter_by(username=data['username']).first()
+    user = db.session.query(User).filter_by(username=data['username']).first()
     if user is not None:
         return invalid_request('User already exists')
     else:
@@ -124,7 +125,7 @@ def login_user():
     data = request.args
     if 'username' not in data or 'password' not in data:
         return invalid_request('Necessary parameters not given')
-    user = User.query.filter_by(username=data['username'], password=data['password']).first()
+    user = db.session.query(User).filter_by(username=data['username'], password=data['password']).first()
     if user is None:
         return invalid_request('Wrong password or username')
     user.logged = True
@@ -138,7 +139,7 @@ def logout_user():
     data = request.args
     if 'username' not in data:
         return invalid_request('Necessary parameters not given')
-    user = User.query.filter_by(username=data['username']).first()
+    user = db.session.query(User).filter_by(username=data['username']).first()
     if user is None:
         return invalid_request('Wrong username')
     user.logged = False
@@ -153,16 +154,16 @@ def get_logged_users():
     if 'id' not in user_id:
         return invalid_request('Necessary parameters not given')
     user_id = int(user_id['id'])
-    users = User.query.order_by(User.logged.desc()).all()
+    users = db.session.query(User).order_by(User.logged.desc()).all()
     user_schema = UserSchema(many=True)
     output = user_schema.dump(users)
     for user in output:
-        last_message = Message.query.filter(((Message.sender_id == user_id) &
+        last_message = db.session.query(Message).filter(((Message.sender_id == user_id) &
                                              (Message.receiver_id == user['id'])) |
                                             ((Message.sender_id == user['id']) &
                                              (Message.receiver_id == user_id))
                                             ).order_by(Message.date.desc()).first()
-        count = Message.query.filter((Message.sender_id == user['id']) & (Message.receiver_id == user_id) &
+        count = db.session.query(Message).filter((Message.sender_id == user['id']) & (Message.receiver_id == user_id) &
                                      (Message.read == False)).count()
         message_schema = MessageSchema()
         result = message_schema.dump(last_message)
@@ -171,7 +172,7 @@ def get_logged_users():
             user['last'] = ""
         else:
             user['last'] = result['date']
-        general = Message.query.filter((Message.receiver_id == 0) &
+        general = db.session.query(Message).filter((Message.receiver_id == 0) &
                                      (Message.read == False)).count()
         gen = {
             'id': 0,
@@ -192,12 +193,12 @@ def mark_as_read():
     if 'user_id' not in data or 'partner_id' not in data:
         return invalid_request('Necessary parameters not given')
     if data['partner_id'] == '0':
-        messages = Message.query.filter(Message.receiver_id == data['partner_id']).all()
+        messages = db.session.query(Message).filter(Message.receiver_id == data['partner_id']).all()
         for m in messages:
             m.read = True
             db.session.commit()
     else:
-        messages = Message.query.filter(
+        messages = db.session.query(Message).filter(
             (Message.sender_id == data['partner_id']) & (Message.receiver_id == data['user_id'])).all()
         for m in messages:
             m.read = True
@@ -214,7 +215,7 @@ def get_user():
     data = request.args
     if 'username' not in data:
         return invalid_request('Necessary parameters not given')
-    user = User.query.filter_by(username=data['username']).first()
+    user = db.session.query(User).filter_by(username=data['username']).first()
     if user is None:
         return invalid_request('Wrong username')
     output = {
@@ -226,6 +227,20 @@ def get_user():
     }
     return jsonify(output)
 
+Healthy = True
+
+@app.route('/healthcheck', methods=['GET'])
+def healthcheck():
+    global Healthy
+    if Healthy:
+        return(invalid_request(message='OK, i am good', status_code=200))
+    return(invalid_request(message='Server is in a bad condition', status_code=500))
+
+@app.route('/makesick', methods=['GET'])
+def makesick():
+    global Healthy
+    Healthy = False
+    return(invalid_request('Made me sick', 200))
 
 app.register_blueprint(swaggerui_blueprint)
 print('dziala')

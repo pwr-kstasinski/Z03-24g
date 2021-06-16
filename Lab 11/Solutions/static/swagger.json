@@ -302,6 +302,24 @@
           }
         }
       }
+    },
+    "/makesick": {
+      "get": {
+        "summary": "Make server sick",
+        "description": "",
+        "operationId": "makesick",
+        "produces": [
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "Made server sick"
+          },
+          "400": {
+            "description": "dunno"
+          }
+        }
+      }
     }
   },
   "definitions": {
