@@ -1,0 +1,66 @@
+
+
+<div class='container'>
+  <div *ngIf = 'currentViewpoint === Viewpoint.Neutral'>
+    <div class='row justify-content-center' >
+      <h3>Co chcesz zrobić w naszym<br>kartoflanym ogrodzie?</h3>
+    </div>
+    <div class =' row justify-content-center'>
+      <button class='btn btn-primary'style='cursor: pointer'
+      (click)='logger()'>Zalogować się</button>
+      <button class='btn btn-primary'style='cursor: pointer'
+      (click)='hogger()'>Zarejestrować się</button>
+    </div>
+  </div>
+  <div class='row justify-content-center' *ngIf = 'currentViewpoint === Viewpoint.Prelogged'>
+    <form ngForm class='col-5 row' (ngSubmit)='legMeInLegMeIN()'>
+      <div class='form-group col'>
+        <label for='loginform' class = 'h4'>Zapraszam do ziemniaczanego czatu:</label>
+        <input [formControl]='loginlogin' class='form-control' id='loginform' placeholder='Login' required>
+        <input [formControl]='loginpassword' type = 'password' class='form-control' id='loginform' placeholder='Password' required>
+      </div>
+      <button type='submit' class='btn btn-primary col-auto align-self-end mb-3 ml-3'>Zaloguj mnie</button>
+    </form>
+  </div>
+  <div class='row justify-content-center' *ngIf = 'currentViewpoint === Viewpoint.Registerform'>
+    <form ngForm class='col-5 row' (ngSubmit)='doYouWantFunnelCake()'>
+      <div class='form-group col'>
+        <label for='registerform' class = 'h4'>Zapraszam do ziemniaczanego czatu:</label>
+        <input [formControl]='registerlogin' class='form-control' id='registerform' placeholder='Login' required>
+        <input [formControl]='registerpassword' type = 'password' class='form-control' id='registerform' placeholder='Password' required>
+      </div>
+      <button type='submit' class='btn btn-primary col-auto align-self-end mb-3 ml-3'>Zarejestruj mnie</button>
+    </form>
+  </div>
+  <div *ngIf = 'currentViewpoint === Viewpoint.Logged'>
+    <div class='row justify-content-center' >
+      <h3>Co chcesz zrobić w naszym<br>kartoflanym ogrodzie?</h3>
+    </div>
+    <div class="row  justify-content-center">
+      <form ngForm class='row justify-content-center' (ngSubmit)='sendThemNapalm()'>
+        <div class='form-group '>
+          <label for='messageform' class = 'h4'>Zapraszam do ziemniaczanego czatu:</label>
+            <input [formControl]='vietcong' class='form-control' id='messageform' placeholder='Adresat' required>
+            <input [formControl]='napalm' class='form-control' id='messageform' placeholder='Wiadomość' required>
+          <button type='submit' class=' btn btn-primary align-self-end mb-3 ml-3'>wyslij wiadomosc</button>
+        </div>
+      </form>
+    </div>
+    <div class = 'row'>
+      <button style='cursor: pointer' (click)='showMeDeWay()'class=' col wbtn btn-primary align-self-end mb-3 ml-3'>Odśwież</button>
+      <button style='cursor: pointer' (click)='punishMeDaddy()' class=' col wbtn btn-primary align-self-end mb-3 ml-3'>Wylogój</button>
+    </div>
+    <div class ='row'>
+      <div class ='col'>
+        <div class="row justify-content-center" style="max-height:130px;width:40%;border:1px solid #ccc;overflow:auto;" *ngFor="let obj of dataarr; let i = index">
+            <div class="align-left justify-content-left" > From: {{obj.sender}}: {{obj.content}} </div>
+        </div>
+      </div>
+      <div class='col'>
+        <div class="row justify-content-center" style="max-height:130px;width:40%;border:1px solid #ccc;overflow:auto;" *ngFor="let obj of activeUsers; let i = index">
+          <div style='cursor: pointer' (click) = 'this.vietcong.setValue(obj.login)'class="align-left justify-content-left" > {{obj.login}} </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
