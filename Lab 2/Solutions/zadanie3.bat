@@ -1,3 +1,4 @@
+
 @echo off
 
 net session >NUL 2>NUL
