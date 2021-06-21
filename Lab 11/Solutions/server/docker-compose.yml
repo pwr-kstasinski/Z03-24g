@@ -1,0 +1,21 @@
+version: "3.1"
+
+services:
+  chat-server:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+      - 5500:5500
+    env_file:
+      - cs.env
+    links:
+      - mdb
+
+  mdb:
+    image: mariadb
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    env_file:
+      - db.env
