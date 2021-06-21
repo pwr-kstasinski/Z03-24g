@@ -1,0 +1,184 @@
+openapi: 3.0.1
+info:
+  title: Server for chatting
+  description: API for chatting between the clients
+  version: "1.0"
+servers:
+- url: http://localhost:5000/
+tags:
+- name: login
+  description: Login of users
+- name: messenger
+  description: Communication between users
+paths:
+  /register:
+    post:
+      tags:
+      - login
+      summary: Register new login in system
+      description: Register new user in system by creating new login
+      operationId: register_post
+      parameters:
+      - name: login
+        in: query
+        description: New user login (must be unique)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: "Register successful, new user created"
+        "400":
+          description: Invalid arguments
+        "409":
+          description: That login already exists
+      x-openapi-router-controller: swagger_server.controllers.login_controller
+  /login:
+    post:
+      tags:
+      - login
+      summary: Login to system
+      description: Logs the user to the system using login
+      operationId: login_post
+      parameters:
+      - name: login
+        in: query
+        description: User login
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Session token
+          content:
+            text/plain:
+              schema:
+                example: "123908129038190283"
+                x-content-type: text/plain
+        "404":
+          description: Invalid login
+      x-openapi-router-controller: swagger_server.controllers.login_controller
+  /logout:
+    post:
+      tags:
+      - login
+      summary: Logout from the system
+      operationId: logout_post
+      parameters:
+      - name: token
+        in: query
+        description: Token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Logout successful
+      x-openapi-router-controller: swagger_server.controllers.login_controller
+  /receivers:
+    get:
+      tags:
+      - messenger
+      summary: List all receivers
+      description: Lists all messages receivers in the system
+      operationId: receivers_get
+      responses:
+        "200":
+          description: List of receivers
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "List of receivers, seperated by ;"
+                example: maciej;mateusz;grzegorz;łukasz
+                x-content-type: text/plain
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+  /send:
+    post:
+      tags:
+      - messenger
+      summary: Sends message
+      description: Sends message to the server
+      operationId: send_post
+      parameters:
+      - name: token
+        in: query
+        description: User token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: receiver
+        in: query
+        description: Message receiver login (leave blank if for all users)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: message
+        in: query
+        description: Message to send
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Sent message to client
+        "400":
+          description: Invalid arguments
+        "404":
+          description: Receipient not found!
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+  /receive:
+    get:
+      tags:
+      - messenger
+      summary: Receives messages
+      description: Receivies all messages from server
+      operationId: receive_get
+      parameters:
+      - name: token
+        in: query
+        description: User token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: sender
+        in: query
+        description: "Message sender, optional"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: All messages from server or from message sender
+          content:
+            application/json:
+              schema:
+                description: List of dict entries
+                example: "[{\"sender\": \"maciej\", \"receiver\": \"grzegorz\", \"\
+                  message\": \"TEST\", \"send_time\": \"2021-05-17 15:16:21.207167\"\
+                  }]"
+                x-content-type: application/json
+        "201":
+          description: No new messages!
+        "404":
+          description: User not found!
+      x-openapi-router-controller: swagger_server.controllers.messenger_controller
+components:
+  schemas: {}
+

@@ -1,0 +1,54 @@
+<p>simplemessenger works!</p>
+
+<h3>Rejestracja</h3>
+<p>wpisz nowy login (nie może się powtarzać): </p>
+<input type="text" [(ngModel)]="loginForRegister">
+<input type="button" value="Zarejestruj" (click)="register(loginForRegister)">
+
+{{registerSuccess}}
+{{registerError}}
+
+<h3>Logowanie</h3>
+<p>wpisz login (musi być już zarejestrowany w systemie): </p>
+<input type="text" [(ngModel)]="loginForLogin">
+<input type="button" value="Zaloguj" (click)="login(loginForLogin)">
+
+{{loginSuccess}}
+{{loginError}}
+
+<h3>Debug</h3>
+Aktualny token: {{actualToken}}
+
+<h3>Chat</h3>
+<div>
+  <ng-container *ngIf = "actualToken != 0; else notLoggedIn">
+    <input type="button" value="Pobierz nowe wiadomości i odśwież listę odbiorców" (click)="refresh()">
+  </ng-container>
+  <ng-template #notLoggedIn>
+    <p>Zaloguj się, aby zacząć korzystać z chatu</p>
+  </ng-template>
+</div>
+<div>
+  <ng-container *ngIf = "messageList.length > 0; else noMessage">
+    <ul>
+      <li *ngFor="let message of messageList">
+        <p>[{{message.sender}}]: {{message.message}}</p>
+      </li>
+    </ul>
+  </ng-container>
+  <ng-template #noMessage>
+    <p>Brak wiadomości. Pobierz nowe wiadomości</p>
+  </ng-template>
+</div>
+
+<h4>Wyślij wiadomość: </h4>
+Wiadomość:
+<input type="text" [(ngModel)]="sendMessage">
+Odbiorca:
+<input type="text" [(ngModel)]="sendReceiver">
+<input type="button" value="Wyślij" (click)="send(sendMessage, sendReceiver)">
+{{sendSuccess}}
+{{sendError}}
+
+<h4>Lista użytkowników:</h4>
+{{usersList}}
