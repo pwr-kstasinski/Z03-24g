@@ -1,0 +1,2 @@
+@ECHO OFF
+DIR %1 /A:-D /B | FINDSTR /E ".%~2"
