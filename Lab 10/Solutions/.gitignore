@@ -1,0 +1,4 @@
+docs/*
+gen*.bat
+server/mudb.sqlite3
+wstest/*
