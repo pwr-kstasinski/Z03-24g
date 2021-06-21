@@ -24,7 +24,7 @@ if(run):
             choice_name = 'Papier'
         else: 
             choice_name = 'Nozyce'
-            
+                       
         print("Wybor uzytkownika to: " + choice_name)
         print("\nTeraz wybiera komputer...")
 
