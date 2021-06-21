@@ -1,0 +1,407 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ChatAPI",
+    "description": "Simple API for a chat app",
+    "version": "0.1"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000"
+    }
+  ],
+  "paths": {
+    "/users/{userID}": {
+      "get": {
+        "description": "Sends table of all users besides requesting user",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": " { \"code\": 200, \"message\": \"All OK\", \"contents\": [ \"tony\", \"mike\", \"steve\" ] }"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user with this username",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": " { \"code\": 404, \"message\": \"Username not found\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Registers an user",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 200, \"message\": \"All OK\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Username already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": " { \"code\": 409, \"message\": \"Username already exists\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:5000"
+          }
+        ]
+      },
+      "delete": {
+        "description": "Deletes an user",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 200, \"message\": \"All OK\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user with this username",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 404, \"message\": \"Username not found\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:5000"
+          }
+        ]
+      },
+      "servers": [
+        {
+          "url": "http://127.0.0.1:5000"
+        }
+      ]
+    },
+    "/login/{userID}": {
+      "get": {
+        "description": "Login",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 200, \"message\": \"All OK\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Username not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 404, \"message\": \"Username not found\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:5000"
+          }
+        ]
+      },
+      "servers": [
+        {
+          "url": "http://127.0.0.1:5000"
+        }
+      ]
+    },
+    "/messagePanel/{userID}": {
+      "get": {
+        "description": "Gets the table of messages",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 200, \"message\": \"All OK\", \"contents\": [] }"
+                  },
+                  "1": {
+                    "value": "{\"code\": 200, \"message\": \"All OK\", \"contents\": [{\"sender\": \"phil\", \"content\": \"hi\"}, { \"sender\": \"mike\", \"content\": \"ad\"  }]}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Username doesnt exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": " { \"code\": 404, \"message\": \"Username not found\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:5000"
+          }
+        ]
+      },
+      "post": {
+        "description": "Send a message",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\"sender\": \"phil\", \"content\": \"example message\"}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 200, \"message\": \"All OK\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": "{ \"code\": 400, \"message\": \"message contents are required\", \"contents\": null }"
+                  },
+                  "1": {
+                    "value": "{ \"code\": 400, \"message\": \"sender is required\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Username doesnt exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                },
+                "examples": {
+                  "0": {
+                    "value": " { \"code\": 404, \"message\": \"Username not found\", \"contents\": null }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://127.0.0.1:5000"
+          }
+        ]
+      },
+      "servers": [
+        {
+          "url": "http://127.0.0.1:5000"
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "inline_response_404": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "sender": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
