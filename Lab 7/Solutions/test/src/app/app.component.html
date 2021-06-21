@@ -1,0 +1,41 @@
+<div class='container'>
+  <div class='row justify-content-center'>
+    <form ngForm class='col-5 row' (ngSubmit)='search()'>
+      <div class='form-group col'>
+        <label for='cityInput' class = 'h4'>For which city you want to know the weather?:</label>
+        <input [formControl]='city' class='form-control' id='cityInput' placeholder='Insert city' required>
+      </div>
+      <button type='submit' class='btn btn-primary col-auto align-self-end mb-3 ml-3'>Search</button>
+    </form>
+  </div>
+
+  <div class='col justify-content-center' *ngIf='currentViewpoint !== Viewpoint.Neutral'>
+    <div *ngFor ="let a of daily.data; let index = index"> 
+      <div class=' d-flex flex-column align-items-center ' style='cursor: pointer'
+           (click)='temperatures(daily.data[index].valid_date)'>
+        <p class='h1'>{{getDate(daily.data[index].valid_date) | date: 'EEEE dd.MM' }}</p>
+        <p class='h4 temperature'>Max Temp:{{ daily.data[index].max_temp | number: '1.0-0' }}&deg;</p>
+        <p class='h5 temperature'>Min Temp:{{ daily.data[index].min_temp | number: '1.0-0' }}&deg;</p>
+        <img src='https://www.weatherbit.io/static/img/icons/{{ daily.data[index].weather.icon }}.png' width='75px' height='75px'>
+        <div>
+          <span class='h6'>Risk of rain </span>
+          <span>{{ daily.data[index].pop }}%</span>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf='currentViewpoint === Viewpoint.Hourly'>
+    <span class='h4 row justify-content-center' >Showing for the {{getDate(selectedDay) | date: 'dd.MM' }}: </span>
+    <div class='row justify-content-center'>
+      <div class='hourly col-auto'>  
+        <div *ngFor='let hour of Hourtemp(); odd as index' class='bar'
+             [style]='TempBars(hour.temp)'>
+          <span>{{ hour.temp | number: '1.0-0'}}&deg;</span>
+          <span *ngIf='index' class='hour'>{{ hour.timestamp_local  | slice : 11:13 }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
