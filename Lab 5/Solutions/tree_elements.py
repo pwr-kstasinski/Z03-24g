@@ -1,6 +1,8 @@
-from typing import Set, List, Optional
+import math
+from typing import Set, Optional, List
 
 from operations import *
+from functions import *
 
 
 class TreeElement:
@@ -21,19 +23,29 @@ class ValueElement(TreeElement):
 
 class OperationElement(TreeElement):
     def __init__(self, operation: Operation, x: TreeElement, y: TreeElement):
-        self.operation = operation
         self.x = x
         self.y = y
+        self.operation = operation
 
     def calc(self) -> float:
         return self.operation.calc(self.x.calc(), self.y.calc())
 
     def __str__(self):
-        return f"({self.x} {self.operation} {str(self.y)})"
+        return f"{self.x} {self.operation} {self.y}"
+
+
+class FunctionElement(TreeElement):
+    def __init__(self, function: Function, x: TreeElement):
+        self.function = function
+        self.x = x
+
+    def calc(self) -> float:
+        return self.function.calc(self.x.calc())
 
 
 class EquationTree:
-    def __init__(self, operations: Set[Operation]):
+    def __init__(self, operations: Set[Operation], functions: Set[Function]):
+        self.functions: List[Function] = list(functions)
         self.operations: List[List[Operation]] = self._transform_operations(operations)
         self._root: Optional[TreeElement] = None
 
@@ -61,11 +73,7 @@ class EquationTree:
             raise AttributeError("equation not found")
 
     def _read_equation(self, equation: str) -> TreeElement:
-        if equation == "":
-            return ValueElement(0)
-        if self._can_delete_outer_brackets(equation):
-            equation = equation[1:-1]
-        blurred_equation = self._blur_brackets(equation)
+        blurred_equation = self._blur_functions(equation)
         for same_priority_operations in self.operations:
             break_index, operation = self.get_break_index_with_operation(blurred_equation, same_priority_operations)
             if break_index != -1:
@@ -74,6 +82,9 @@ class EquationTree:
                 x = self._read_equation(first)
                 y = self._read_equation(second)
                 return OperationElement(operation, x, y)
+        for function in self.functions:
+            if function.check(equation):
+                return FunctionElement(function, self._read_equation(function.edit(equation)))
         return ValueElement(float(equation))
 
     @staticmethod
@@ -85,7 +96,7 @@ class EquationTree:
         return break_index, operation
 
     @staticmethod
-    def _blur_brackets(equation: str) -> str:
+    def _blur_functions(equation: str) -> str:
         counter = 0
         equation_list = list(equation)
         blurred_equation_list = list()
@@ -97,57 +108,5 @@ class EquationTree:
                 counter -= 1
         return "".join(blurred_equation_list)
 
-    @staticmethod
-    def _can_delete_outer_brackets(equation: str) -> bool:
-        counter = 0
-        if equation[0] != "(" or equation[-1] != ")":
-            return False
-        equation = equation[1:-1]
-        for letter in equation:
-            if letter == "(":
-                counter += 1
-            elif letter == ")":
-                if counter == 0:
-                    return False
-                else:
-                    counter -= 1
-        return True
-
     def equation_is_read(self) -> bool:
         return self._root is not None
-
-    def __str__(self):
-        if not self.equation_is_read():
-            raise AttributeError("equation is not read")
-        depth: int = self._get_depth(self._root)
-        width: int = (2 ** depth) * 2
-        queue: list = [self._root]
-        next_queue: list = []
-        result = ""
-        while len(list(filter(lambda x: x is not None, queue))):
-            for element in queue:
-                to_add: str = ""
-                if isinstance(element, ValueElement):
-                    to_add = str(element)
-                    next_queue.append(None)
-                    next_queue.append(None)
-                elif isinstance(element, OperationElement):
-                    to_add = str(element.operation)
-                    next_queue.append(element.x)
-                    next_queue.append(element.y)
-                result += to_add.center(width)
-            result += "\n" * depth
-            depth -= 1
-            width //= 2
-            queue = next_queue
-            next_queue = []
-        return result
-
-    def _get_depth(self, tree_element: TreeElement) -> int:
-        if isinstance(tree_element, ValueElement):
-            return 1
-        elif isinstance(tree_element, OperationElement):
-            opr_elem: OperationElement = tree_element
-            y_depth = self._get_depth(opr_elem.y)
-            x_depth = self._get_depth(opr_elem.x)
-            return 1 + max(x_depth, y_depth)
