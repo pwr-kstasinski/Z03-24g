@@ -1,0 +1,137 @@
+<h4>Kalkulator</h4>
+
+<div id="floating_container">
+  <div id="calculator_container" class="blocks">
+    <input id="display" type="text" [(ngModel)]="display">
+    <table>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="postfix_operator('!')" value="!"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('%')" value="mod"></td>
+        <td><input class='calc_button' type="button" (click)="backspace()" value="Bcksp"></td>
+        <td><input class='calc_button' type="button" (click)="clear()" value="C"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('sqrt(')" value="sqrt(x)"></td>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('abs(')" value="|x|"></td>
+        <td><input class='calc_button' type="button" (click)="prefix_operator('log(')" value="log(x)"></td>
+        <td><input class='calc_button' type="button" (click)="clear()" value="C"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="bracket(true)" value="("></td>
+        <td><input class='calc_button' type="button" (click)="bracket(false)" value=")"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('^')" value="x^y"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('/')" value="/"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="digit(7)" value="7"></td>
+        <td><input class='calc_button' type="button" (click)="digit(8)" value="8"></td>
+        <td><input class='calc_button' type="button" (click)="digit(9)" value="9"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('*')" value="*"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="digit(4)" value="4"></td>
+        <td><input class='calc_button' type="button" (click)="digit(5)" value="5"></td>
+        <td><input class='calc_button' type="button" (click)="digit(6)" value="6"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('-')" value="-"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="digit(1)" value="1"></td>
+        <td><input class='calc_button' type="button" (click)="digit(2)" value="2"></td>
+        <td><input class='calc_button' type="button" (click)="digit(3)" value="3"></td>
+        <td><input class='calc_button' type="button" (click)="infix_operator('+')" value="+"></td>
+      </tr>
+      <tr>
+        <td><input class='calc_button' type="button" (click)="reciprocal()" value="1/x"></td>
+        <td><input class='calc_button' type="button" (click)="digit(0)" value="0"></td>
+        <td><input class='calc_button' type="button" (click)="comma()" value=","></td>
+        <td><input class='calc_button' type="button" (click)="perform()" value="="></td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="output_container" class="blocks">
+    <h6>Postać Odwróconej Notacji Polskiej:</h6> {{rpn}} <br>
+    <h6>Wynik obliczenia:</h6>  {{result}} <br>
+  </div>
+  <div class="blocks">
+    <h6>Graf wyrażenia:</h6>  <br>
+    <ngx-graph
+      class="chart-container"
+      [view]="[811, 300]"
+      [nodes]="graphNodesJsons"
+      [links]="graphLinksJsons"
+      [customColors]="[
+        {
+          name: '=',
+          value: 'yellow'
+        }, {
+          name: '0',
+          value: 'white'
+        }, {
+          name: '+',
+          value: 'green'
+        }, {
+          name: '-',
+          value: 'green'
+        }, {
+          name: '*',
+          value: 'blue'
+        }, {
+          name: '/',
+          value: 'blue'
+        }, {
+          name: '%',
+          value: 'blue'
+        }, {
+          name: '/',
+          value: 'gray'
+        }, {
+          name: 'sqrt',
+          value: 'brown'
+        }, {
+          name: 'abs',
+          value: 'brown'
+        }, {
+          name: 'log',
+          value: 'brown'
+        }, {
+          name: '!',
+          value: 'red'
+        },
+      ]"
+
+    >
+      <ng-template #defsTemplate>
+        <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+          <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+        </svg:marker>
+      </ng-template>
+      <ng-template #nodeTemplate let-node>
+        <svg:g class="node">
+          <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
+                    [attr.fill]="node.data.color" />
+          <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}
+          </svg:text>
+        </svg:g>
+      </ng-template>
+      <ng-template #linkTemplate let-link>
+        <svg:g class="edge">
+          <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
+          <svg:text
+            class="edge-label"
+            text-anchor="middle"style="fill: #666;"
+            [attr.href]="'#' + link.id"
+            startOffset="60%">
+
+              {{link.label}}
+
+          </svg:text>
+        </svg:g>
+      </ng-template>
+    </ngx-graph>
+  </div>
+
+
+</div>
+
+
