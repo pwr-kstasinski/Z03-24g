@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.0",
+    "info":{
+        "description": "Api Lab 9-10",
+        "version": "1.0.0",
+        "title": "Lab 10"
+        
+        
+    },
+      "tags": [
+        {
+          "name": "API Lab 10"
+          
+        }
+      ],
+        "paths": {
+        "/get/{userId}": {
+          "parameters":[
+              {
+                  "name": "userId",
+                  "in": "path",
+                  "required": true,
+                  "description:": "user id",
+                  "type": "integer"
+              }
+          ],
+          "get": {
+            "tags": [
+              "API"
+            ],
+            "summary": "Gets messages stored on server to coresponding user",
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            }
+            
+          }
+          
+
+        },
+        
+        "/send/{userId}/{message}": {
+            "parameters":[
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "description:": "user id",
+                    "type": "integer"
+                },
+                {
+                    "name": "message",
+                    "in": "path",
+                    "required": true,
+                    "description:": "content of the message",
+                    "type": "string"
+                }
+            ],  
+          "post": {
+            "tags": [
+              "API"
+            ],
+            "summary": "Sends message to a user ",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+        
+    }
+}
