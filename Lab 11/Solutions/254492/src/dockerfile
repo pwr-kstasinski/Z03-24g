@@ -1,0 +1,16 @@
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+RUN apt-get update
+RUN apt-get install -y python3-dev default-libmysqlclient-dev build-essential
+RUN apt-get install -y curl
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+HEALTHCHECK --interval=5s --timeout=5s --start-period=5s CMD curl --fail http://0.0.0.0:5000/healthcheck || exit 1
+
+EXPOSE 5000
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

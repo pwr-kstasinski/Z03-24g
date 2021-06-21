@@ -1,0 +1,38 @@
+version: "3.3"
+services: 
+    api:
+        restart: always 
+        container_name: src
+        build: ./src
+        ports: 
+            - "5000:5000"
+        environment: 
+            DB_HOST: database
+            DB_USER: root
+            DB_PASS: root
+            DB_NAME: chat_database
+    client:
+        container_name: front-chat
+        restart: always
+        build: ./front-chat
+        ports: 
+            - "80:80"
+    database:
+        image: mariadb
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+    adminer:
+        image: adminer
+        restart: always
+        environment:
+            ADMINER_DEFAULTS_SERVER: database
+        ports:
+            - 8080:8080
+    autoheal:
+        restart: always
+        image: willfarrell/autoheal
+        environment:
+        - AUTOHEAL_CONTAINER_LABEL=all
+        volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
