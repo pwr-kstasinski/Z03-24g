@@ -1,3 +1,4 @@
+
 @echo off
 
 :start
@@ -33,5 +34,6 @@ set /a t2=%nT%
 set /a nT=%t1%+%t2%
 set /a counter=%counter%+1
 goto loop
+
 
 :End
