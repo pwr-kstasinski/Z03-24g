@@ -5,11 +5,11 @@ import datetime
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_marshmallow import Marshmallow
 
-ser = Flask(__name__)
-db = SQLAlchemy(ser)
-ma = Marshmallow(ser)
-ser.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///databasee.db'
-ser.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app = Flask(__name__)
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///databasee.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 SWAGGER_URL = '/swagger'
 API_URL = '/static/swagger12.json'
@@ -56,16 +56,22 @@ def invalid_request(message=None, status_code=400):
     return response
 
 
-@ser.route('/download', methods=['GET'])
+@app.route('/download', methods=['GET'])
 def download_messages():
     data = request.args
-    print(data)
     if 'user_id' not in data or 'partner_id' not in data:
         return invalid_request('Necessary parameters not given')
     user = db.session.query(User).filter_by(id=data['partner_id']).first()
     user2 = db.session.query(User).filter_by(id=data['user_id']).first()
-    if user is None or user2 is None:
+    partner_id: int = int(data['partner_id'])
+    if partner_id == 0:
+        messages = Message.query.filter((Message.receiver_id == data['partner_id']))
+        message_schema = MessageSchema(many=True)
+        result = message_schema.dump(messages)
+        return jsonify(result)
+    elif user is None or user2 is None:
         return invalid_request('One of the users doesnt exist')
+
     messages = Message.query.filter(((Message.sender_id == data['user_id']) &
                                     (Message.receiver_id == data['partner_id'])) |
                                     ((Message.sender_id == data['partner_id']) &
@@ -73,25 +79,22 @@ def download_messages():
                                     ).order_by(Message.date).all()
     message_schema = MessageSchema(many=True)
     result = message_schema.dump(messages)
-    print(messages)
-    print(result)
     return jsonify(result)
 
 
-@ser.route('/send', methods=['POST'])
+@app.route('/send', methods=['POST'])
 def send_message():
     data = request.get_json() or {}
-    print(data)
     if 'sender_id' not in data or 'receiver_id' not in data or 'message' not in data or 'date' not in data:
         return invalid_request('Any of necessary parameters not found')
     message = Message(receiver_id=data['receiver_id'], sender_id=data['sender_id'], message=data['message'],
-                      date=datetime.datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S.%f'))
+                      date=datetime.datetime.strptime(data['date'], "%m/%d/%Y, %H:%M:%S"))
     db.session.add(message)
     db.session.commit()
     return 'OK'
 
 
-@ser.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json() or {}
     if 'username' not in data or 'password' not in data:
@@ -106,7 +109,7 @@ def register_user():
     return 'OK'
 
 
-@ser.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET'])
 def login_user():
     data = request.args
     if 'username' not in data or 'password' not in data:
@@ -119,7 +122,7 @@ def login_user():
     return 'OK'
 
 
-@ser.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['GET'])
 def logout_user():
     data = request.args
     if 'username' not in data:
@@ -132,15 +135,14 @@ def logout_user():
     return 'OK'
 
 
-@ser.route('/users', methods=['GET'])
+@app.route('/users', methods=['GET'])
 def get_logged_users():
-    user = User.query.filter_by(logged=True).all()
+    user = User.query.all()
     user_schema = UserSchema(many=True)
     output = user_schema.dump(user)
-    print(output)
     return jsonify(output)
 
 
 if __name__ == '__main__':
-    ser.register_blueprint(swaggerui_blueprint)
-    ser.run(host='localhost')
+    app.register_blueprint(swaggerui_blueprint)
+    app.run(host='localhost')

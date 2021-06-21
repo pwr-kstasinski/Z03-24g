@@ -10,9 +10,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 import app
-from openapi_client.model.message import Message
 from openapi_client.model.user import User
-from openapi_client.model.user_public import UserPublic
 from openapi_client.api.users_api import UsersApi
 from openapi_client.api.messages_api import MessagesApi
 
@@ -56,7 +54,7 @@ class LoginWindow(QMainWindow):
         self.login_button.pressed.connect(self.login)
         self.register_button.pressed.connect(self.register)
         self.setWindowTitle('ChatApp Login')
-        self.setWindowIcon(QIcon('app_icon.png'))
+        self.setWindowIcon(QIcon('icons/app_icon.png'))
         self.resize(250, 150)
         self.host_name.setFocus()
         self.host_name.returnPressed.connect(lambda: self.room_id.setFocus())
@@ -74,7 +72,6 @@ class LoginWindow(QMainWindow):
             self.user_api.login(username=nick, password=password)
             self.other.nick = nick
             self.hide()
-            self.other.users = self.user_api.list_users()
             self.other.list_users()
             self.other.show()
         except openapi_client.exceptions.ApiException:
@@ -82,10 +79,9 @@ class LoginWindow(QMainWindow):
             msg.setIcon(QMessageBox.Information)
             msg.setText("Wrond password or username")
             msg.setInformativeText("We couldnt login, if user doesnt exist you can register")
-            msg.setWindowTitle("Wrong credential")
+            msg.setWindowTitle("Wrong credentials")
             msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msg.exec_()
-            print('asala')
             self.host_name.clear()
             self.password.clear()
 
